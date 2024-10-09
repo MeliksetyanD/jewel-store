@@ -1,0 +1,12 @@
+import usermodel from "../models/usermodel.js"
+import { Router } from "express"
+
+const router = Router()
+
+
+router.post('/', async(req, res)=>{
+    
+})
+
+
+
