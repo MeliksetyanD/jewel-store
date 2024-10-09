@@ -1,0 +1,67 @@
+.nav {
+	padding: 20px;
+	width: 100vw;
+	height: 80px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.nav svg {
+	opacity: 0.7;
+	transition: all 0.3s ease;
+}
+.nav svg:hover {
+	opacity: 1;
+}
+
+.link {
+	color: var(--black);
+	text-decoration: none;
+	position: relative;
+	transition: all 0.3s ease;
+}
+
+.link::after,
+.active::after {
+	content: '';
+	position: absolute;
+	bottom: -10px;
+	left: 0;
+	width: 0;
+	height: 2px;
+	background-color: var(--black);
+	transition: all 0.3s ease;
+}
+.link:hover::after {
+	width: 100%;
+}
+.link:global(.active::after) {
+	width: 100%;
+}
+.link,
+button {
+	display: flex;
+	align-items: center;
+}
+.menu {
+	flex: 2;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 30px;
+	margin: 0 24px;
+}
+.cart {
+	margin: 0 12px;
+}
+
+.logo {
+	margin: 0 10px;
+	width: 158px;
+	height: 40px;
+}
+.search {
+	border: none;
+	background-color: transparent;
+	cursor: pointer;
+}
