@@ -1,3 +1,28 @@
 .home {
-	flex: 1;
+	padding: 20px;
+}
+.homeContent {
+	display: flex;
+	flex-direction: column;
+}
+.homeContentText {
+	padding: 0 20px;
+	margin: 20px 0;
+	display: flex;
+	justify-content: space-between;
+}
+
+.homeContentText a {
+	text-decoration: none;
+	color: var(--accent);
+}
+.homeContentText a:hover {
+	text-decoration: underline;
+}
+
+.products {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 57px;
 }

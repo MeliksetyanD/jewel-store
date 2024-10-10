@@ -1,0 +1,19 @@
+.product {
+	border: 1px solid var(--light-gray);
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding-bottom: 20px;
+	text-decoration: none;
+}
+.product h3 {
+	margin: 0 2px;
+	color: var(--black);
+}
+.product h4 {
+	margin: 0 2px;
+	color: var(--accent);
+}
+.product img {
+}

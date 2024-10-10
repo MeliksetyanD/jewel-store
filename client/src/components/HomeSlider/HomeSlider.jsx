@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import Slider from 'react-slick'
 import { sliderImages } from '../../../public/slider/sliderImages'
 import styles from './HomeSlider.module.css'
@@ -35,7 +36,13 @@ function CustomSlide(props) {
 			{...otherProps}
 			style={{ backgroundImage: `url(${image})` }}
 			className={styles.sliderItem}
-		></div>
+		>
+			<div className={styles.sliderContent}>
+				<h1>Gold big hoops</h1>
+				<h2>$ 68,00</h2>
+				<Link to='/product/:id'>View Product</Link>
+			</div>
+		</div>
 	)
 }
 function HomeSlider() {
@@ -55,7 +62,7 @@ function HomeSlider() {
 		prevArrow: <SamplePrevArrow />,
 	}
 	return (
-		<div className='slider-container'>
+		<div className={styles.sliderContainer}>
 			<Slider {...settings}>
 				{sliderImages.map((image, index) => (
 					<CustomSlide key={index} index={index + 1} image={image} />
