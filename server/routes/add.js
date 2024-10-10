@@ -1,6 +1,7 @@
 import { Router } from "express"
 import prodmodel from "../models/productmodel.js"
 import { v4 as uuidv4 } from "uuid"
+import { where } from "sequelize"
 const router = Router()
 
 
@@ -38,5 +39,24 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.delete('/', async (req, res) => {
+    try {
+        const uid = req.body.uid
+        const product = await prodmodel.findAll({
+            where:{
+                uid: uid
+            }
+        })
+        await product[0].destroy()
+
+        res.status(200).json({message: 'Удалено'})
+    } catch (e) {
+        res.status(404).json({message: 'не найдено такого товара'})
+        console.log(e)
+    }
+})
+
+
 
 export default router
+

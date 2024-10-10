@@ -7,7 +7,7 @@ import { validationResult } from "express-validator"
 const router = Router()
 
 
-router.post('/', async (req, res) => {
+router.post('/register', async (req, res) => {
     try {
 
         const errors = validationResult(req)
@@ -24,26 +24,22 @@ router.post('/', async (req, res) => {
             }
         })
 
-
-        const password = req.body.password
-        const salt = await bcrypt.genSalt(10)
-        const hash = await bcrypt.hash(password, salt)
-
-        await usermodel.create({
-            uid: uuidv4(),
-            username: req.body.username,
-            email: req.body.email,
-            password: hash
-        })
-
-        res.status(200).json({
-            message: "Вы успешно зарегистрировались"
-        })
-
+            const password = req.body.password
+            const salt = await bcrypt.genSalt(10)
+            const hash = await bcrypt.hash(password, salt)
+    
+            await usermodel.create({
+                uid: uuidv4(),
+                username: req.body.username,
+                email: req.body.email,
+                password: hash
+            })
+    
+            res.status(200).json({
+                message: "Вы успешно зарегистрировались"
+            })
+             
     } catch (error) {
-        // res.status(500).json({
-        //     message: 'Не удалось зарегистрироватся',
-        // })
         console.log(error)
     }
 })

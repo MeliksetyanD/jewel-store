@@ -2,7 +2,7 @@ import  Sequelize  from "sequelize"
 import sequelize from "../utils/connect.js"
 
 
-const user = sequelize.define('User', {
+const user = sequelize.define('Users', {
     id: {
         primaryKey: true,
         autoIncrement: true,
