@@ -14,16 +14,15 @@ router.post('/', async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).json(errors.array())
         }
-        if(req.body.email){
-            const users = await usermodel.findAll()
-            users.forEach(user => {
-                if(user.email === req.body.email){
-                    return res.status(400).json({
-                        message: 'Такой емаил уже есть'
-                    })
-                }
-            })
-        }
+
+        const users = await usermodel.findAll()
+        users.forEach(user => {
+            if (user.email === req.body.email) {
+                return res.status(412).json({
+                    message: 'Такой емаил уже есть'
+                }).redirect('/')
+            }
+        })
 
 
         const password = req.body.password
@@ -42,10 +41,10 @@ router.post('/', async (req, res) => {
         })
 
     } catch (error) {
+        // res.status(500).json({
+        //     message: 'Не удалось зарегистрироватся',
+        // })
         console.log(error)
-        res.status(500).json({
-            message: 'Не удалось зарегистрироватся',
-        })
     }
 })
 
