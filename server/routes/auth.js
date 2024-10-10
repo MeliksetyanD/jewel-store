@@ -7,7 +7,7 @@ import { validationResult } from "express-validator"
 const router = Router()
 
 
-router.post('/register', async (req, res) => {
+router.post('/reg', async (req, res) => {
     try {
 
         const errors = validationResult(req)
@@ -16,33 +16,67 @@ router.post('/register', async (req, res) => {
         }
 
         const users = await usermodel.findAll()
+        if(users){
         users.forEach(user => {
             if (user.email === req.body.email) {
-                return res.status(412).json({
-                    message: 'Такой емаил уже есть'
-                }).redirect('/')
+                return res.status(203).redirect('/reg')
             }
         })
+    }
+    else{
 
-            const password = req.body.password
-            const salt = await bcrypt.genSalt(10)
-            const hash = await bcrypt.hash(password, salt)
-    
-            await usermodel.create({
-                uid: uuidv4(),
-                username: req.body.username,
-                email: req.body.email,
-                password: hash
-            })
-    
-            res.status(200).json({
-                message: "Вы успешно зарегистрировались"
-            })
-             
+        const password = req.body.password
+        const salt = await bcrypt.genSalt(10)
+        const hash = await bcrypt.hash(password, salt)
+
+        await usermodel.create({
+            uid: uuidv4(),
+            username: req.body.username,
+            email: req.body.email,
+            password: hash
+        })
+
+        res.redirect('/')
+    }
+
     } catch (error) {
         console.log(error)
     }
 })
+
+
+router.post('/log', async (req, res) => {
+    try {
+        const { email, password } = req.body
+        const candidate = await usermodel.findOne({ where: { email } })
+
+        if (candidate) {
+            const isyou = await bcrypt.compare(password, candidate.password)
+
+            if (isyou) {
+                req.session.user = candidate
+                req.session.isAuthenticated = true
+                req.session.save(err => {
+                    if (err) {
+                        throw err
+                    }
+                })
+                res.redirect('/')
+
+            } else {
+                if (err) {
+                    throw err
+                }
+            }
+        } else {
+            res.redirect('/log')
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 
 
 export default router
