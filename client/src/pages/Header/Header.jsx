@@ -3,13 +3,13 @@ import styles from './Header.module.css'
 import logo from '/SHOPPE.svg'
 const Header = () => {
 	return (
-		<nav className={styles.nav}>
-			<Link className={styles.link} to='/'>
+		<header className={styles.nav}>
+			<Link to='/'>
 				<img src={logo} alt='logo' className={styles.logo} />
 			</Link>
 
 			<menu className={styles.menu}>
-				<NavLink className={styles.link} to='/'>
+				<NavLink className={styles.link} to='/shop'>
 					Shop
 				</NavLink>
 				<NavLink className={styles.link} to='/blog'>
@@ -84,7 +84,7 @@ const Header = () => {
 					</svg>
 				</NavLink>
 			</div>
-		</nav>
+		</header>
 	)
 }
 
