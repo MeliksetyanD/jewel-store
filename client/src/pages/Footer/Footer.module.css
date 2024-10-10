@@ -1,0 +1,92 @@
+.footer {
+	padding: 20px;
+	width: 100vw;
+
+	align-self: flex-end;
+	display: flex;
+	flex-direction: column;
+	border-top: 1px solid var(--dark-gray);
+}
+.footerMenu {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 30px;
+}
+.footerMenuList {
+	display: flex;
+	list-style: none;
+	gap: 40px;
+}
+
+.footerMenuLink {
+	color: var(--dark-gray);
+	text-decoration: none;
+	transition: all 0.3s ease;
+}
+.footerMenuLink:hover {
+	color: var(--black);
+}
+.footerMenuLink:global(.active) {
+	color: var(--black);
+}
+.footerNewsLetterForm {
+	position: relative;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.footerNewsLetterInput {
+	width: 300px;
+	padding: 5px;
+	border: 1px solid transparent;
+	border-bottom: 1px solid var(--dark-gray);
+}
+.footerNewsLetterButton {
+	position: absolute;
+	top: 50%;
+	right: 0;
+	transform: translateY(-50%);
+}
+.footerNewsLetterSubmit {
+	position: relative;
+	padding: 5px 15px;
+	border: none;
+	cursor: pointer;
+	z-index: 5;
+	background-color: transparent;
+}
+.footerNewsLetterSubmit + img {
+	z-index: 4;
+
+	position: absolute;
+	top: 50%;
+	right: 50%;
+	transform: translate(50%, -50%);
+}
+.footerNewsLetterInput:focus {
+	border: 1px solid var(--black);
+	outline: none;
+}
+.footerNewsLetterInput {
+	width: 300px;
+	padding: 5px;
+}
+.footerCopy {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.footerSocial {
+	display: flex;
+	gap: 20px;
+}
+.footerSocialLink svg path {
+	color: var(--dark-gray);
+	transition: all 0.3s ease;
+}
+.footerSocialLink:hover > svg path {
+	fill: var(--black);
+}

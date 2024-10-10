@@ -10,6 +10,7 @@ import Cart from './pages/Cart/Cart.jsx'
 import ErrorPage from './pages/ErrorPage/ErrorPage.jsx'
 import Home from './pages/Home/Home.jsx'
 import Layout from './pages/layout/Layout.jsx'
+import Shop from './pages/Shop/Shop.jsx'
 import { store } from './store/store.js'
 
 const router = createBrowserRouter([
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
 			{
 				path: '/blog',
 				element: <Blog />,
+			},
+			{
+				path: '/shop',
+				element: <Shop />,
 			},
 			{
 				path: '/about',
