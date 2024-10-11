@@ -46,8 +46,6 @@ function CustomSlide(props) {
 	)
 }
 function HomeSlider() {
-	console.log('sliderImages', sliderImages)
-
 	const settings = {
 		dots: true,
 		infinite: true,

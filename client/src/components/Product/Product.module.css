@@ -3,9 +3,13 @@
 	border-radius: 10px;
 	display: flex;
 	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 	gap: 20px;
 	padding-bottom: 20px;
 	text-decoration: none;
+	transition: 0.3s;
+	margin: 15px;
 }
 .product h3 {
 	margin: 0 2px;
@@ -14,6 +18,9 @@
 .product h4 {
 	margin: 0 2px;
 	color: var(--accent);
+}
+.product:hover {
+	border: 1px solid var(--accent);
 }
 .product img {
 }
