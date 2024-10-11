@@ -39,6 +39,7 @@ router.post('/', async (req, res) => {
     }
 })
 
+
 router.delete('/', async (req, res) => {
     try {
         const uid = req.body.uid

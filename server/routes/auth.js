@@ -14,31 +14,32 @@ router.post('/reg', async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).json(errors.array())
         }
+        const { email } = req.body
 
-        const users = await usermodel.findAll()
-        if(users){
-        users.forEach(user => {
-            if (user.email === req.body.email) {
-                return res.status(203).redirect('/reg')
-            }
-        })
-    }
-    else{
 
-        const password = req.body.password
-        const salt = await bcrypt.genSalt(10)
-        const hash = await bcrypt.hash(password, salt)
+        const candidate = await usermodel.findOne({ where: { email } })
+        if (candidate) {
+            res.status(200).json({ message: "you have a account" })
+        } else {
+            const password = req.body.password
+            const salt = await bcrypt.genSalt(10)
+            const hash = await bcrypt.hash(password, salt)
 
-        await usermodel.create({
-            uid: uuidv4(),
-            username: req.body.username,
-            email: req.body.email,
-            password: hash
-        })
+            await usermodel.create({
+                uid: uuidv4(),
+                username: req.body.username,
+                email: req.body.email,
+                password: hash
+            })
 
-        res.redirect('/')
-    }
+            res.status(200).json({ message: "you create a account" })
 
+            // res.redirect('/')
+
+        }
+
+
+    
     } catch (error) {
         console.log(error)
     }
@@ -76,7 +77,5 @@ router.post('/log', async (req, res) => {
         console.log(error)
     }
 })
-
-
 
 export default router

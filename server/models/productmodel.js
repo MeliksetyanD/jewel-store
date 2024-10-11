@@ -54,7 +54,7 @@ const product = sequelize.define('Product', {
         allowNull: false,
     },
     images:{
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
     },
     rate:{
@@ -66,6 +66,8 @@ const product = sequelize.define('Product', {
         allowNull: false
     }
 })
+
+
 
 export default product
 

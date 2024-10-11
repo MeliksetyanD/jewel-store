@@ -1,5 +1,6 @@
 import express, { urlencoded } from 'express'
 import sequelize from "./utils/connect.js"
+import user from './models/usermodel.js'
 import cors from 'cors'
 import session from 'express-session'
 import add  from './routes/add.js'
@@ -23,7 +24,7 @@ app.use('/add', add)
 app.use('/auth', registervalidation, register)
 
 
-
+user.sync()
 
 async function start(){
     try {
