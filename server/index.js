@@ -5,8 +5,12 @@ import cors from 'cors'
 import session from 'express-session'
 import add  from './routes/add.js'
 import register from "./routes/auth.js"
+import comments from './routes/addcomments.js'
+import rates from './routes/addrate.js'
 import registervalidation from "./validation/registervalidation.js"
 import varmiddleware from "./middleware/variable.js"
+
+
 
 const PORT = process.env.PORT || 4700
 
@@ -22,6 +26,10 @@ app.use(varmiddleware)
 app.use(cors())
 app.use('/add', add)
 app.use('/auth', registervalidation, register)
+app.use('/addcomments', comments)
+app.use('/addrate', rates)
+
+
 
 
 user.sync()

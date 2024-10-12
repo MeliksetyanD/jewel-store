@@ -29,17 +29,15 @@ router.post('/reg', async (req, res) => {
                 uid: uuidv4(),
                 username: req.body.username,
                 email: req.body.email,
-                password: hash
+                password: hash   
             })
 
             res.status(200).json({ message: "you create a account" })
 
-            // res.redirect('/')
-
         }
 
 
-    
+
     } catch (error) {
         console.log(error)
     }

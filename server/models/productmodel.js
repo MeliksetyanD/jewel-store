@@ -2,7 +2,8 @@ import  Sequelize  from "sequelize"
 import sequelize from "../utils/connect.js"
 
 
-const product = sequelize.define('Product', {
+const product = sequelize.define('Product',
+     {
     id: {
         primaryKey: true,
         autoIncrement: true,
@@ -56,14 +57,6 @@ const product = sequelize.define('Product', {
     images:{
         type: Sequelize.STRING,
         allowNull: false,
-    },
-    rate:{
-        type: Sequelize.FLOAT,
-        allowNull: false,
-    },
-    reviews: {
-        type: Sequelize.STRING,
-        allowNull: false
     }
 })
 
