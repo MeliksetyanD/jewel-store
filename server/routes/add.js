@@ -16,7 +16,6 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const prod = req.body
-        // console.log(prod)
         await prodmodel.create({
             uid: uuidv4(),
             name: req.body.name,
@@ -29,9 +28,7 @@ router.post('/', async (req, res) => {
             material: req.body.material,
             categoryname: req.body.categoryname,
             categorylink: req.body.categorylink,
-            images: req.body.images,
-            rate: req.body.rate,
-            reviews: req.body.reviews
+            images: req.body.images
         })
         res.status(200).json(prod)
     } catch (e) {
@@ -44,15 +41,15 @@ router.delete('/', async (req, res) => {
     try {
         const uid = req.body.uid
         const product = await prodmodel.findAll({
-            where:{
+            where: {
                 uid: uid
             }
         })
         await product[0].destroy()
 
-        res.status(200).json({message: 'Удалено'})
+        res.status(200).json({ message: 'Удалено' })
     } catch (e) {
-        res.status(404).json({message: 'не найдено такого товара'})
+        res.status(404).json({ message: 'не найдено такого товара' })
         console.log(e)
     }
 })
