@@ -21,7 +21,12 @@ app.use(express.urlencoded({extended:true}))
 app.use(session({
     secret: 'secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // Время жизни куки (в данном случае — 1 день)
+        secure: false, // Устанавливать true, если используешь HTTPS
+        httpOnly: true, // Защита от XSS, куки доступны только через HTTP (не JavaScript)
+    }
 }))
 app.use(varmiddleware)
 app.use(cors())
@@ -30,6 +35,11 @@ app.use('/auth', registervalidation, register)
 app.use('/addcomments', comments)
 app.use('/addrate', rates)
 app.use('/cart', cart)
+
+
+
+
+
 
 
 
