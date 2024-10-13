@@ -40,6 +40,7 @@ router.post('/reg', async (req, res) => {
 
     } catch (error) {
         console.log(error)
+        res.status(500).json({message:'error, try again'})
     }
 })
 
@@ -73,6 +74,7 @@ router.post('/log', async (req, res) => {
 
     } catch (error) {
         console.log(error)
+        res.status(500).json({message:'error, try again'})
     }
 })
 

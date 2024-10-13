@@ -7,6 +7,7 @@ import add  from './routes/add.js'
 import register from "./routes/auth.js"
 import comments from './routes/addcomments.js'
 import rates from './routes/addrate.js'
+import cart from './routes/cart.js'
 import registervalidation from "./validation/registervalidation.js"
 import varmiddleware from "./middleware/variable.js"
 
@@ -28,6 +29,9 @@ app.use('/add', add)
 app.use('/auth', registervalidation, register)
 app.use('/addcomments', comments)
 app.use('/addrate', rates)
+app.use('/cart', cart)
+
+
 
 
 

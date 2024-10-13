@@ -1,8 +1,6 @@
 import { Router } from "express"
 import ratemodel from "../models/ratemodel.js"
 import user from "../models/usermodel.js"
-import { v4 as uuidv4 } from "uuid"
-import { where } from "sequelize"
 import products from "../models/productmodel.js"
 const router = Router()
 
@@ -15,6 +13,8 @@ router.get('/', async (req, res) => {
         res.status(200).json({ message: summ })
     } catch (e) {
         console.log(e)
+        res.status(500).json({message:'error, try again'})
+
     }
 })
 
@@ -36,6 +36,7 @@ router.post('/', async (req, res) => {
         }
     } catch (e) {
         console.log(e)
+        res.status(500).json({message:'error, try again'})
     }
 })
 

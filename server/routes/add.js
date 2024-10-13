@@ -10,6 +10,7 @@ router.get('/', async (req, res) => {
         res.status(200).json(await prodmodel.findAll())
     } catch (e) {
         console.log(e)
+        res.status(500).json({message:'error, try again'})
     }
 })
 
@@ -33,6 +34,7 @@ router.post('/', async (req, res) => {
         res.status(200).json(prod)
     } catch (e) {
         console.log(e)
+        res.status(500).json({message:'error, try again'})
     }
 })
 
@@ -49,8 +51,8 @@ router.delete('/', async (req, res) => {
 
         res.status(200).json({ message: 'Удалено' })
     } catch (e) {
-        res.status(404).json({ message: 'не найдено такого товара' })
         console.log(e)
+        res.status(404).json({ message: 'не найдено такого товара' })
     }
 })
 

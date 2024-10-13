@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
         res.status(200).json(await commentsmodel.findAll())
     } catch (e) {
         console.log(e)
+        res.status(500).json({message:'error, try again'})
     }
 })
 
@@ -34,6 +35,7 @@ router.post('/', async (req, res) => {
 
     } catch (e) {
         console.log(e)
+        res.status(500).json({message:'error, try again'})
     }
 })
 
