@@ -1,6 +1,10 @@
 import express, { urlencoded } from 'express'
 import sequelize from "./utils/connect.js"
 import user from './models/usermodel.js'
+import carts from './models/cartmodel.js'
+import comment from './models/commentmodel.js'
+import product from './models/productmodel.js'
+import rate from './models/ratemodel.js'
 import cors from 'cors'
 import session from 'express-session'
 import add  from './routes/add.js'
@@ -37,16 +41,11 @@ app.use('/addrate', rates)
 app.use('/cart', cart)
 
 
-
-
-
-
-
-
-
-
-
 user.sync()
+carts.sync()
+comment.sync()
+product.sync()
+rate.sync()
 
 async function start(){
     try {
