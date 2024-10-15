@@ -13,7 +13,7 @@ const Home = () => {
 					<Link to='/shop'>View all</Link>
 				</div>
 				<div className={styles.products}>
-					<Product />
+					<Product id={5} />
 					<Product />
 					<Product />
 					<Product />

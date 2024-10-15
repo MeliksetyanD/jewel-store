@@ -1,0 +1,11 @@
+.footerSocial {
+	display: flex;
+	gap: 20px;
+}
+.footerSocialLink svg path {
+	color: var(--dark-gray);
+	transition: all 0.3s ease;
+}
+.footerSocialLink:hover > svg path {
+	fill: var(--black);
+}
