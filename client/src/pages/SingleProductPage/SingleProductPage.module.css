@@ -1,0 +1,104 @@
+.singleProductContent {
+	display: flex;
+	justify-content: space-around;
+}
+.singleProductInfo {
+	flex: 1.5;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding: 10px 30px;
+}
+.singleProductImages {
+	flex: 2;
+	display: flex;
+	gap: 20px;
+	align-items: center;
+	justify-content: center;
+}
+.singleProductImageBox {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding: 10px;
+}
+.singleProductImageBox img {
+	border-radius: 10px;
+	transition: 0.3s;
+	cursor: pointer;
+}
+.singleProductImageBox img:hover {
+	opacity: 0.75;
+}
+.singleProductImagePreview img {
+	border-radius: 10px;
+}
+
+.singleProductName h2,
+.singleProductReviews h3 {
+	font-weight: normal;
+	margin: 10px 0;
+}
+.singleProductName h4 {
+	color: var(--accent);
+}
+.singleProductReviews {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+}
+.singleProductDescription {
+}
+.descriptionMenu {
+	display: flex;
+	gap: 20px;
+	position: relative;
+}
+.descriptionMenuLink {
+	margin: 20px;
+	text-decoration: none;
+	color: var(--dark-gray);
+	font-size: 20px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	position: relative;
+}
+.descriptionMenuLink:hover {
+	color: var(--black);
+}
+
+.descriptionMenuLink::after,
+.active::after {
+	content: '';
+	position: absolute;
+	bottom: -10px;
+	left: 0;
+	width: 0;
+	height: 2px;
+	background-color: var(--black);
+	transition: all 0.3s ease;
+}
+.descriptionMenuLink:hover::after {
+	width: 100%;
+}
+.active {
+	color: var(--black);
+}
+.active::after {
+	width: 100%;
+}
+.descriptionShow {
+	padding: 20px;
+}
+.similarProducts {
+	padding: 20px;
+}
+
+.similarProductsContent {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+}

@@ -11,6 +11,7 @@ import ErrorPage from './pages/ErrorPage/ErrorPage.jsx'
 import Home from './pages/Home/Home.jsx'
 import Layout from './pages/layout/Layout.jsx'
 import Shop from './pages/Shop/Shop.jsx'
+import { SingleProductPage } from './pages/SingleProductPage/SingleProductPage.jsx'
 import { store } from './store/store.js'
 
 const router = createBrowserRouter([
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
 			{
 				path: '/cart',
 				element: <Cart />,
+			},
+			{
+				path: '/product/:id',
+				element: <SingleProductPage />,
 			},
 		],
 	},

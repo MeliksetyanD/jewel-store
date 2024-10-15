@@ -9,6 +9,11 @@
 	right: 4%;
 	top: 10%;
 }
+.sliderArrowNext,
+.sliderArrowPrev {
+	width: inherit;
+}
+
 .sliderArrowNext::before,
 .sliderArrowPrev::before {
 	opacity: 0.3;
