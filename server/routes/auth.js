@@ -16,7 +16,6 @@ router.post('/reg', async (req, res) => {
         }
         const { email } = req.body
 
-
         const candidate = await usermodel.findOne({ where: { email } })
         if (candidate) {
             res.status(200).json({ message: "you have a account" })
@@ -33,10 +32,7 @@ router.post('/reg', async (req, res) => {
             })
 
             res.status(200).json({ message: "you create a account" })
-
         }
-
-
 
     } catch (error) {
         console.log(error)

@@ -9,7 +9,7 @@ import cors from 'cors'
 import session from 'express-session'
 import add  from './routes/add.js'
 import register from "./routes/auth.js"
-import comments from './routes/addcomments.js'
+import comments from './routes/comments.js'
 import rates from './routes/addrate.js'
 import cart from './routes/cart.js'
 import registervalidation from "./validation/registervalidation.js"

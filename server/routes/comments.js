@@ -2,6 +2,8 @@ import { Router } from "express"
 import commentsmodel from "../models/commentmodel.js"
 import prodmodel from "../models/productmodel.js"
 import usermodel from "../models/usermodel.js"
+import { where } from "sequelize"
+import comments from "../models/commentmodel.js"
 
 
 const router = Router()
@@ -9,7 +11,20 @@ const router = Router()
 
 router.get('/', async (req, res) => {
     try {
-        res.status(200).json(await commentsmodel.findAll())
+        
+        const {productid} = req.body
+        const comments = await commentsmodel.findAll({where: { productid }} )
+        
+        const com = []
+        comments.forEach(async(obj) => {
+            const users = await usermodel.findAll({where: {uid: obj.userid}})
+           console.log(users[0].username, users[0].uid, obj.comment)
+            com.push([`${users[0].username}`, `${obj.comment}`])
+            console.log(com)
+    });
+
+        console.log(com)
+        res.status(200).json(com)
     } catch (e) {
         console.log(e)
         res.status(500).json({message:'error, try again'})
@@ -38,6 +53,21 @@ router.post('/', async (req, res) => {
         res.status(500).json({message:'error, try again'})
     }
 })
+
+
+async function getcomments(comments, usermodel) {
+    const com = []
+    comments.forEach(async(obj) => {
+        const user = await usermodel.findAll({where: {uid: obj.userid}})
+        com.push({
+            username: user[0].username,
+            com: obj.comment
+    })    
+});
+  return com
+}
+
+
 
 
 export default router
