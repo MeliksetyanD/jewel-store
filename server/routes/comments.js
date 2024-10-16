@@ -7,27 +7,26 @@ import usermodel from "../models/usermodel.js"
 const router = Router()
 
 
-// router.get('/', async (req, res) => {
-//     try {
+router.get('/', async (req, res) => {
+    try {
         
-//         const {productid} = req.body
-//         const comments = await commentsmodel.findAll({where: { productid }} )
+        const {productid} = req.body
+        const comments = await commentsmodel.findAll({where: { productid }} )
         
-//         const com = []
+        const com = []
 
 
-//         for (const obj of comments) {
-//             const users = await usermodel.findAll({where: {uid: obj.userid}})
-//            console.log(users[0].username, users[0].uid, obj.comment)
-//             com.push({name:users[0].username, rewiu:obj.comment})
-//         }
+        for (const obj of comments) {
+            const users = await usermodel.findAll({where: {uid: obj.userid}})
+            com.push({name:users[0].username, rewiu:obj.comment, rate: obj.rate})
+        }
 
-//         res.status(200).json(com)
-//     } catch (e) {
-//         console.log(e)
-//         res.status(500).json({message:'error, try again'})
-//     }
-// })
+        res.status(200).json(com)
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message:'error, try again'})
+    }
+})
 
 router.post('/', async (req, res) => {
     try {

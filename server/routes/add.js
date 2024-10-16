@@ -28,10 +28,13 @@ router.get('/get/:id', async (req, res) => {
             console.log(users[0].username, users[0].uid, obj.comment)
             com.push({ name: users[0].username, rewiu: obj.comment, rate: obj.rate })
         }
+        const sum = ratesum(com)
+        console.log(com)
 
         res.status(200).json({
             ...response[0].dataValues,
             revies: com,
+            sum
         })
 
     } catch (e) {
@@ -95,6 +98,23 @@ router.delete('/', async (req, res) => {
         res.status(404).json({ message: 'не найдено такого товара' })
     }
 })
+
+
+
+
+function ratesum(rewiu) {
+    const count = rewiu.length
+    let sum = 0
+    rewiu.forEach(obj => {
+        sum += obj.rate
+    });
+    return sum / count
+}
+
+
+
+
+
 
 
 
