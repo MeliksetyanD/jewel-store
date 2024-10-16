@@ -25,6 +25,10 @@ const comments = sequelize.define('Comment', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    rate:{
+        type: Sequelize.INTEGER,
+        allowNull: false
+    }
 })
 
 
