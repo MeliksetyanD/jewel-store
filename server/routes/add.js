@@ -51,16 +51,13 @@ router.get('/get/:id', async (req, res) => {
 
 //         const users = await user.findAll({where:{uid:userids}})
 //         const data = new Map()
-//         console.log(users)
 
 //         for (const user of users) {
 //             data.set(user.uid, user.username)
 //         }
-//         console.log(data)
 
 
 //         for (const obj of comments) {
-//             console.log(obj)
 
 //             com.push({ name: data.get(obj.userid), rewiu: obj.comment, rate: obj.rate })
 //         }
@@ -137,10 +134,10 @@ router.delete('/', async (req, res) => {
 
 
 
-function ratesum(rewiu) {
-    const count = rewiu.length
+function ratesum(rewiew) {
+    const count = rewiew.length
     let sum = 0
-    rewiu.forEach(obj => {
+    rewiew.forEach(obj => {
         sum += obj.rate
     });
     return sum / count

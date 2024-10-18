@@ -30,12 +30,12 @@ app.use(session({
         httpOnly: true, // Защита от XSS, куки доступны только через HTTP (не JavaScript)
     }
 }))
+
 app.use(varmiddleware)
 app.use(cors())
 app.use('/add', add)
 app.use('/auth', registervalidation, register)
 app.use('/addcomments', comments)
-// app.use('/addrate', rates)
 app.use('/cart', cart)
 
 
