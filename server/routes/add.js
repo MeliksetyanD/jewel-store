@@ -10,8 +10,6 @@ const router = Router()
 
 
 
-
-
 router.get('/get/:id', async (req, res) => {
     try {
 
@@ -19,17 +17,15 @@ router.get('/get/:id', async (req, res) => {
         console.log(req.params.id)
 
         const comments = await commentss.findAll({ where: { productid: req.params.id } })
-
         const com = []
-
 
         for (const obj of comments) {
             const users = await user.findAll({ where: { uid: obj.userid } })
-            console.log(users[0].username, users[0].uid, obj.comment)
+            // console.log(users[0].username, users[0].uid, obj.comment)
             com.push({ name: users[0].username, rewiu: obj.comment, rate: obj.rate })
         }
         const sum = ratesum(com)
-        console.log(com)
+        // console.log(com)
 
         res.status(200).json({
             ...response[0].dataValues,
@@ -42,6 +38,51 @@ router.get('/get/:id', async (req, res) => {
         res.status(500).json({ message: 'error, try again' })
     }
 })
+
+
+
+
+// router.get('/get/:id', async (req, res) => {
+//     try {
+
+//         const response = await prodmodel.findAll()
+//         console.log(req.params.id)
+
+//         const comments = await commentss.findAll({ where: { productid: req.params.id } })
+
+//         const com = []
+
+//         const userids = comments.map(comment => comment.userid)
+
+//         const users = await user.findAll({where:{uid:userids}})
+//         const data = new Map()
+//         console.log(users)
+
+//         for (const user of users) {
+//             data.set(user.uid, user.username)
+//         }
+//         console.log(data)
+
+
+//         for (const obj of comments) {
+//             console.log(obj)
+
+//             com.push({ name: data.get(obj.userid), rewiu: obj.comment, rate: obj.rate })
+//         }
+//         const sum = ratesum(com)
+
+//         res.status(200).json({
+//             ...response[0].dataValues,
+//             revies: com,
+//             sum
+//         })
+
+//     } catch (e) {
+//         console.log(e)
+//         res.status(500).json({ message: 'error, try again' })
+//     }
+// })
+
 
 
 
@@ -101,7 +142,6 @@ router.delete('/', async (req, res) => {
 
 
 
-
 function ratesum(rewiu) {
     const count = rewiu.length
     let sum = 0
@@ -110,9 +150,6 @@ function ratesum(rewiu) {
     });
     return sum / count
 }
-
-
-
 
 
 

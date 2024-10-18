@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
         
 
         if (candidate && product && rate) {
-            if(rate <= 0 || rate >= 5 || comment.length <= 1){
+            if(rate <= 0 || rate > 5 || comment.length <= 1){
                 res.status(200).json({ message: "ti ne astavil comment"})
             }else{
                 await commentsmodel.create({
@@ -56,6 +56,7 @@ router.post('/', async (req, res) => {
         res.status(500).json({message:'error, try again'})
     }
 })
+
 
 
 
