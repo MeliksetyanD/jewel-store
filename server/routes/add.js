@@ -1,11 +1,8 @@
 import { Router } from "express"
 import prodmodel from "../models/productmodel.js"
 import commentss from "../models/commentmodel.js"
-// import ratess from "../models/ratemodel.js"
-
 import user from "../models/usermodel.js"
 import { v4 as uuidv4 } from "uuid"
-import { where } from "sequelize"
 const router = Router()
 
 
@@ -21,11 +18,9 @@ router.get('/get/:id', async (req, res) => {
 
         for (const obj of comments) {
             const users = await user.findAll({ where: { uid: obj.userid } })
-            // console.log(users[0].username, users[0].uid, obj.comment)
             com.push({ name: users[0].username, rewiu: obj.comment, rate: obj.rate })
         }
         const sum = ratesum(com)
-        // console.log(com)
 
         res.status(200).json({
             ...response[0].dataValues,
