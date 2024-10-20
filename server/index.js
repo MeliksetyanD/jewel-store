@@ -10,6 +10,7 @@ import add  from './routes/add.js'
 import register from "./routes/auth.js"
 import comments from './routes/comments.js'
 import cart from './routes/cart.js'
+import blog from './routes/blog.js'
 import registervalidation from "./validation/registervalidation.js"
 import varmiddleware from "./middleware/variable.js"
 
@@ -37,6 +38,7 @@ app.use('/add', add)
 app.use('/auth', registervalidation, register)
 app.use('/addcomments', comments)
 app.use('/cart', cart)
+app.use('/blog', blog)
 
 
 user.sync()

@@ -7,36 +7,6 @@ const router = Router()
 
 
 
-router.get('/get/:id', async (req, res) => {
-    try {
-
-        const response = await prodmodel.findAll()
-        console.log(req.params.id)
-
-        const comments = await commentss.findAll({ where: { productid: req.params.id } })
-        const com = []
-
-        for (const obj of comments) {
-            const users = await user.findAll({ where: { uid: obj.userid } })
-            com.push({ name: users[0].username, rewiu: obj.comment, rate: obj.rate })
-        }
-        const sum = ratesum(com)
-
-        res.status(200).json({
-            ...response[0].dataValues,
-            revies: com,
-            sum
-        })
-
-    } catch (e) {
-        console.log(e)
-        res.status(500).json({ message: 'error, try again' })
-    }
-})
-
-
-
-
 // router.get('/get/:id', async (req, res) => {
 //     try {
 
@@ -44,22 +14,11 @@ router.get('/get/:id', async (req, res) => {
 //         console.log(req.params.id)
 
 //         const comments = await commentss.findAll({ where: { productid: req.params.id } })
-
 //         const com = []
 
-//         const userids = comments.map(comment => comment.userid)
-
-//         const users = await user.findAll({where:{uid:userids}})
-//         const data = new Map()
-
-//         for (const user of users) {
-//             data.set(user.uid, user.username)
-//         }
-
-
 //         for (const obj of comments) {
-
-//             com.push({ name: data.get(obj.userid), rewiu: obj.comment, rate: obj.rate })
+//             const users = await user.findAll({ where: { uid: obj.userid } })
+//             com.push({ name: users[0].username, rewiu: obj.comment, rate: obj.rate })
 //         }
 //         const sum = ratesum(com)
 
@@ -76,6 +35,44 @@ router.get('/get/:id', async (req, res) => {
 // })
 
 
+
+
+router.get('/get/:id', async (req, res) => {
+    try {
+
+        const response = await prodmodel.findAll()
+        console.log(req.params.id)
+
+        const comments = await commentss.findAll({ where: { productid: req.params.id } })
+
+        const com = []
+
+        const userids = comments.map(comment => comment.userid)
+
+        const users = await user.findAll({where:{uid:userids}})
+        const data = new Map()
+
+        for (const user of users) {
+            data.set(user.uid, user.username)
+        }
+
+
+        for (const obj of comments) {
+            com.push({ name: data.get(obj.userid), rewiu: obj.comment, rate: obj.rate })
+        }
+        const sum = ratesum(com)
+
+        res.status(200).json({
+            ...response[0].dataValues,
+            revies: com,
+            sum
+        })
+
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({ message: 'error, try again' })
+    }
+})
 
 
 
@@ -104,7 +101,6 @@ router.post('/', async (req, res) => {
             weight: req.body.weight,
             material: req.body.material,
             categoryname: req.body.categoryname,
-            categorylink: req.body.categorylink,
             images: req.body.images
         })
         res.status(200).json(prod)

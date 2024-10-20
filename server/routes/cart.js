@@ -2,8 +2,8 @@ import { Router } from "express"
 import cart from "../models/cartmodel.js"
 import user from "../models/usermodel.js"
 import products from "../models/productmodel.js"
-import connection from "../utils/connect.js"
-import { where } from "sequelize"
+
+
 const router = Router()
 
 
