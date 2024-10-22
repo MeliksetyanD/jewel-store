@@ -52,7 +52,6 @@ router.post('/', async (req, res) => {
     }
 })
 
-
 router.put('/:productid', async (req, res) => {
     try {
         const { productid } = req.params; // Получаем productid из параметров
@@ -73,7 +72,6 @@ router.put('/:productid', async (req, res) => {
         res.status(500).json({ message: 'Произошла ошибка, попробуйте снова' });
     }
 });
-
 
 router.delete('/:productid', async (req, res) => {
     try {

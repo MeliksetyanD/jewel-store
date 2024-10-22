@@ -4,6 +4,7 @@ import user from './models/usermodel.js'
 import carts from './models/cartmodel.js'
 import comment from './models/commentmodel.js'
 import product from './models/productmodel.js'
+import blogmodel from './models/blogmodel.js'
 import cors from 'cors'
 import session from 'express-session'
 import add  from './routes/add.js'
@@ -43,8 +44,9 @@ app.use('/blog', blog)
 
 user.sync()
 carts.sync()
-comment.sync()
 product.sync()
+comment.sync()
+blogmodel.sync()
 
 async function start(){
     try {
