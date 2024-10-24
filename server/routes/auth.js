@@ -40,7 +40,6 @@ router.post('/reg', async (req, res) => {
     }
 })
 
-
 router.post('/log', async (req, res) => {
     try {
         const { email, password } = req.body

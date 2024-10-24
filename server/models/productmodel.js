@@ -50,10 +50,6 @@ const product = sequelize.define('Product',
         type: Sequelize.STRING,
         allowNull: false,
     },
-    categorylink:{
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
     images:{
         type: Sequelize.STRING,
         allowNull: false,

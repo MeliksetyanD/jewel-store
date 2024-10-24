@@ -1,36 +1,32 @@
-import  Sequelize  from "sequelize"
+import Sequelize from "sequelize"
 import sequelize from "../utils/connect.js"
 
 
 
-
-
-
-const comments = sequelize.define('Comment', {
+const blog = sequelize.define('Blog', {
     id: {
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
         type: Sequelize.INTEGER
     },
-    productid: {
+    uid: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    userid: {
+    title: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    comment:{
-        type: Sequelize.STRING,
+    description: {
+        type: Sequelize.TEXT,
         allowNull: false
     },
-    rate:{
-        type: Sequelize.INTEGER,
+    images: {
+        type: Sequelize.STRING,
         allowNull: false
     }
 })
 
 
-
-export default comments
+export default blog

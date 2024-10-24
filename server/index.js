@@ -4,14 +4,14 @@ import user from './models/usermodel.js'
 import carts from './models/cartmodel.js'
 import comment from './models/commentmodel.js'
 import product from './models/productmodel.js'
-import rate from './models/ratemodel.js'
+import blogmodel from './models/blogmodel.js'
 import cors from 'cors'
 import session from 'express-session'
 import add  from './routes/add.js'
 import register from "./routes/auth.js"
 import comments from './routes/comments.js'
-import rates from './routes/addrate.js'
 import cart from './routes/cart.js'
+import blog from './routes/blog.js'
 import registervalidation from "./validation/registervalidation.js"
 import varmiddleware from "./middleware/variable.js"
 
@@ -32,20 +32,21 @@ app.use(session({
         httpOnly: true, // Защита от XSS, куки доступны только через HTTP (не JavaScript)
     }
 }))
+
 app.use(varmiddleware)
 app.use(cors())
 app.use('/add', add)
 app.use('/auth', registervalidation, register)
 app.use('/addcomments', comments)
-app.use('/addrate', rates)
 app.use('/cart', cart)
+app.use('/blog', blog)
 
 
 user.sync()
 carts.sync()
-comment.sync()
 product.sync()
-rate.sync()
+comment.sync()
+blogmodel.sync()
 
 async function start(){
     try {

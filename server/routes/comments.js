@@ -2,8 +2,6 @@ import { Router } from "express"
 import commentsmodel from "../models/commentmodel.js"
 import prodmodel from "../models/productmodel.js"
 import usermodel from "../models/usermodel.js"
-import { where } from "sequelize"
-
 
 
 const router = Router()
@@ -20,8 +18,7 @@ router.get('/', async (req, res) => {
 
         for (const obj of comments) {
             const users = await usermodel.findAll({where: {uid: obj.userid}})
-           console.log(users[0].username, users[0].uid, obj.comment)
-            com.push([`${users[0].username}`, `${obj.comment}`])
+            com.push({name:users[0].username, rewiu:obj.comment, rate: obj.rate})
         }
 
         res.status(200).json(com)
@@ -33,17 +30,23 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { userid, productid } = req.body
+        const { userid, productid, comment, rate } = req.body
         const candidate = await usermodel.findOne({ where: { uid: userid } })
         const product = await prodmodel.findOne({ where: { uid: productid } })
+        
 
-        if (candidate && product) {
-            await commentsmodel.create({
-                productid: req.body.productid,
-                userid: req.body.userid,
-                comment: req.body.comment
-            })
-            res.status(200).json({ message: "ti astavil comment" })
+        if (candidate && product && rate) {
+            if(rate <= 0 || rate > 5 || comment.length <= 1){
+                res.status(200).json({ message: "ti ne astavil comment"})
+            }else{
+                await commentsmodel.create({
+                    productid,
+                    userid,
+                    comment,
+                    rate
+                })
+                res.status(200).json({ message: "ti astavil comment" })
+            }
         } else {
             res.status(200).json({ message: "ti ne astavil comment" })
         }
@@ -53,6 +56,7 @@ router.post('/', async (req, res) => {
         res.status(500).json({message:'error, try again'})
     }
 })
+
 
 
 
