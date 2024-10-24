@@ -20,6 +20,8 @@ import varmiddleware from "./middleware/variable.js"
 const PORT = process.env.PORT || 4700
 
 const app = express()
+
+
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(session({
@@ -32,7 +34,6 @@ app.use(session({
         httpOnly: true, // Защита от XSS, куки доступны только через HTTP (не JavaScript)
     }
 }))
-
 app.use(varmiddleware)
 app.use(cors())
 app.use('/add', add)
