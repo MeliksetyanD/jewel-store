@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import styles from './Reviews.module.css'
-const Reviews = ({ count = 5 }) => {
+import styles from './Stars.module.css'
+const Stars = ({ count = 5 }) => {
 	const [stars, setStarsCount] = useState([])
 	useEffect(() => {
 		setStarsCount(Array(Math.ceil(count)).fill(0))
@@ -27,4 +27,4 @@ const Reviews = ({ count = 5 }) => {
 	)
 }
 
-export default Reviews
+export default Stars

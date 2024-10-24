@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import HomeSlider from '../../components/HomeSlider/HomeSlider'
-
 import Product from '../../components/Product/Product'
+import { products } from '../../product'
 import styles from './Home.module.css'
+
 const Home = () => {
 	return (
 		<div className={styles.home}>
@@ -13,12 +14,9 @@ const Home = () => {
 					<Link to='/shop'>View all</Link>
 				</div>
 				<div className={styles.products}>
-					<Product id={5} />
-					<Product />
-					<Product />
-					<Product />
-					<Product />
-					<Product />
+					{products.map(product => (
+						<Product key={product.id} id={product.id} {...product} />
+					))}
 				</div>
 			</div>
 		</div>
