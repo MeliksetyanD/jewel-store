@@ -3,66 +3,43 @@ import prodmodel from "../models/productmodel.js"
 import commentss from "../models/commentmodel.js"
 import user from "../models/usermodel.js"
 import { v4 as uuidv4 } from "uuid"
+import { where } from "sequelize"
 const router = Router()
 
 
 
-// router.get('/get/:id', async (req, res) => {
-//     try {
-
-//         const response = await prodmodel.findAll()
-//         console.log(req.params.id)
-
-//         const comments = await commentss.findAll({ where: { productid: req.params.id } })
-//         const com = []
-
-//         for (const obj of comments) {
-//             const users = await user.findAll({ where: { uid: obj.userid } })
-//             com.push({ name: users[0].username, rewiu: obj.comment, rate: obj.rate })
-//         }
-//         const sum = ratesum(com)
-
-//         res.status(200).json({
-//             ...response[0].dataValues,
-//             revies: com,
-//             sum
-//         })
-
-//     } catch (e) {
-//         console.log(e)
-//         res.status(500).json({ message: 'error, try again' })
-//     }
-// })
-
 router.get('/get/:id', async (req, res) => {
     try {
 
-        const response = await prodmodel.findAll()
-        console.log(req.params.id)
-
+        const response = await prodmodel.findAll({ where: { uid: req.params.id } })
         const comments = await commentss.findAll({ where: { productid: req.params.id } })
+
+
+        const imageslinks = response[0].images
+        const links = JSON.parse(imageslinks)
+        const images = links.links
 
         const com = []
 
         const userids = comments.map(comment => comment.userid)
-
-        const users = await user.findAll({where:{uid:userids}})
+        const users = await user.findAll({ where: { uid: userids } })
         const data = new Map()
 
         for (const user of users) {
             data.set(user.uid, user.username)
         }
 
-
         for (const obj of comments) {
             com.push({ name: data.get(obj.userid), rewiu: obj.comment, rate: obj.rate })
         }
+
         const sum = ratesum(com)
 
         res.status(200).json({
             ...response[0].dataValues,
             revies: com,
-            sum
+            sum,
+            images
         })
 
     } catch (e) {
@@ -73,7 +50,20 @@ router.get('/get/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        res.status(200).json(await prodmodel.findAll())
+        const products = await prodmodel.findAll()
+
+        const data = new Map()
+
+
+        products.forEach(product => {
+            data.set(product.categoryname, product.dataValues)
+            // console.log(product.categoryname, product.dataValues)
+        });
+
+        console.log(data)
+
+
+        res.status(200).json(data)
     } catch (e) {
         console.log(e)
         res.status(500).json({ message: 'error, try again' })
@@ -82,7 +72,9 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const prod = req.body
+        const link = { links: [] }
+        link.links.push(req.body.images)
+        const data = JSON.stringify(link)
         await prodmodel.create({
             uid: uuidv4(),
             name: req.body.name,
@@ -94,7 +86,7 @@ router.post('/', async (req, res) => {
             weight: req.body.weight,
             material: req.body.material,
             categoryname: req.body.categoryname,
-            images: req.body.images
+            images: data
         })
         res.status(200).json({ message: 'Добавлено' })
     } catch (e) {
@@ -124,8 +116,11 @@ router.put('/:id', async (req, res) => {
     try {
 
         const product = await prodmodel.findOne({ where: { uid: req.params.id } })
+        const link = { links: [] }
+        link.links.push(req.body.images)
+        const data = JSON.stringify(link)
 
-            product.name = req.body.name,
+        product.name = req.body.name,
             product.price = req.body.price,
             product.description = req.body.description,
             product.count = req.body.count,
@@ -134,16 +129,28 @@ router.put('/:id', async (req, res) => {
             product.weight = req.body.weight,
             product.material = req.body.material,
             product.categoryname = req.body.categoryname,
-            product.images = req.body.images
+            product.images = data
 
-            await product.save()
-            
+        await product.save()
+
         res.status(200).json({ message: 'Изменено' })
     } catch (e) {
         console.log(e)
         res.status(400).json({ message: 'error' })
     }
 })
+
+// router.get('/:category', async(req,res)=>{
+//     try {
+//         const response = 
+
+//     } catch (error) {
+//         console.log(error)
+//         res.status(400).json({message: 'error'})
+//     }
+// })
+
+
 
 function ratesum(rewiew) {
     const count = rewiew.length

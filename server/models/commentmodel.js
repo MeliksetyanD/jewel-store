@@ -3,9 +3,6 @@ import sequelize from "../utils/connect.js"
 
 
 
-
-
-
 const comments = sequelize.define('Comment', {
     id: {
         primaryKey: true,
