@@ -1,16 +1,39 @@
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import Product from '../../components/Product/Product'
 import styles from './Shop.module.css'
 const Shop = () => {
+	const products = useSelector(state => state.products.entities)
+	const [shopProducts, setShopProducts] = useState(products)
+
 	function handleSubmit(e) {
 		e.preventDefault()
 		const form = e.target
 		const formData = new FormData(form)
-		const selectData = [...formData.entries()]
-		console.log(selectData)
+		const [jewels, sort] = [...formData.entries()]
+		setShopProducts(prevstate => {
+			const newState = products.filter(product => {
+				if (product.categoryname === jewels[1]) {
+					return product
+				} else if (jewels[1] === 'all') {
+					return product
+				}
+			})
+			if (sort[1] === 'asc') {
+				return newState.sort((a, b) => a.price - b.price)
+			}
+			if (sort[1] === 'desc') {
+				return newState.sort((a, b) => b.price - a.price)
+			}
+
+			return newState
+		})
 	}
+
+	useEffect(() => {}, [products])
 	return (
 		<section className={styles.shop}>
-			<h1>Shop Ther Latest</h1>
+			<h1>Shop The Latest</h1>
 			<div className={styles.shopContent}>
 				<form className={styles.filter} method='post' onSubmit={handleSubmit}>
 					<label>
@@ -23,7 +46,7 @@ const Shop = () => {
 						</select>
 					</label>
 					<label>
-						<select name='jewels' defaultValue='all' className={styles.select}>
+						<select name='sort' defaultValue='all' className={styles.select}>
 							<option value='desc'>Price: High to Low</option>
 							<option value='asc'>Price: Low to High</option>
 							<option value='all'>Sort by</option>
@@ -48,12 +71,10 @@ const Shop = () => {
 					</button>
 				</form>
 				<div className={styles.products}>
-					<Product />
-					<Product />
-					<Product />
-					<Product />
-					<Product />
-					<Product />
+					{shopProducts &&
+						shopProducts.map(product => (
+							<Product key={product.id} id={product.id} {...product} />
+						))}
 				</div>
 			</div>
 		</section>

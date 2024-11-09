@@ -1,28 +1,34 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { sliderImages } from '../../../public/slider/sliderImages'
 import Product from '../../components/Product/Product'
 import ShowDescriptionContent from '../../components/ShowDescriptions/ShowDescriptions'
 import Social from '../../components/Social/Social'
-import Reviews from '../../features/Stars/Stars'
 import { products } from '../../product'
+
+import { addToCart } from '../../store/cartSlice'
+import { getProductById } from '../../store/productsSlice'
 import Button from '../../ui/Button'
 import styles from './SingleProductPage.module.css'
 products
 
 export const SingleProductPage = () => {
-	const [image, setImage] = useState(sliderImages[0])
+	const { id } = useParams()
+	const dispatch = useDispatch()
 
-	const [product, setProduct] = useState(products[0])
+	const [image, setImage] = useState(sliderImages[0])
+	const products = useSelector(state => state.products.entities)
+	const product = useSelector(state => state.products.singleProduct)
 	const [similarProducts, setSimilarProducts] = useState(products)
 
-	const [rate, setRate] = useState({ sum: 4.5, count: 6 })
-
-	const { id } = useParams()
-	function addToCart(id) {
-		console.log(id)
+	function addToCartHandler(item) {
+		dispatch(addToCart(item))
 	}
 
+	useEffect(() => {
+		dispatch(getProductById(id))
+	}, [id])
 	return (
 		<section className={styles.singleProductPage}>
 			<div className={styles.singleProductContainer}>
@@ -46,23 +52,22 @@ export const SingleProductPage = () => {
 					</div>
 					<div className={styles.singleProductInfo}>
 						<section className={styles.singleProductName}>
-							<h2>{product.name}</h2>
-							<h4>{product.price} AMD</h4>
+							<h2>{product?.name}</h2>
+							<h4>{product?.price} AMD</h4>
 						</section>
-						<section className={styles.singleProductReviews}>
-							<Reviews count={rate.sum} />
 
-							<h3> {rate.count} rates</h3>
+						<section>
+							<h5>{product?.description}</h5>
 						</section>
 						<section>
-							<h5>{product.description}</h5>
+							<ShowDescriptionContent content={product.specs} />
 						</section>
 						<section>
 							<div className={styles.counts}></div>
 							<Button
 								text='Add to cart'
 								type={'button'}
-								onClick={() => addToCart(id)}
+								onClick={() => addToCartHandler(product)}
 							/>
 						</section>
 						<section>
@@ -70,13 +75,7 @@ export const SingleProductPage = () => {
 								<Social />
 							</div>
 						</section>
-						<section>
-							<div>{product.categoryname}</div>
-						</section>
 					</div>
-				</div>
-				<div className={styles.singleProductDescription}>
-					<ShowDescriptionContent content={product} />
 				</div>
 			</div>
 			<div className={styles.similarProducts}>

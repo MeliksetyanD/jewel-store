@@ -5,8 +5,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import About from './pages/About/About.jsx'
 import Account from './pages/Account/Account.jsx'
-import Blog from './pages/Blog/Blog.jsx'
-import Cart from './pages/Cart/Cart.jsx'
+import BlogPage from './pages/BlogPage/BlogPage.jsx'
+import BlogSingle from './pages/BlogSingle/BlogSingle.jsx'
+import { Cart } from './pages/Cart/Cart.jsx'
 import ErrorPage from './pages/ErrorPage/ErrorPage.jsx'
 import Home from './pages/Home/Home.jsx'
 import Layout from './pages/layout/Layout.jsx'
@@ -23,7 +24,13 @@ const router = createBrowserRouter([
 			{ index: true, element: <Home /> },
 			{
 				path: '/blog',
-				element: <Blog />,
+				element: <BlogPage />,
+				children: [
+					{
+						path: '/blog/:id',
+						element: <BlogSingle />,
+					},
+				],
 			},
 			{
 				path: '/shop',

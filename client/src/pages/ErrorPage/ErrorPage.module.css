@@ -1,0 +1,25 @@
+.errorPageContainer {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+.errorPage {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	gap: 40px;
+}
+.errorPage a {
+	text-decoration: none;
+	color: var(--black);
+	transition: all 0.3s ease;
+	padding: 15px;
+	border: 1px solid var(--black);
+}
+.errorPage a:hover {
+	color: var(--accent);
+}

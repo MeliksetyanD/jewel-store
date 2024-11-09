@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom'
 import Slider from 'react-slick'
 import { sliderImages } from '../../../public/slider/sliderImages'
