@@ -6,7 +6,7 @@ import { getSignedUrl} from "@aws-sdk/s3-request-presigner"
 import mysql from 'mysql2'
 import fs from 'fs'
 import path from "path"
-import connection from "../utils/connect"
+import connection from "../utils/connect.js"
 import sharp from 'sharp'
 import dotenv from 'dotenv'
 import multer from 'multer'

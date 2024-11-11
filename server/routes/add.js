@@ -6,7 +6,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import mysql from 'mysql2'
 import fs from 'fs'
 import path from "path"
-import connection from "../utils/connect"
+import connection from "../utils/connect.js"
 import sharp from 'sharp'
 import dotenv from 'dotenv'
 import multer from 'multer'
@@ -44,38 +44,26 @@ router.get('/get/:id', async (req, res) => {
 })
 
 router.get('/', async (req, res) => {
-
+    try {
+        const query = 'SELECT * FROM Products';
+        
+      
+        connection.query(query, (err, results) => {
+          if (err) {
+            console.error('Ошибка при получении данных: ', err)
+            return res.status(500).send('Ошибка сервера')
+          }
+          res.status(200).json(results)
+        })
+        
+    } catch (err) {
+        console.log(err)   
+    }
 })
 
 router.post('/', async (req, res) => {
     try {
         const { name, price, description, count, sizes, colours, weight, material, categoryname, images } = req.body
-
-
-        // const Data = fs.readFileSync(path.join(__dirname, '../images/1.jpg'))
-        // const Buffer = await sharp(Data).resize({height:5000 , width: 3338, fit: 'contain' }).toBuffer()
-        // const imageName = uuidv4()
-     
-
-        // const params = {
-        //     Bucket: BUCKET_NAME,
-        //     Key: imageName,
-        //     Body: Buffer,
-        //     ContentType: 'image/jpeg'
-        // }
-        
-
-        // const command = new PutObjectCommand(params)
-    
-
-        // await s3.send(command)
-
-        // const image = {
-        //     images: []
-        // }
-
-        // image.images.push(imageName)
-       
 
 
 
@@ -97,9 +85,7 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.delete('/:id', async (req, res) => {
 
-})
 
 router.put('/:id', async (req, res) => {
 
@@ -109,6 +95,9 @@ router.get('/cat/:category', async (req, res) => {
 
 })
 
+router.delete('/:id', async (req, res) => {
+
+})
 
 export default router
 

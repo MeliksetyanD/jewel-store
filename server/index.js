@@ -1,7 +1,4 @@
 import express, { urlencoded } from 'express'
-import sequelize from "./utils/connect.js"
-import product from './models/productmodel.js'
-import blogmodel from './models/blogmodel.js'
 import cors from 'cors'
 import add  from './routes/add.js'
 import blog from './routes/blog.js'
@@ -22,12 +19,9 @@ app.use('/blog', blog)
 
 
 
-product.sync()
-blogmodel.sync()
 
 async function start(){
     try {
-        await sequelize.sync()
         app.listen(PORT, ()=>{
             console.log(`server run on port ${PORT}`)
         })
