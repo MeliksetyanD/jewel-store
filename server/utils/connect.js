@@ -1,14 +1,22 @@
-import Sequelize from "sequelize"
+import mysql from 'mysql2'
+import dotenv from 'dotenv'
 
-const NAME = 'new_schema'
-const USER = 'root'
-const PASSWORD = '12345678'
-
-
-const sequelize = new Sequelize(NAME, USER, PASSWORD, {
-    host: 'localhost',
-    dialect: 'mysql'
-})
+dotenv.config()
 
 
-export default sequelize
+
+const connection = mysql.createPool({
+  connectionLimit: 10,
+  host     : ,
+  user     : 'admin',
+  password : '12345678',
+  port     : 3306,
+  database: 'mydatabase',
+  connectTimeout: 25000,
+  queueLimit: 0
+});
+
+
+
+
+export default connection
