@@ -52,9 +52,30 @@ router.post('/', async (req, res) => {
         const { name, price, description, count, sizes, colours, weight, material, categoryname, images } = req.body
 
 
+        // const Data = fs.readFileSync(path.join(__dirname, '../images/1.jpg'))
+        // const Buffer = await sharp(Data).resize({height:5000 , width: 3338, fit: 'contain' }).toBuffer()
+        // const imageName = uuidv4()
+     
 
+        // const params = {
+        //     Bucket: BUCKET_NAME,
+        //     Key: imageName,
+        //     Body: Buffer,
+        //     ContentType: 'image/jpeg'
+        // }
+        
 
+        // const command = new PutObjectCommand(params)
+    
 
+        // await s3.send(command)
+
+        // const image = {
+        //     images: []
+        // }
+
+        // image.images.push(imageName)
+       
 
 
 
