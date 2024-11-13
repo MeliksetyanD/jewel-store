@@ -10,7 +10,8 @@ const __filename = fileURLToPath(import.meta.url)
 
 
 const PORT = process.env.PORT || 4700
-const upload = multer({ dest: 'uploads/' })
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 const app = express()
 app.use(express.static(path.join(__filename, 'form.html')))
 
