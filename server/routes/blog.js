@@ -12,7 +12,7 @@ import dotenv from 'dotenv'
 import multer from 'multer'
 
 
-const storage = multer.memoryStorage();
+const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -148,8 +148,24 @@ router.delete('/:id', async (req, res) => {
 
 
 
-router.put('/:id', async (req, res) => {
-    
+router.put('/put/:id',upload.array('images', 4), async (req, res) => {
+    try {
+        const thedata = req.body.body
+        const body = JSON.parse(thedata)
+        const query = `UPDATE Blogs SET title=?, description=? WHERE uid = ?`
+
+
+
+        connection.query(query, [body.title, body.description, req.params.id], (err) => {
+            if (err) {
+                console.log('Ошибка при вставке данных: ', err);
+                return res.status(500).send(err);
+            }
+            res.status(200).send(`Блог успешно обновлен`);
+        })
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 

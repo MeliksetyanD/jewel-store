@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteBucketCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { v4 as uuidv4 } from 'uuid'
 import { fileURLToPath } from 'url'
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
@@ -13,7 +13,7 @@ import multer from 'multer'
 import { console } from "inspector"
 
 
-const storage = multer.memoryStorage();
+const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -136,7 +136,6 @@ router.post('/post', upload.array('images', 4), async (req, res) => {
         connection.query(query, [uid, body.name, body.price, body.description, body.count, body.sizes, body.colours, body.weight, body.material, body.categoryname, images], (err, results) => {
             if (err) {
                 console.error('Ошибка при вставке данных: ', err);
-                console.log('hufdus')
                 return res.status(500).send('Ошибка сервера');
             }
             res.status(200).send(`Продукт добавлен с ID: ${results.insertId}`);
@@ -150,13 +149,30 @@ router.post('/post', upload.array('images', 4), async (req, res) => {
 
 
 
-router.put('/:id', async (req, res) => {
+router.put('/put/:id', upload.array('images', 4), async (req, res) => {
+    try {
+        const thedata = req.body.body
+        const body = JSON.parse(thedata)
+        const query = `UPDATE Products SET name=?, price=?, description=?, count=?, sizes=?, colours=?, weight=?, material=?, categoryname=? WHERE uid = ?`
 
+
+
+
+
+
+
+        connection.query(query, [body.name, body.price, body.description, body.count, body.sizes, body.colours, body.weight, body.material, body.categoryname, req.params.id], (err) => {
+            if (err) {
+                console.log('Ошибка при вставке данных: ', err);
+                return res.status(500).send(err);
+            }
+            res.status(200).send(`Продукт успешно обновлен`);
+        })
+    } catch (error) {
+        console.log(error)
+    }
 })
 
-router.get('/cat/:category', async (req, res) => {
-
-})
 
 router.delete('/:id', async (req, res) => {
     try {
