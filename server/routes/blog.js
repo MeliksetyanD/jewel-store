@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import {v4 as uuidv4} from 'uuid'
 import { fileURLToPath } from 'url'
 import { getSignedUrl} from "@aws-sdk/s3-request-presigner"
@@ -12,7 +12,8 @@ import dotenv from 'dotenv'
 import multer from 'multer'
 
 
-const upload = multer({ dest: 'uploads/' })
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage })
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -31,25 +32,118 @@ const s3 = new S3Client({
     }
 })
 
-
-
-
 dotenv.config()
 const router = Router()
 
 
-router.post('/create', async (req, res) => {
-    
+
+router.post('/create', upload.array('images', 4), async (req, res) => {
+    try {
+        const thedata = req.body.body
+        const body = JSON.parse(thedata)
+
+        const uploadpromises = req.files.map(async (file) => {
+            const imageName = uuidv4()
+            const Buffer = await sharp(file.buffer).resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
+            const params = {
+                Bucket: BUCKET_NAME,
+                Key: imageName,
+                Body: Buffer,
+                ContentType: file.mimetype,
+            }
+            const command = new PutObjectCommand(params)
+            await s3.send(command)
+
+            return imageName
+
+        })
+        const imagenames = await Promise.all(uploadpromises)
+        const ids = {
+            imagenames
+        }
+        const images = JSON.stringify(ids)
+        const query = 'INSERT INTO Blogs (uid, title, description, images) VALUES (?, ?, ?, ?)'
+        const uid = uuidv4()
+
+        connection.query(query, [uid, body.title, body.description, images], (err, results) => {
+            if (err) {
+                console.error('Ошибка при вставке данных: ', err);
+                return res.status(500).send('Ошибка сервера');
+            }
+            res.status(200).send(`Блог добавлен с ID: ${results.insertId}`);
+        })
+    } catch (err) {
+        console.log(err)
+    }
 })
 
 
 router.get('/getblogs', async (req, res) => {
-   
+    try {
+        const query = 'SELECT * FROM Blogs';
+        connection.query(query, async (err, results) => {
+            if (err) {
+                console.error('Ошибка при получении данных: ', err)
+                return res.status(500).send('Ошибка сервера')
+            }
+            for (const element of results) {
+                const image = JSON.parse(element.images)
+
+                const links = []
+                for (const element of image.imagenames) {
+                    const getObjectParams = {
+                        Bucket: BUCKET_NAME,
+                        Key: element
+                    }
+                    const command = new GetObjectCommand(getObjectParams)
+                    const url = await getSignedUrl(s3, command, { expiresIn: 3600 })
+                    links.push(url)
+                }
+                element.images = links
+            }
+            res.status(200).json(results)
+        })
+    } catch (err) {
+        console.log(err)
+    }
 })
 
 
 router.delete('/:id', async (req, res) => {
-   
+    try {
+        const query = 'SELECT * FROM Blogs WHERE uid = ?'
+        const delquery = 'DELETE FROM Blogs WHERE uid = ?'
+
+        connection.query(query,[req.params.id], async (err, results) => {
+            if (err) {
+                console.error('Ошибка при получении данных: ', err)
+                return res.status(500).send('Ошибка сервера')
+            }
+            for (const element of results) {
+                const image = JSON.parse(element.images)
+                for (const element of image.imagenames) {
+                    const getObjectParams = {
+                        Bucket: BUCKET_NAME,
+                        Key: element
+                    }
+                    const command = new DeleteObjectCommand(getObjectParams)
+                    await s3.send(command)
+                }
+            }
+            
+        })
+
+        connection.query(delquery,[req.params.id], async (err, results) => {
+            if (err) {
+                console.error('Ошибка при получении данных: ', err)
+                return res.status(500).send('Ошибка сервера')
+            }
+                res.status(200).json({messsage: 'deleted'})
+        })
+    
+    } catch (err) {
+        console.log(err)
+    }
 })
 
 

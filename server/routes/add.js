@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteBucketCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { v4 as uuidv4 } from 'uuid'
 import { fileURLToPath } from 'url'
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
@@ -10,6 +10,7 @@ import connection from "../utils/connect.js"
 import sharp from 'sharp'
 import dotenv from 'dotenv'
 import multer from 'multer'
+import { console } from "inspector"
 
 
 const storage = multer.memoryStorage();
@@ -31,9 +32,6 @@ const s3 = new S3Client({
         secretAccessKey: BUCKET_SECRET_KEY,
     }
 })
-
-
-
 
 dotenv.config()
 const router = Router()
@@ -104,7 +102,6 @@ router.get('/', async (req, res) => {
 
 router.post('/post', upload.array('images', 4), async (req, res) => {
     try {
-
         const thedata = req.body.body
         const body = JSON.parse(thedata)
 
@@ -131,8 +128,6 @@ router.post('/post', upload.array('images', 4), async (req, res) => {
         }
 
         const images = JSON.stringify(ids)
-
-
 
         const query = 'INSERT INTO Products (uid, name, price, description, count, sizes, colours, weight, material, categoryname, images) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         const uid = uuidv4()
@@ -164,8 +159,94 @@ router.get('/cat/:category', async (req, res) => {
 })
 
 router.delete('/:id', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM Products WHERE uid = ?'
+        const delquery = 'DELETE FROM Products WHERE uid = ?'
 
+        connection.query(query,[req.params.id], async (err, results) => {
+            if (err) {
+                console.error('Ошибка при получении данных: ', err)
+                return res.status(500).send('Ошибка сервера')
+            }
+            for (const element of results) {
+                const image = JSON.parse(element.images)
+                for (const element of image.imagenames) {
+                    const getObjectParams = {
+                        Bucket: BUCKET_NAME,
+                        Key: element
+                    }
+                    console.log(getObjectParams.Key)
+                    const command = new DeleteObjectCommand(getObjectParams)
+                    await s3.send(command)
+                }
+            }
+            
+        })
+
+        connection.query(delquery,[req.params.id], async (err, results) => {
+            if (err) {
+                console.error('Ошибка при получении данных: ', err)
+                return res.status(500).send('Ошибка сервера')
+            }
+                res.status(200).json({messsage: 'deleted'})
+        })
+    
+    } catch (err) {
+        console.log(err)
+    }
 })
+
 
 export default router
 
+
+
+
+
+
+
+
+/*  const query = 'SELECT * FROM Products WHERE uid = ?';
+const delquery = 'DELETE FROM Products WHERE uid = ?';
+
+connection.query(query, [req.params.id], async (err, results) => {
+    if (err) {
+        console.error('Ошибка при получении данных: ', err);
+        return res.status(500).send('Ошибка сервера');
+    }
+
+    if (results.length === 0) {
+        return res.status(404).send('Продукт не найден');
+    }
+
+    try {
+        for (const result of results) {
+            const image = JSON.parse(result.images);
+            const deletePromises = image.imagenames.map(async (imageName) => {
+                const getObjectParams = {
+                    Bucket: BUCKET_NAME,
+                    Key: imageName
+                };
+                console.log(getObjectParams.Key);
+                const command = new DeleteObjectCommand(getObjectParams);
+                return s3.send(command);
+            });
+
+            // Ждем выполнения всех промисов для удаления изображений
+            await Promise.all(deletePromises);
+        }
+
+        // Удаляем запись из базы данных
+        connection.query(delquery, [req.params.id], (err) => {
+            if (err) {
+                console.error('Ошибка при удалении данных: ', err);
+                return res.status(500).send('Ошибка сервера');
+            }
+            res.status(200).json({ message: 'deleted' });
+        });
+    } catch (error) {
+        console.error('Ошибка при удалении файлов: ', error);
+        res.status(500).send('Ошибка сервера при удалении файлов');
+    }
+});
+*/

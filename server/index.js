@@ -19,16 +19,6 @@ app.use(express.static(path.join(__filename, 'form.html')))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors())
-// app.use('/', async (req,res)=>{
-//     res.sendFile(path.join(__filename, '..', 'form.html'))
-//     console.log(req.body)
-
-// })
-// app.post('/photos/upload', upload.array('photos', 4), function (req, res, next) {
-//     res.sendFile(path.join(__filename, '..', 'form.html'))
-//     const data = req.files
-//     console.log(data)
-//   })
 app.use('/add', add)
 app.use('/blog', blog)
 
