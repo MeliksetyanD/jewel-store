@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import Social from '../../components/Social/Social'
 import styles from './Footer.module.css'
-import arrow from '/arrow.svg'
 export const Footer = () => {
 	return (
 		<footer className={styles.footer}>
@@ -23,7 +22,7 @@ export const Footer = () => {
 						</NavLink>
 					</li>
 				</ul>
-				<form action='' className={styles.footerNewsLetterForm}>
+				{/* <form action='' className={styles.footerNewsLetterForm}>
 					<input
 						className={styles.footerNewsLetterInput}
 						type='text'
@@ -40,7 +39,7 @@ export const Footer = () => {
 						/>
 						<img src={arrow} alt='submit' width={25} height={25} />
 					</div>
-				</form>
+				</form> */}
 			</div>
 
 			<div className={styles.footerCopy}>

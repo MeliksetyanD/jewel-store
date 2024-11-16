@@ -1,0 +1,35 @@
+.sideFilter {
+	margin: 5px;
+	padding: 10px;
+	border: 1px solid var(--light-gray);
+	border-radius: 10px;
+	background-color: var(--dark-gray);
+	position: sticky;
+	top: 50%;
+	align-self: flex-start;
+	color: white;
+	cursor: pointer;
+}
+.filterMobile {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(128, 128, 128, 0.13);
+	z-index: 115;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.filterMobileContent {
+	background-color: white;
+	position: relative;
+	padding: 20px;
+}
+.close {
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 20px;
+}

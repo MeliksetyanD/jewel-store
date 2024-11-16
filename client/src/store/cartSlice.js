@@ -15,9 +15,11 @@ export const cartReducer = createSlice({
 			)
 		},
 		addToCart: (state, action) => {
+			if (state.entities.some(item => item.uid === action.payload.uid)) return
 			state.entities.push(action.payload)
 		},
+		cleanCart: state => (state = initialState),
 	},
 })
-export const { deleteFromCart, addToCart } = cartReducer.actions
+export const { deleteFromCart, addToCart, cleanCart } = cartReducer.actions
 export default cartReducer.reducer

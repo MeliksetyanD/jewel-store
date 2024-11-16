@@ -4,10 +4,14 @@ import styles from './Cart.module.css'
 
 import { useEffect, useState } from 'react'
 import CartModal from '../../components/CartModal/CartModal'
+import Complete from '../../components/Complete/Complete'
 import { deleteFromCart } from '../../store/cartSlice'
+import Button from '../../ui/Button'
 export const Cart = () => {
 	const [orderInfo, setOrderInfo] = useState([])
 	const [modalOpen, setModalOpen] = useState(false)
+	const [complete, setComplete] = useState(false)
+
 	const dispatch = useDispatch()
 	const cartProducts = useSelector(state => state.cart.entities)
 
@@ -16,7 +20,6 @@ export const Cart = () => {
 		dispatch(deleteFromCart(id))
 	}
 	function setOrderInfoHandler(itemId, count) {
-		console.log(itemId, count)
 		setOrderInfo(prevState => {
 			if (prevState.some(item => item.productId === itemId)) {
 				return prevState.map(item => {
@@ -34,13 +37,17 @@ export const Cart = () => {
 	function orderInfoCotentHandler() {
 		setModalOpen(state => !state)
 	}
+	function total() {
+		return orderInfo.reduce((acc, item) => acc + item.count * item.price, 0)
+	}
+
 	useEffect(() => {
 		setOrderInfo(prevState => {
 			return cartProducts.map(item => {
 				return { productId: item.uid, count: 1, price: item.price }
 			})
 		})
-	}, [])
+	}, [cartProducts, complete])
 	return (
 		<div className={styles.cart}>
 			<h1>Shoping Cart</h1>
@@ -59,21 +66,24 @@ export const Cart = () => {
 				</div>
 				<div className={styles.cartInfo}>
 					<div className={styles.cartTotal}>
-						<h3>
-							{cartProducts.reduce((acc, item) => acc + item.price, 0)} AMD
-						</h3>
+						<h3>{total()} AMD</h3>
 					</div>
-					<button
-						disabled={cartProducts.length === 0}
+
+					<Button
 						className={styles.cartCheckout}
+						disabled={cartProducts.length === 0}
+						text='Checkout'
 						onClick={orderInfoCotentHandler}
-					>
-						Checkout
-					</button>
+					/>
 				</div>
 				{modalOpen && (
-					<CartModal orderInfo={orderInfo} setModalOpen={setModalOpen} />
+					<CartModal
+						orderInfo={orderInfo}
+						setModalOpen={setModalOpen}
+						setComplete={setComplete}
+					/>
 				)}
+				{complete && <Complete setComplete={setComplete} />}
 			</div>
 		</div>
 	)
