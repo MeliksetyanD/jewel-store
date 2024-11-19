@@ -152,16 +152,69 @@ router.put('/put/:id',upload.array('images', 4), async (req, res) => {
     try {
         const thedata = req.body.body
         const body = JSON.parse(thedata)
-        const query = `UPDATE Blogs SET title=?, description=? WHERE uid = ?`
+        const queryimages = 'SELECT * FROM Blogs WHERE uid = ?'
+        const oldimage = []
 
-
-
-        connection.query(query, [body.title, body.description, req.params.id], (err) => {
+        connection.query(queryimages, [req.params.id], async (err, results) => {
             if (err) {
-                console.log('Ошибка при вставке данных: ', err);
-                return res.status(500).send(err);
+                console.log(err)
             }
-            res.status(200).send(`Блог успешно обновлен`);
+
+            for (const element of results) {
+                const image = JSON.parse(element.images)
+                for (const element of image.imagenames) {
+                    oldimage.push(element)
+                }
+            }
+            console.log(oldimage)
+
+            const deletepromises = oldimage.map(async (key) => {
+                console.log(key)
+                const params = {
+                    Bucket: BUCKET_NAME,
+                    Key: key,
+                }
+                const command = new DeleteObjectCommand(params)
+                await s3.send(command)
+                return 'deleted'
+            })
+            const deleted = await Promise.all(deletepromises)
+            console.log(deleted)
+
+            const uploadpromises = req.files.map(async (file) => {
+                const imageName = uuidv4()
+                const Buffer = await sharp(file.buffer).resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
+                const params = {
+                    Bucket: BUCKET_NAME,
+                    Key: imageName,
+                    Body: Buffer,
+                    ContentType: file.mimetype,
+                }
+                const command = new PutObjectCommand(params)
+                await s3.send(command)
+
+                return imageName
+            })
+
+            const imagenames = await Promise.all(uploadpromises)
+
+            const ids = {
+                imagenames
+            }
+
+            const images = JSON.stringify(ids)
+
+
+            const query = `UPDATE Blogs SET title=?, description=?, images=? WHERE uid = ?`
+
+
+            connection.query(query,  [body.title, body.description, images, req.params.id], (err) => {
+                if (err) {
+                    console.log('Ошибка при вставке данных: ', err);
+                    return res.status(500).send(err);
+                }
+                res.status(200).send(`Блог успешно обновлен`);
+            })
         })
     } catch (error) {
         console.log(error)
