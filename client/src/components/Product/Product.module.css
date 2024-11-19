@@ -23,4 +23,31 @@
 	border: 1px solid var(--accent);
 }
 .product img {
+	width: 377px;
+	height: 380px;
+}
+
+@media (max-width: 1200px) {
+	.product img {
+		width: 312px;
+		height: 305px;
+	}
+	.product {
+		margin: 10px;
+	}
+}
+@media (max-width: 924px) {
+	.product img {
+		width: 277px;
+		height: 280px;
+	}
+}
+@media (max-width: 675px) {
+	.product img {
+		width: 247px;
+		height: 250px;
+	}
+	.product {
+		margin: 5px;
+	}
 }

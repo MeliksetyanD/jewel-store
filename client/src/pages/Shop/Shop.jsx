@@ -1,75 +1,36 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import Filter from '../../components/Filter/Filter'
 import Product from '../../components/Product/Product'
+import useWindowDimensions from '../../components/UseDimession/useDimession'
+import { SideFilter } from '../../features/SideFilter/SideFilter'
 import styles from './Shop.module.css'
 const Shop = () => {
+	const { height, width } = useWindowDimensions()
+
 	const products = useSelector(state => state.products.entities)
 	const [shopProducts, setShopProducts] = useState(products)
-
-	function handleSubmit(e) {
-		e.preventDefault()
-		const form = e.target
-		const formData = new FormData(form)
-		const [jewels, sort] = [...formData.entries()]
-		setShopProducts(prevstate => {
-			const newState = products.filter(product => {
-				if (product.categoryname === jewels[1]) {
-					return product
-				} else if (jewels[1] === 'all') {
-					return product
-				}
-			})
-			if (sort[1] === 'asc') {
-				return newState.sort((a, b) => a.price - b.price)
-			}
-			if (sort[1] === 'desc') {
-				return newState.sort((a, b) => b.price - a.price)
-			}
-
-			return newState
-		})
+	const [scroll, setScroll] = useState(false)
+	function handleMakeToNonScroll(open) {
+		setScroll(open)
 	}
+	console.log(scroll)
 
 	useEffect(() => {}, [products])
 	return (
-		<section className={styles.shop}>
-			<h1>Shop The Latest</h1>
+		<section
+			className={styles.shop}
+			style={scroll ? { overflow: 'hidden' } : null}
+		>
 			<div className={styles.shopContent}>
-				<form className={styles.filter} method='post' onSubmit={handleSubmit}>
-					<label>
-						<select name='jewels' defaultValue='all' className={styles.select}>
-							<option value='rings'>rings</option>
-							<option value='earings'>earings</option>
-							<option value='bracelet'>bracelet</option>
-							<option value='cuff'>cuff</option>
-							<option value='all'>Shop by</option>
-						</select>
-					</label>
-					<label>
-						<select name='sort' defaultValue='all' className={styles.select}>
-							<option value='desc'>Price: High to Low</option>
-							<option value='asc'>Price: Low to High</option>
-							<option value='all'>Sort by</option>
-						</select>
-					</label>
-					<div className={styles.switchContainer}>
-						On sale
-						<label className={styles.switch}>
-							<input type='checkbox' name='onSale' />
-							<span className={`${styles.slider} ${styles.round}`}></span>
-						</label>
-					</div>
-					<div className={styles.switchContainer}>
-						In Stock
-						<label className={styles.switch}>
-							<input type='checkbox' name='inStock' />
-							<span className={`${styles.slider} ${styles.round}`}></span>
-						</label>
-					</div>
-					<button type='submit' className={styles.submitBtn}>
-						Apply
-					</button>
-				</form>
+				{width < 675 ? (
+					<SideFilter
+						setShopProducts={setShopProducts}
+						handleMakeToNonScroll={handleMakeToNonScroll}
+					/>
+				) : (
+					<Filter setShopProducts={setShopProducts} />
+				)}
 				<div className={styles.products}>
 					{shopProducts &&
 						shopProducts.map(product => (

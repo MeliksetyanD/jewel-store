@@ -1,8 +1,9 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Form } from '../Form/Form'
 import styles from './CartModal.module.css'
-const CartModal = ({ setModalOpen, orderInfo }) => {
+const CartModal = ({ setModalOpen, orderInfo, setComplete }) => {
+	const [total, setTotal] = useState()
 	const products = useSelector(state => state.products.entities)
 	const ref = useRef()
 	function modalClose(e) {
@@ -11,6 +12,11 @@ const CartModal = ({ setModalOpen, orderInfo }) => {
 		}
 	}
 
+	useEffect(() => {
+		setTotal(prev =>
+			orderInfo.reduce((acc, item) => acc + item.count * item.price, 0)
+		)
+	}, [orderInfo])
 	return (
 		<div className={styles.cartModalWrapper} ref={ref} onClick={modalClose}>
 			<div className={styles.cartModal}>
@@ -29,15 +35,14 @@ const CartModal = ({ setModalOpen, orderInfo }) => {
 								</div>
 							)
 						})}
-						<div className={styles.cartModalTotal}>
-							Total:{' '}
-							{orderInfo.reduce(
-								(acc, item) => acc + item.count * item.price,
-								0
-							)}
-						</div>
+						<div className={styles.cartModalTotal}>Total: {total}</div>
 					</div>
-					<Form orderInfo={orderInfo} />
+					<Form
+						orderInfo={orderInfo}
+						total={total}
+						setModalOpen={setModalOpen}
+						setComplete={setComplete}
+					/>
 				</div>
 
 				<button

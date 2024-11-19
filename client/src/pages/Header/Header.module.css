@@ -79,3 +79,12 @@ button {
 	background-color: transparent;
 	cursor: pointer;
 }
+
+@media (max-width: 924px) {
+}
+@media (max-width: 675px) {
+	.nav {
+		flex-direction: column;
+		gap: 20px;
+	}
+}

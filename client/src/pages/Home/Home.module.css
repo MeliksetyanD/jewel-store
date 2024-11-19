@@ -10,6 +10,7 @@
 	margin: 20px 0;
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 }
 
 .homeContentText a {
@@ -25,4 +26,29 @@
 	flex-wrap: wrap;
 	justify-content: center;
 	gap: 57px;
+}
+@media (max-width: 924px) {
+	.products {
+		gap: 30px;
+	}
+	.home {
+		margin-top: 10px;
+	}
+	.homeContentText h1 {
+		font-size: 25px;
+	}
+	.homeContentText a {
+		font-size: 15px;
+	}
+}
+@media (max-width: 675px) {
+	.products {
+		gap: 15px;
+	}
+	.homeContentText h1 {
+		font-size: 20px;
+	}
+	.homeContentText a {
+		font-size: 14px;
+	}
 }
