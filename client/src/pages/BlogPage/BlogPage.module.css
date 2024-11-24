@@ -1,7 +1,16 @@
 .blogPage {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
 	padding: 20px;
 	gap: 50px;
+}
+@media (max-width: 924px) {
+	.blogPage {
+		justify-content: space-around;
+		gap: 20px;
+	}
+}
+@media (max-width: 675px) {
 }

@@ -2,9 +2,11 @@ import { configureStore } from '@reduxjs/toolkit'
 
 import { default as cartReducer } from './cartSlice'
 import { default as productsReducer } from './productsSlice'
+import { default as saleReducer } from './saleSlice'
 const reducer = {
 	products: productsReducer,
 	cart: cartReducer,
+	sale: saleReducer,
 }
 
 const preloadedState = {
@@ -15,7 +17,10 @@ const preloadedState = {
 	},
 	cart: {
 		entities: [],
-
+		loading: 'true',
+	},
+	sale: {
+		entities: [],
 		loading: 'true',
 	},
 }
