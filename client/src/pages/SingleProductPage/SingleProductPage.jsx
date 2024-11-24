@@ -29,7 +29,6 @@ export const SingleProductPage = () => {
 	// console.log(similarProducts)
 	useEffect(() => {
 		dispatch(getProductById(id))
-		setImage(product?.images?.[0] || '')
 	}, [id])
 	return loading === 'pending' ? (
 		<h1>Loading</h1>
@@ -54,7 +53,7 @@ export const SingleProductPage = () => {
 							</div>
 							<div className={styles.singleProductImagePreview}>
 								<img
-									src={image}
+									src={image ? image : product?.images?.[0]}
 									alt='jewel'
 									className={styles.singleProductImage}
 								/>
@@ -92,7 +91,7 @@ export const SingleProductPage = () => {
 					<div className={styles.similarProductsContent}>
 						{products
 							.filter(item => {
-								return item.categoryname === product?.categoryname
+								return item.categoryName === product?.categoryName
 							})
 							.map((product, index) => (
 								<Product
@@ -100,6 +99,7 @@ export const SingleProductPage = () => {
 									uid={product.uid}
 									name={product.name}
 									price={product.price}
+									{...product}
 								/>
 							))}
 					</div>

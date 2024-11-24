@@ -36,13 +36,13 @@ function CustomSlide(props) {
 	return (
 		<div
 			{...otherProps}
-			style={{ backgroundImage: `url(${item.images})` }}
+			style={{ backgroundImage: `url(${item.images?.[0]})` }}
 			className={styles.sliderItem}
 		>
 			<div className={styles.sliderContent}>
-				<h1>Gold big hoops</h1>
-				<h2>$ 68,00</h2>
-				<Link to={`/product/${item.uid}`}>View Product</Link>
+				<h1>{item.name}</h1>
+				<h2>{item.price} AMD</h2>
+				<Link to={`/product/${item.uid}`}>Տեսնել</Link>
 			</div>
 		</div>
 	)
