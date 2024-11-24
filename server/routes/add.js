@@ -148,8 +148,8 @@ router.put('/put/:id', upload.array('images', 4), async (req, res) => {
         const queryimages = 'SELECT * FROM Products WHERE uid = ?'
         const oldimage = []
 
-        connection.query(queryimages,[req.params.id], async (err, results) =>{
-            if(err){
+        connection.query(queryimages, [req.params.id], async (err, results) => {
+            if (err) {
                 console.log(err)
             }
 
@@ -161,15 +161,15 @@ router.put('/put/:id', upload.array('images', 4), async (req, res) => {
             }
             console.log(oldimage)
 
-            const deletepromises = oldimage.map(async (key)=>{
+            const deletepromises = oldimage.map(async (key) => {
                 console.log(key)
                 const params = {
                     Bucket: BUCKET_NAME,
                     Key: key,
-                } 
-                    const command = new DeleteObjectCommand(params)
-                    await s3.send(command)
-                    return 'deleted'
+                }
+                const command = new DeleteObjectCommand(params)
+                await s3.send(command)
+                return 'deleted'
             })
             const deleted = await Promise.all(deletepromises)
             console.log(deleted)
@@ -185,16 +185,16 @@ router.put('/put/:id', upload.array('images', 4), async (req, res) => {
                 }
                 const command = new PutObjectCommand(params)
                 await s3.send(command)
-    
+
                 return imageName
             })
-    
+
             const imagenames = await Promise.all(uploadpromises)
 
             const ids = {
                 imagenames
             }
-    
+
             const images = JSON.stringify(ids)
 
 
@@ -219,7 +219,7 @@ router.delete('/:id', async (req, res) => {
         const query = 'SELECT * FROM Products WHERE uid = ?'
         const delquery = 'DELETE FROM Products WHERE uid = ?'
 
-        connection.query(query,[req.params.id], async (err, results) => {
+        connection.query(query, [req.params.id], async (err, results) => {
             if (err) {
                 console.error('Ошибка при получении данных: ', err)
                 return res.status(500).send('Ошибка сервера')
@@ -236,17 +236,17 @@ router.delete('/:id', async (req, res) => {
                     await s3.send(command)
                 }
             }
-            
+
         })
 
-        connection.query(delquery,[req.params.id], async (err, results) => {
+        connection.query(delquery, [req.params.id], async (err, results) => {
             if (err) {
                 console.error('Ошибка при получении данных: ', err)
                 return res.status(500).send('Ошибка сервера')
             }
-                res.status(200).json({messsage: 'deleted'})
+            res.status(200).json({ messsage: 'deleted' })
         })
-    
+
     } catch (err) {
         console.log(err)
     }

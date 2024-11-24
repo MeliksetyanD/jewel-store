@@ -20,7 +20,7 @@ app.use(express.static(path.join(__filename, 'form.html')))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors())
-app.use('/add', add)
+app.use('/products', add)
 app.use('/blog', blog)
 
 

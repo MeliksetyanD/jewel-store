@@ -1,9 +1,47 @@
 {
 	"products": [
 		{
+			"id": 14,
+			"uid": "56de7380-3ad6-442b-b91c-38c8c1219f93",
+			"name": "braclete",
+			"price": 142,
+			"description": "some description",
+			"count": 2,
+			"specs":{
+			"sizes": "14,15,22,36,78",
+			"colours": "silver,gold",
+			"weight": 1.3,
+			"material": "aluminium"
+		},
+			"categoryname": "vznocner",
+			"images": [
+				"https://jewelbucket.s3.eu-central-1.amazonaws.com/49a73667-e3d3-414f-abb8-de32d8bbbd98?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAU6VTTTCWBPZ4OZV6%2F20241124%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20241124T200525Z&X-Amz-Expires=3600&X-Amz-Signature=0885d2ec55ef51277ae3d17245118d7678c76cb44cb1106bdc6841fdbd418984&X-Amz-SignedHeaders=host&x-id=GetObject",
+				"https://jewelbucket.s3.eu-central-1.amazonaws.com/d0cb3c29-6d83-4313-a90b-700b2a52b9a1?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAU6VTTTCWBPZ4OZV6%2F20241124%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20241124T200525Z&X-Amz-Expires=3600&X-Amz-Signature=3a654b1fb8c0913894e1a552c0a907130e0a409f46a592c0b1f37c977c3486d6&X-Amz-SignedHeaders=host&x-id=GetObject"
+			],
+			"created_at": "2024-11-18T18:51:56.000Z"
+		},
+		{
+			"id": 14,
+			"uid": "56de7380-3ad6-442b-b91c-38c8c1219f93",
+			"name": "braclete",
+			"price": 142,
+			"description": "some description",
+			"count": 2,
+			"sizes": "14,15,22,36,78",
+			"colours": "silver,gold",
+			"weight": 1.3,
+			"material": "aluminium",
+			"categoryname": "vznocner",
+			"images": [
+				"https://jewelbucket.s3.eu-central-1.amazonaws.com/49a73667-e3d3-414f-abb8-de32d8bbbd98?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAU6VTTTCWBPZ4OZV6%2F20241124%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20241124T200525Z&X-Amz-Expires=3600&X-Amz-Signature=0885d2ec55ef51277ae3d17245118d7678c76cb44cb1106bdc6841fdbd418984&X-Amz-SignedHeaders=host&x-id=GetObject",
+				"https://jewelbucket.s3.eu-central-1.amazonaws.com/d0cb3c29-6d83-4313-a90b-700b2a52b9a1?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAU6VTTTCWBPZ4OZV6%2F20241124%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20241124T200525Z&X-Amz-Expires=3600&X-Amz-Signature=3a654b1fb8c0913894e1a552c0a907130e0a409f46a592c0b1f37c977c3486d6&X-Amz-SignedHeaders=host&x-id=GetObject"
+			],
+			"created_at": "2024-11-18T18:51:56.000Z"
+		},
+		{
 			"id": "1",
 			"uid": "f73b0a3b-a2cb-415c-a7f4-17657763f15d",
-			"name": "earings",
+			"name": "braclete",
 			"price": 1000,
 			"description": "req.body.description",
 			"count": 150,
@@ -39,15 +77,15 @@
 		{
 			"id": "3",
 			"uid": "f21q0a3b-a2cb-415c-a7f4-17333763f15d",
-			"name": "bracelet",
-			"price": 3000,
-			"description": "req.body.description",
-			"count": 150,
-			"sizes": "req.body.size",
-			"colorus": "req.body.colorus",
-			"weight": 1.3,
-			"material": "req.body.material",
-			"categoryname": "bracelet",
+			"name": "braclete",
+		"price": 142,
+		"description": "some description",
+		"count": 2,
+		"sizes": "14,15,22,36,78",
+		"colours": "silver,gold",
+		"weight": 1.3,
+		"material": "aluminium",
+		"categoryname": "vznocner",
 			"categorylink": "req.body.categorylink",
 			"images": "clouud.ru",
 			"createdAt": "2024-10-16T18:05:52.000Z",
