@@ -49,7 +49,10 @@ export const Cart = () => {
 		})
 	}, [cartProducts, complete])
 	return (
-		<div className={styles.cart}>
+		<div
+			className={styles.cart}
+			style={modalOpen ? { overflow: 'hidden' } : null}
+		>
 			<h1>Shoping Cart</h1>
 			<div className={styles.cartContainer}>
 				<div className={styles.cartItems}>

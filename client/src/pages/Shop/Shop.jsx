@@ -8,37 +8,43 @@ import styles from './Shop.module.css'
 const Shop = () => {
 	const { height, width } = useWindowDimensions()
 
-	const products = useSelector(state => state.products.entities)
+	const { entities: products, loading } = useSelector(state => state.products)
 	const [shopProducts, setShopProducts] = useState(products)
 	const [scroll, setScroll] = useState(false)
 	function handleMakeToNonScroll(open) {
 		setScroll(open)
 	}
-	console.log(scroll)
 
 	useEffect(() => {}, [products])
-	return (
-		<section
-			className={styles.shop}
-			style={scroll ? { overflow: 'hidden' } : null}
-		>
-			<div className={styles.shopContent}>
-				{width < 675 ? (
-					<SideFilter
-						setShopProducts={setShopProducts}
-						handleMakeToNonScroll={handleMakeToNonScroll}
-					/>
-				) : (
-					<Filter setShopProducts={setShopProducts} />
-				)}
-				<div className={styles.products}>
-					{shopProducts &&
-						shopProducts.map(product => (
-							<Product key={product.id} id={product.id} {...product} />
-						))}
+	return loading === 'pending' ? (
+		<h1>Loading</h1>
+	) : (
+		loading === 'success' && (
+			<section
+				className={styles.shop}
+				style={scroll ? { overflow: 'hidden' } : null}
+			>
+				<div className={styles.shopContent}>
+					{width < 675 ? (
+						<SideFilter
+							setShopProducts={setShopProducts}
+							handleMakeToNonScroll={handleMakeToNonScroll}
+						/>
+					) : (
+						<Filter setShopProducts={setShopProducts} />
+					)}
+					<div className={styles.products}>
+						{shopProducts.length === 0
+							? products.map(product => (
+									<Product key={product.id} id={product.id} {...product} />
+							  ))
+							: shopProducts.map(product => (
+									<Product key={product.id} id={product.id} {...product} />
+							  ))}
+					</div>
 				</div>
-			</div>
-		</section>
+			</section>
+		)
 	)
 }
 

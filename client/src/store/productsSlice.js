@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 export const getProducts = createAsyncThunk(
 	'products/getProducts',
 	async () => {
-		const response = await fetch('http://localhost:3000/products')
+		const response = await fetch('http://localhost:8000/products')
 		const data = await response.json()
 		return data
 	}
@@ -12,15 +12,16 @@ export const getProducts = createAsyncThunk(
 export const getProductById = createAsyncThunk(
 	'products/getProductById',
 	async id => {
-		const response = await fetch(`http://localhost:3000/products?uid=${id}`)
+		const response = await fetch(`http://localhost:8000/products?uid=${id}`)
 		const data = await response.json()
+
 		return data[0]
 	}
 )
 const initialState = {
 	entities: [],
 	singleProduct: [],
-	loading: 'true',
+	loading: 'false',
 }
 
 export const productsReducer = createSlice({

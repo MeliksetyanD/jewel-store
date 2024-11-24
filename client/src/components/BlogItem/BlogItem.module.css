@@ -4,8 +4,10 @@
 	flex-direction: column;
 	gap: 5px;
 }
-.blogItem img {
+.blogItemImage {
 	border-radius: 20px;
+	width: 300px;
+	height: 300px;
 }
 .blogItemContent {
 	display: flex;
@@ -26,4 +28,22 @@
 }
 .blogItemDescription {
 	color: var(--dark-gray);
+}
+@media (max-width: 924px) {
+	.blogItemImage {
+		width: 250px;
+		height: 250px;
+	}
+	.blogItem {
+		width: 250px;
+	}
+}
+@media (max-width: 675px) {
+	.blogItemImage {
+		width: 200px;
+		height: 200px;
+	}
+	.blogItem {
+		width: 200px;
+	}
 }

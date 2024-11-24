@@ -4,7 +4,7 @@ import styles from './BlogItem.module.css'
 const BlogItem = () => {
 	return (
 		<div className={styles.blogItem}>
-			<img src={img} width={300} height={200} alt='' />
+			<img src={img} className={styles.blogItemImage} alt='' />
 			<div className={styles.blogItemContent}>
 				<div className={styles.blogItemInfo}>Fashion - October 8, 2020</div>
 				<h3 className={styles.blogItemTitle}>Top Trends From Spring</h3>

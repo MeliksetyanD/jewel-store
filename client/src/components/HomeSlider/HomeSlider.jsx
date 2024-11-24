@@ -1,10 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Slider from 'react-slick'
-import { sliderImages } from '../../../public/slider/sliderImages'
 import styles from './HomeSlider.module.css'
-
 function SampleNextArrow(props) {
 	const { className, style, onClick } = props
 	return (
@@ -32,22 +31,24 @@ function SamplePrevArrow(props) {
 }
 
 function CustomSlide(props) {
-	const { index, image, ...otherProps } = props
+	const { index, item, ...otherProps } = props
+
 	return (
 		<div
 			{...otherProps}
-			style={{ backgroundImage: `url(${image})` }}
+			style={{ backgroundImage: `url(${item.images})` }}
 			className={styles.sliderItem}
 		>
 			<div className={styles.sliderContent}>
 				<h1>Gold big hoops</h1>
 				<h2>$ 68,00</h2>
-				<Link to='/product/:id'>View Product</Link>
+				<Link to={`/product/${item.uid}`}>View Product</Link>
 			</div>
 		</div>
 	)
 }
 function HomeSlider() {
+	const sale = useSelector(state => state.sale.entities)
 	const settings = {
 		dots: true,
 		infinite: true,
@@ -64,8 +65,8 @@ function HomeSlider() {
 	return (
 		<div className={styles.sliderContainer}>
 			<Slider {...settings}>
-				{sliderImages.map((image, index) => (
-					<CustomSlide key={index} index={index + 1} image={image} />
+				{sale.map((item, index) => (
+					<CustomSlide key={index} index={index + 1} item={item} />
 				))}
 			</Slider>
 		</div>
