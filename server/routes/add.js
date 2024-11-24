@@ -32,6 +32,9 @@ const router = Router()
 
 
 
+
+
+
 router.get('/get/:id', async (req, res) => {
     try {
         const query = `SELECT * FROM Products WHERE uid = '${req.params.id}'`;
@@ -69,7 +72,7 @@ router.get('/', async (req, res) => {
 
         connection.query(query, async (err, results) => {
             if (err) {
-                console.error('Ошибка при получении данных: ', err)
+                console.log('Ошибка при получении данных: ', err)
                 return res.status(500).send('Ошибка сервера')
             }
             for (const element of results) {
@@ -98,10 +101,16 @@ router.post('/post', upload.array('images', 4), async (req, res) => {
     try {
         const thedata = req.body.body
         const body = JSON.parse(thedata)
+        const forslide = body.forSlide
+        let istrue = false 
+        if(forslide === "true"){
+            istrue = true
+        }
 
         const uploadpromises = req.files.map(async (file) => {
             const imageName = uuidv4()
-            const Buffer = await sharp(file.buffer).resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
+            const Buffer = await sharp(file.buffer).rotate().resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
+
             const params = {
                 Bucket: BUCKET_NAME,
                 Key: imageName,
@@ -123,11 +132,11 @@ router.post('/post', upload.array('images', 4), async (req, res) => {
 
         const images = JSON.stringify(ids)
 
-        const query = 'INSERT INTO Products (uid, name, price, description, count, sizes, colours, weight, material, categoryname, images) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        const query = 'INSERT INTO Products (uid, name, price, description, count, sizes, colours, weight, material, categoryname, images, forSlide) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         const uid = uuidv4()
 
 
-        connection.query(query, [uid, body.name, body.price, body.description, body.count, body.sizes, body.colours, body.weight, body.material, body.categoryname, images], (err, results) => {
+        connection.query(query, [uid, body.name, body.price, body.description, body.count, body.sizes, body.colours, body.weight, body.material, body.categoryname, images, istrue], (err, results) => {
             if (err) {
                 console.error('Ошибка при вставке данных: ', err);
                 return res.status(500).send('Ошибка сервера');
