@@ -7,6 +7,7 @@ import sharp from 'sharp'
 import dotenv from 'dotenv'
 import multer from 'multer'
 
+dotenv.config()
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
@@ -26,7 +27,7 @@ const s3 = new S3Client({
     }
 })
 
-dotenv.config()
+
 const router = Router()
 
 
@@ -37,11 +38,11 @@ router.post('/create', upload.array('images', 4), async (req, res) => {
 
         const uploadpromises = req.files.map(async (file) => {
             const imageName = uuidv4()
-            const Buffer = await sharp(file.buffer).resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
+            const imageBuffer = await sharp(file.buffer).rotate().resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
             const params = {
                 Bucket: BUCKET_NAME,
                 Key: imageName,
-                Body: Buffer,
+                Body: imageBuffer,
                 ContentType: file.mimetype,
             }
             const command = new PutObjectCommand(params)
@@ -70,76 +71,101 @@ router.post('/create', upload.array('images', 4), async (req, res) => {
     }
 })
 
-
 router.get('/getblogs', async (req, res) => {
     try {
-        const query = 'SELECT * FROM Blogs';
-        connection.query(query, async (err, results) => {
-            if (err) {
-                console.error('Ошибка при получении данных: ', err)
-                return res.status(500).send('Ошибка сервера')
-            }
-            for (const element of results) {
-                const image = JSON.parse(element.images)
+        const query = 'SELECT * FROM Blogs'
 
-                const links = []
-                for (const element of image.imagenames) {
-                    const getObjectParams = {
-                        Bucket: BUCKET_NAME,
-                        Key: element
-                    }
-                    const command = new GetObjectCommand(getObjectParams)
-                    const url = await getSignedUrl(s3, command, { expiresIn: 3600 })
-                    links.push(url)
+        const results = await new Promise((resolve, reject) => {
+            connection.query(query, (err, results) => {
+                if (err) {
+                    console.error('Ошибка при получении данных: ', err);
+                    return reject('Ошибка сервера');
                 }
-                element.images = links
-            }
-            res.status(200).json(results)
+                resolve(results);
+            });
         })
+
+        for (const element of results) {
+            const image = JSON.parse(element.images);
+            element.images = await generateSignedUrls(image);
+        }
+
+        res.status(200).json(results)
+
     } catch (err) {
         console.log(err)
     }
 })
 
+router.get('/:id', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM Blogs WHERE uid = ?';
+
+        const results = await new Promise((resolve, reject) => {
+            connection.query(query, [req.params.id], (err, results) => {
+                if (err) {
+                    console.error('Ошибка при получении данных: ', err);
+                    return reject('Ошибка сервера');
+                }
+                resolve(results);
+            });
+        })
+
+        for (const element of results) {
+            const image = JSON.parse(element.images);
+            element.images = await generateSignedUrls(image);
+        }
+
+        res.status(200).json(results)
+    } catch (err) {
+        console.log(err)
+    }
+})
 
 router.delete('/:id', async (req, res) => {
     try {
         const query = 'SELECT * FROM Blogs WHERE uid = ?'
         const delquery = 'DELETE FROM Blogs WHERE uid = ?'
 
-        connection.query(query,[req.params.id], async (err, results) => {
-            if (err) {
-                console.error('Ошибка при получении данных: ', err)
-                return res.status(500).send('Ошибка сервера')
-            }
-            for (const element of results) {
-                const image = JSON.parse(element.images)
-                for (const element of image.imagenames) {
-                    const getObjectParams = {
-                        Bucket: BUCKET_NAME,
-                        Key: element
-                    }
-                    const command = new DeleteObjectCommand(getObjectParams)
-                    await s3.send(command)
+        const results = await new Promise((resolve, reject) => {
+            connection.query(query, [req.params.id], (err, results) => {
+                if (err) {
+                    console.error('Ошибка при получении данных: ', err);
+                    return reject('Ошибка сервера');
                 }
-            }
-            
+                resolve(results);
+            });
         })
 
-        connection.query(delquery,[req.params.id], async (err, results) => {
-            if (err) {
-                console.error('Ошибка при получении данных: ', err)
-                return res.status(500).send('Ошибка сервера')
+        for (const element of results) {
+            const image = JSON.parse(element.images)
+            for (const element of image.imagenames) {
+                const getObjectParams = {
+                    Bucket: BUCKET_NAME,
+                    Key: element
+                }
+                console.log(getObjectParams.Key)
+                const command = new DeleteObjectCommand(getObjectParams)
+                await s3.send(command)
             }
-                res.status(200).json({messsage: 'deleted'})
+        }
+
+        const delresult = await new Promise((resolve, reject) => {
+            connection.query(delquery, [req.params.id], (err, results) => {
+                if (err) {
+                    console.error('Ошибка при получении данных: ', err)
+                    return reject('Ошибка сервера')
+                }
+                resolve(results)
+            })
         })
+
+       res.status(200).json({ message: 'Блог успешно удален' })
     
     } catch (err) {
         console.log(err)
     }
 })
-
-
 
 router.put('/put/:id',upload.array('images', 4), async (req, res) => {
     try {
@@ -176,11 +202,11 @@ router.put('/put/:id',upload.array('images', 4), async (req, res) => {
 
             const uploadpromises = req.files.map(async (file) => {
                 const imageName = uuidv4()
-                const Buffer = await sharp(file.buffer).resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
+                const imageBuffer = await sharp(file.buffer).resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
                 const params = {
                     Bucket: BUCKET_NAME,
                     Key: imageName,
-                    Body: Buffer,
+                    Body: imageBuffer,
                     ContentType: file.mimetype,
                 }
                 const command = new PutObjectCommand(params)

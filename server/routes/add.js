@@ -1,8 +1,8 @@
-import dotenv from 'dotenv'
 import { Router } from "express"
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { v4 as uuidv4 } from 'uuid'
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import dotenv from 'dotenv'
 import connection from "../utils/connect.js"
 import sharp from 'sharp'
 import multer from 'multer'
@@ -32,12 +32,12 @@ const router = Router()
 
 
 
-router.get('/:id', async (req, res) => {
+router.get('/get/:id', async (req, res) => {
     try {
         const query = 'SELECT * FROM Products WHERE uid = ?';
 
         const results = await new Promise((resolve, reject) => {
-            connection.query(query,[req.params.id], (err, results) => {
+            connection.query(query, [req.params.id], (err, results) => {
                 if (err) {
                     console.error('Ошибка при получении данных: ', err);
                     return reject('Ошибка сервера');
@@ -51,7 +51,7 @@ router.get('/:id', async (req, res) => {
             element.images = await generateSignedUrls(image);
         }
 
-            res.status(200).json(results)
+        res.status(200).json(results)
     } catch (err) {
         console.log(err)
     }
@@ -76,7 +76,7 @@ router.get('/', async (req, res) => {
             element.images = await generateSignedUrls(image);
         }
         res.status(200).json(results)
-    
+
     } catch (err) {
         console.log(err)
     }
@@ -87,19 +87,19 @@ router.post('/post', upload.array('images', 4), async (req, res) => {
         const thedata = req.body.body
         const body = JSON.parse(thedata)
         const forslide = body.forSlide
-        let istrue = false 
-        if(forslide === "true"){
+        let istrue = false
+        if (forslide === "true") {
             istrue = true
         }
 
         const uploadpromises = req.files.map(async (file) => {
             const imageName = uuidv4()
-            const Buffer = await sharp(file.buffer).rotate().resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
+            const imageBuffer = await sharp(file.buffer).rotate().resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
 
             const params = {
                 Bucket: BUCKET_NAME,
                 Key: imageName,
-                Body: Buffer,
+                Body: imageBuffer,
                 ContentType: file.mimetype,
             }
             const command = new PutObjectCommand(params)
@@ -170,11 +170,11 @@ router.put('/put/:id', upload.array('images', 4), async (req, res) => {
 
             const uploadpromises = req.files.map(async (file) => {
                 const imageName = uuidv4()
-                const Buffer = await sharp(file.buffer).resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
+                const imageBuffer = await sharp(file.buffer).resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
                 const params = {
                     Bucket: BUCKET_NAME,
                     Key: imageName,
-                    Body: Buffer,
+                    Body: imageBuffer,
                     ContentType: file.mimetype,
                 }
                 const command = new PutObjectCommand(params)
@@ -188,12 +188,10 @@ router.put('/put/:id', upload.array('images', 4), async (req, res) => {
             const ids = {
                 imagenames
             }
-
             const images = JSON.stringify(ids)
 
 
             const query = `UPDATE Products SET name=?, price=?, description=?, count=?, sizes=?, colours=?, weight=?, material=?, categoryname=?, images=? WHERE uid = ?`
-
 
             connection.query(query, [body.name, body.price, body.description, body.count, body.sizes, body.colours, body.weight, body.material, body.categoryname, images, req.params.id], (err) => {
                 if (err) {
@@ -214,7 +212,7 @@ router.delete('/:id', async (req, res) => {
         const delquery = 'DELETE FROM Products WHERE uid = ?'
 
         const results = await new Promise((resolve, reject) => {
-            connection.query(query,[req.params.id], (err, results) => {
+            connection.query(query, [req.params.id], (err, results) => {
                 if (err) {
                     console.error('Ошибка при получении данных: ', err);
                     return reject('Ошибка сервера');
@@ -236,8 +234,8 @@ router.delete('/:id', async (req, res) => {
             }
         }
 
-        const delresult = await new Promise((resolve, reject) => { 
-            connection.query(delquery, [req.params.id],(err, results) => {
+        const delresult = await new Promise((resolve, reject) => {
+            connection.query(delquery, [req.params.id], (err, results) => {
                 if (err) {
                     console.error('Ошибка при получении данных: ', err)
                     return reject('Ошибка сервера')
@@ -246,8 +244,8 @@ router.delete('/:id', async (req, res) => {
             })
         })
 
-        res.status(200).json({ message: 'Продукт успешно удален' })
-
+       res.status(200).json({ message: 'Продукт успешно удален' })
+ 
     } catch (err) {
         console.log(err)
     }
