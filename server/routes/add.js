@@ -1,12 +1,13 @@
+import dotenv from 'dotenv'
 import { Router } from "express"
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { v4 as uuidv4 } from 'uuid'
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import connection from "../utils/connect.js"
 import sharp from 'sharp'
-import dotenv from 'dotenv'
 import multer from 'multer'
 
+dotenv.config()
 
 
 const storage = multer.memoryStorage()
@@ -27,40 +28,30 @@ const s3 = new S3Client({
     }
 })
 
-dotenv.config()
 const router = Router()
 
 
 
-
-
-
-router.get('/get/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const query = `SELECT * FROM Products WHERE uid = '${req.params.id}'`;
+        const query = 'SELECT * FROM Products WHERE uid = ?';
 
-        connection.query(query, async (err, results) => {
-            if (err) {
-                console.error('Ошибка при получении данных: ', err)
-                return res.status(500).send('Ошибка сервера')
-            }
-            for (const element of results) {
-                const image = JSON.parse(element.images)
-
-                const links = []
-                for (const element of image.imagenames) {
-                    const getObjectParams = {
-                        Bucket: BUCKET_NAME,
-                        Key: element
-                    }
-                    const command = new GetObjectCommand(getObjectParams)
-                    const url = await getSignedUrl(s3, command, { expiresIn: 3600 })
-                    links.push(url)
+        const results = await new Promise((resolve, reject) => {
+            connection.query(query,[req.params.id], (err, results) => {
+                if (err) {
+                    console.error('Ошибка при получении данных: ', err);
+                    return reject('Ошибка сервера');
                 }
-                element.images = links
-            }
-            res.status(200).json(results)
+                resolve(results);
+            });
         })
+
+        for (const element of results) {
+            const image = JSON.parse(element.images);
+            element.images = await generateSignedUrls(image);
+        }
+
+            res.status(200).json(results)
     } catch (err) {
         console.log(err)
     }
@@ -70,28 +61,22 @@ router.get('/', async (req, res) => {
     try {
         const query = 'SELECT * FROM Products';
 
-        connection.query(query, async (err, results) => {
-            if (err) {
-                console.log('Ошибка при получении данных: ', err)
-                return res.status(500).send('Ошибка сервера')
-            }
-            for (const element of results) {
-                const image = JSON.parse(element.images)
-
-                const links = []
-                for (const element of image.imagenames) {
-                    const getObjectParams = {
-                        Bucket: BUCKET_NAME,
-                        Key: element
-                    }
-                    const command = new GetObjectCommand(getObjectParams)
-                    const url = await getSignedUrl(s3, command, { expiresIn: 3600 })
-                    links.push(url)
+        const results = await new Promise((resolve, reject) => {
+            connection.query(query, (err, results) => {
+                if (err) {
+                    console.error('Ошибка при получении данных: ', err);
+                    return reject('Ошибка сервера');
                 }
-                element.images = links
-            }
-            res.status(200).json(results)
+                resolve(results);
+            });
         })
+
+        for (const element of results) {
+            const image = JSON.parse(element.images);
+            element.images = await generateSignedUrls(image);
+        }
+        res.status(200).json(results)
+    
     } catch (err) {
         console.log(err)
     }
@@ -228,37 +213,57 @@ router.delete('/:id', async (req, res) => {
         const query = 'SELECT * FROM Products WHERE uid = ?'
         const delquery = 'DELETE FROM Products WHERE uid = ?'
 
-        connection.query(query, [req.params.id], async (err, results) => {
-            if (err) {
-                console.error('Ошибка при получении данных: ', err)
-                return res.status(500).send('Ошибка сервера')
-            }
-            for (const element of results) {
-                const image = JSON.parse(element.images)
-                for (const element of image.imagenames) {
-                    const getObjectParams = {
-                        Bucket: BUCKET_NAME,
-                        Key: element
-                    }
-                    console.log(getObjectParams.Key)
-                    const command = new DeleteObjectCommand(getObjectParams)
-                    await s3.send(command)
+        const results = await new Promise((resolve, reject) => {
+            connection.query(query,[req.params.id], (err, results) => {
+                if (err) {
+                    console.error('Ошибка при получении данных: ', err);
+                    return reject('Ошибка сервера');
                 }
-            }
-
+                resolve(results);
+            });
         })
 
-        connection.query(delquery, [req.params.id], async (err, results) => {
-            if (err) {
-                console.error('Ошибка при получении данных: ', err)
-                return res.status(500).send('Ошибка сервера')
+        for (const element of results) {
+            const image = JSON.parse(element.images)
+            for (const element of image.imagenames) {
+                const getObjectParams = {
+                    Bucket: BUCKET_NAME,
+                    Key: element
+                }
+                console.log(getObjectParams.Key)
+                const command = new DeleteObjectCommand(getObjectParams)
+                await s3.send(command)
             }
-            res.status(200).json({ messsage: 'deleted' })
+        }
+
+        const delresult = await new Promise((resolve, reject) => { 
+            connection.query(delquery, [req.params.id],(err, results) => {
+                if (err) {
+                    console.error('Ошибка при получении данных: ', err)
+                    return reject('Ошибка сервера')
+                }
+                resolve(results)
+            })
         })
+
+        res.status(200).json({ message: 'Продукт успешно удален' })
 
     } catch (err) {
         console.log(err)
     }
 })
+
+
+const generateSignedUrls = async (images) => {
+    const links = [];
+    for (const imageName of images.imagenames) {
+        const getObjectParams = { Bucket: BUCKET_NAME, Key: imageName };
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+        links.push(url);
+    }
+    return links;
+}
+
 
 export default router

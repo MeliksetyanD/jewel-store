@@ -1,11 +1,7 @@
 import { Router } from "express"
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import {v4 as uuidv4} from 'uuid'
-import { fileURLToPath } from 'url'
 import { getSignedUrl} from "@aws-sdk/s3-request-presigner"
-import mysql from 'mysql2'
-import fs from 'fs'
-import path from "path"
 import connection from "../utils/connect.js"
 import sharp from 'sharp'
 import dotenv from 'dotenv'
@@ -14,8 +10,6 @@ import multer from 'multer'
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 
 const BUCKET_REGION = process.env.BUCKET_REGION
@@ -34,7 +28,6 @@ const s3 = new S3Client({
 
 dotenv.config()
 const router = Router()
-
 
 
 router.post('/create', upload.array('images', 4), async (req, res) => {
@@ -221,7 +214,16 @@ router.put('/put/:id',upload.array('images', 4), async (req, res) => {
     }
 })
 
-
+const generateSignedUrls = async (images) => {
+    const links = [];
+    for (const imageName of images.imagenames) {
+        const getObjectParams = { Bucket: BUCKET_NAME, Key: imageName };
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+        links.push(url);
+    }
+    return links;
+}
 
 
 export default router
