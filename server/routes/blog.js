@@ -6,6 +6,8 @@ import connection from "../utils/connect.js"
 import sharp from 'sharp'
 import dotenv from 'dotenv'
 import multer from 'multer'
+import authcheck from "../middleware/authcheck.js"
+
 
 dotenv.config()
 
@@ -31,7 +33,7 @@ const s3 = new S3Client({
 const router = Router()
 
 
-router.post('/create', upload.array('images', 4), async (req, res) => {
+router.post('/create', authcheck, upload.array('images', 4), async (req, res) => {
     try {
         const thedata = req.body.body
         const body = JSON.parse(thedata)
@@ -122,7 +124,7 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authcheck, async (req, res) => {
     try {
         const query = 'SELECT * FROM Blogs WHERE uid = ?'
         const delquery = 'DELETE FROM Blogs WHERE uid = ?'
@@ -167,7 +169,7 @@ router.delete('/:id', async (req, res) => {
     }
 })
 
-router.put('/put/:id',upload.array('images', 4), async (req, res) => {
+router.put('/put/:id', authcheck, upload.array('images', 4), async (req, res) => {
     try {
         const thedata = req.body.body
         const body = JSON.parse(thedata)

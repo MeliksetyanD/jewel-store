@@ -136,7 +136,7 @@ router.post('/post', authcheck, upload.array('images', 4), async (req, res) => {
     }
 })
 
-router.put('/put/:id',authcheck, upload.array('images', 4), async (req, res) => {
+router.put('/put/:id', authcheck, upload.array('images', 4), async (req, res) => {
     try {
         const thedata = req.body.body
         const body = JSON.parse(thedata)
@@ -207,7 +207,7 @@ router.put('/put/:id',authcheck, upload.array('images', 4), async (req, res) => 
     }
 })
 
-router.delete('/:id',authcheck, async (req, res) => {
+router.delete('/:id', authcheck, async (req, res) => {
     try {
         const query = 'SELECT * FROM Products WHERE uid = ?'
         const delquery = 'DELETE FROM Products WHERE uid = ?'

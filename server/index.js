@@ -28,8 +28,8 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24, // Время жизни куки (в данном случае — 1 день)
-        secure: false, // Устанавливать true, если используешь HTTPS
-        httpOnly: true, // Защита от XSS, куки доступны только через HTTP (не JavaScript)
+        secure: false,
+        httpOnly: true, 
     }
 }))
 app.use(varmiddleware)
