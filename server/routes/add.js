@@ -33,7 +33,7 @@ const router = Router()
 
 
 
-router.get('/get/:id', authcheck, async (req, res) => {
+router.get('/get/:id', async (req, res) => {
     try {
         const query = 'SELECT * FROM Products WHERE uid = ?';
 
@@ -58,7 +58,7 @@ router.get('/get/:id', authcheck, async (req, res) => {
     }
 })
 
-router.get('/' , authcheck, async (req, res) => {
+router.get('/' , async (req, res) => {
     try {
         const query = 'SELECT * FROM Products';
 
@@ -83,7 +83,7 @@ router.get('/' , authcheck, async (req, res) => {
     }
 })
 
-router.post('/post', upload.array('images', 4), async (req, res) => {
+router.post('/post', authcheck, upload.array('images', 4), async (req, res) => {
     try {
         const thedata = req.body.body
         const body = JSON.parse(thedata)
@@ -136,7 +136,7 @@ router.post('/post', upload.array('images', 4), async (req, res) => {
     }
 })
 
-router.put('/put/:id', upload.array('images', 4), async (req, res) => {
+router.put('/put/:id',authcheck, upload.array('images', 4), async (req, res) => {
     try {
         const thedata = req.body.body
         const body = JSON.parse(thedata)
@@ -207,7 +207,7 @@ router.put('/put/:id', upload.array('images', 4), async (req, res) => {
     }
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',authcheck, async (req, res) => {
     try {
         const query = 'SELECT * FROM Products WHERE uid = ?'
         const delquery = 'DELETE FROM Products WHERE uid = ?'

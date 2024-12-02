@@ -27,14 +27,14 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 60 * 60 * 0.01, // Время жизни куки (в данном случае — 1 день)
+        maxAge: 1000 * 60 * 60 * 24, // Время жизни куки (в данном случае — 1 день)
         secure: false, // Устанавливать true, если используешь HTTPS
         httpOnly: true, // Защита от XSS, куки доступны только через HTTP (не JavaScript)
     }
 }))
 app.use(varmiddleware)
 app.use(cors())
-app.use('/products',varmiddleware, add)
+app.use('/products', add)
 app.use('/auth', auth)
 app.use('/blog', blog)
 
