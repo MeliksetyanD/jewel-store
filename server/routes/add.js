@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 import connection from "../utils/connect.js"
 import sharp from 'sharp'
 import multer from 'multer'
-import variable from "../middleware/variable.js"
+import authcheck from "../middleware/authcheck.js"
 
 dotenv.config()
 
@@ -33,7 +33,7 @@ const router = Router()
 
 
 
-router.get('/get/:id', variable, async (req, res) => {
+router.get('/get/:id', authcheck, async (req, res) => {
     try {
         const query = 'SELECT * FROM Products WHERE uid = ?';
 
@@ -58,7 +58,7 @@ router.get('/get/:id', variable, async (req, res) => {
     }
 })
 
-router.get('/' , variable, async (req, res) => {
+router.get('/' , authcheck, async (req, res) => {
     try {
         const query = 'SELECT * FROM Products';
 
