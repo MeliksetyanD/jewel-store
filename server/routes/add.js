@@ -1,207 +1,73 @@
 import { Router } from "express"
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
-import { v4 as uuidv4 } from 'uuid'
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import Product from "../models/product.js"
 import dotenv from 'dotenv'
-import connection from "../utils/connect.js"
-import sharp from 'sharp'
-import multer from 'multer'
 import authcheck from "../middleware/authcheck.js"
 
 dotenv.config()
 
 
-const storage = multer.memoryStorage()
-const upload = multer({ storage: storage })
 
 
-const BUCKET_REGION = process.env.BUCKET_REGION
-const BUCKET_NAME = process.env.BUCKET_NAME
-const BUCKET_KEY = process.env.ACCESS_KEY
-const BUCKET_SECRET_KEY = process.env.SECRET_ACCESS_KEY
 
-
-const s3 = new S3Client({
-    region: BUCKET_REGION,
-    credentials: {
-        accessKeyId: BUCKET_KEY,
-        secretAccessKey: BUCKET_SECRET_KEY,
-    }
-})
 
 const router = Router()
 
 
 
-router.get('/get/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const query = 'SELECT * FROM Products WHERE uid = ?';
+        const { id } = req.params
+        const products = await Product.findById(id)
+        
 
-        const results = await new Promise((resolve, reject) => {
-            connection.query(query, [req.params.id], (err, results) => {
-                if (err) {
-                    console.error('Ошибка при получении данных: ', err);
-                    return reject('Ошибка сервера');
-                }
-                resolve(results);
-            });
-        })
-
-        for (const element of results) {
-            const image = JSON.parse(element.images);
-            element.images = await generateSignedUrls(image);
-        }
-
-        res.status(200).json(results)
+        res.status(200).json(products)
     } catch (err) {
         console.log(err)
     }
 })
 
-router.get('/' , async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const query = 'SELECT * FROM Products';
+        const products = await Product.find()
 
-        const results = await new Promise((resolve, reject) => {
-            connection.query(query, (err, results) => {
-                if (err) {
-                    console.error('Ошибка при получении данных: ', err);
-                    return reject('Ошибка сервера');
-                }
-                resolve(results);
-            });
-        })
-
-        for (const element of results) {
-            const image = JSON.parse(element.images);
-            element.images = await generateSignedUrls(image);
-        }
-        res.status(200).json(results)
+        res.status(200).json(products)
 
     } catch (err) {
         console.log(err)
     }
 })
 
-router.post('/post', authcheck, upload.array('images', 4), async (req, res) => {
+router.post('/', authcheck, async (req, res) => {
     try {
-        const thedata = req.body.body
-        const body = JSON.parse(thedata)
-        const forslide = body.forSlide
-        let istrue = false
-        if (forslide === "true") {
-            istrue = true
-        }
-
-        const uploadpromises = req.files.map(async (file) => {
-            const imageName = uuidv4()
-            const imageBuffer = await sharp(file.buffer).rotate().resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
-
-            const params = {
-                Bucket: BUCKET_NAME,
-                Key: imageName,
-                Body: imageBuffer,
-                ContentType: file.mimetype,
-            }
-            const command = new PutObjectCommand(params)
-            await s3.send(command)
-
-            return imageName
-
+        const images = []
+        images.push(req.body.images)
+        // const images = JSON.stringify(image)
+        const product = new Product({
+            name: req.body.name,
+            price: req.body.price,
+            description: req.body.description,
+            count: req.body.count,
+            sizes: req.body.sizes,
+            colorus: req.body.colorus,
+            weight: req.body.weight,
+            material: req.body.material,
+            categoryname: req.body.categoryname,
+            images,
         })
-
-        const imagenames = await Promise.all(uploadpromises)
-
-        const ids = {
-            imagenames
-        }
-
-        const images = JSON.stringify(ids)
-
-        const query = 'INSERT INTO Products (uid, name, price, description, count, sizes, colours, weight, material, categoryname, images, forSlide) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-        const uid = uuidv4()
-
-
-        connection.query(query, [uid, body.name, body.price, body.description, body.count, body.sizes, body.colours, body.weight, body.material, body.categoryname, images, istrue], (err, results) => {
-            if (err) {
-                console.error('Ошибка при вставке данных: ', err);
-                return res.status(500).send('Ошибка сервера');
-            }
-            res.status(200).send(`Продукт добавлен с ID: ${results.insertId}`);
-        })
-
-
+        await product.save()
+        res.status(200).json({ message: 'Добавлено', product })
     } catch (err) {
         console.log(err)
     }
 })
 
-router.put('/put/:id', authcheck, upload.array('images', 4), async (req, res) => {
+router.put('/', authcheck, async (req, res) => {
     try {
-        const thedata = req.body.body
-        const body = JSON.parse(thedata)
-        const queryimages = 'SELECT * FROM Products WHERE uid = ?'
-        const oldimage = []
+        const { _id } = req.body
+        delete req.body._id
+        await Product.findByIdAndUpdate(_id, req.body)
 
-        connection.query(queryimages, [req.params.id], async (err, results) => {
-            if (err) {
-                console.log(err)
-            }
-
-            for (const element of results) {
-                const image = JSON.parse(element.images)
-                for (const element of image.imagenames) {
-                    oldimage.push(element)
-                }
-            }
-            console.log(oldimage)
-
-            const deletepromises = oldimage.map(async (key) => {
-                console.log(key)
-                const params = {
-                    Bucket: BUCKET_NAME,
-                    Key: key,
-                }
-                const command = new DeleteObjectCommand(params)
-                await s3.send(command)
-                return 'deleted'
-            })
-            const deleted = await Promise.all(deletepromises)
-            console.log(deleted)
-
-            const uploadpromises = req.files.map(async (file) => {
-                const imageName = uuidv4()
-                const imageBuffer = await sharp(file.buffer).resize({ height: 5000, width: 3338, fit: 'contain' }).toBuffer()
-                const params = {
-                    Bucket: BUCKET_NAME,
-                    Key: imageName,
-                    Body: imageBuffer,
-                    ContentType: file.mimetype,
-                }
-                const command = new PutObjectCommand(params)
-                await s3.send(command)
-
-                return imageName
-            })
-
-            const imagenames = await Promise.all(uploadpromises)
-
-            const ids = {
-                imagenames
-            }
-            const images = JSON.stringify(ids)
-
-
-            const query = `UPDATE Products SET name=?, price=?, description=?, count=?, sizes=?, colours=?, weight=?, material=?, categoryname=?, images=? WHERE uid = ?`
-
-            connection.query(query, [body.name, body.price, body.description, body.count, body.sizes, body.colours, body.weight, body.material, body.categoryname, images, req.params.id], (err) => {
-                if (err) {
-                    console.log('Ошибка при вставке данных: ', err);
-                    return res.status(500).send(err);
-                }
-                res.status(200).send(`Продукт успешно обновлен`);
-            })
-        })
+        res.status(200).json({ message: 'Изменено', })
     } catch (error) {
         console.log(error)
     }
@@ -209,60 +75,45 @@ router.put('/put/:id', authcheck, upload.array('images', 4), async (req, res) =>
 
 router.delete('/:id', authcheck, async (req, res) => {
     try {
-        const query = 'SELECT * FROM Products WHERE uid = ?'
-        const delquery = 'DELETE FROM Products WHERE uid = ?'
-
-        const results = await new Promise((resolve, reject) => {
-            connection.query(query, [req.params.id], (err, results) => {
-                if (err) {
-                    console.error('Ошибка при получении данных: ', err);
-                    return reject('Ошибка сервера');
-                }
-                resolve(results);
-            });
-        })
-
-        for (const element of results) {
-            const image = JSON.parse(element.images)
-            for (const element of image.imagenames) {
-                const getObjectParams = {
-                    Bucket: BUCKET_NAME,
-                    Key: element
-                }
-                console.log(getObjectParams.Key)
-                const command = new DeleteObjectCommand(getObjectParams)
-                await s3.send(command)
-            }
-        }
-
-        const delresult = await new Promise((resolve, reject) => {
-            connection.query(delquery, [req.params.id], (err, results) => {
-                if (err) {
-                    console.error('Ошибка при получении данных: ', err)
-                    return reject('Ошибка сервера')
-                }
-                resolve(results)
-            })
-        })
-
-       res.status(200).json({ message: 'Продукт успешно удален' })
- 
+        await Product.deleteOne({ _id: req.params.id })
+        res.status(200).json({ message: 'Продукт успешно удален' })
     } catch (err) {
         console.log(err)
     }
 })
 
 
-const generateSignedUrls = async (images) => {
-    const links = [];
-    for (const imageName of images.imagenames) {
-        const getObjectParams = { Bucket: BUCKET_NAME, Key: imageName };
-        const command = new GetObjectCommand(getObjectParams);
-        const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-        links.push(url);
-    }
-    return links;
-}
 
 
 export default router
+
+
+
+
+
+
+
+/*
+
+const axios = require('axios');
+const FormData = require('form-data');
+const fs = require('fs');
+
+const uploadImage = async () => {
+    const formData = new FormData();
+    formData.append('key', 'ВАШ_API_КЛЮЧ'); // Замените на ваш API-ключ
+    formData.append('image', fs.createReadStream('/path/to/your/image.jpg'));
+
+    try {
+        const response = await axios.post('https://api.postimages.org/1/upload', formData, {
+            headers: formData.getHeaders(),
+        });
+        console.log('Image URL:', response.data.data.url);
+    } catch (error) {
+        console.error('Ошибка загрузки:', error.response.data);
+    }
+};
+
+uploadImage();
+
+*/
