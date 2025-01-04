@@ -21,7 +21,7 @@ const Home = () => {
 						products
 							.slice(0, 4)
 							.map(product => (
-								<Product key={product.id} id={product.id} {...product} />
+								<Product key={product.uid} uid={product.uid} {...product} />
 							))
 					)}
 				</div>

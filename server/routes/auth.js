@@ -1,31 +1,19 @@
+import bcrypt from "bcrypt"
+import usermodel from "../models/usermodel.js"
 import { Router } from "express"
 
 const router = Router()
 
 
-
 router.post('/log', async (req, res) => {
     try {
-        const { login, password } = req.body
+        const { email, password } = req.body
+        const candidate = await usermodel.findOne({ where: { email } })
 
-        if (login == 'admin' && password == '12345678') {
-            req.session.isAuthenticated = true
-            req.session.save(err => {
-                if (err) {
-                    throw err
-                }
-            })
 
-        } else {
-            return res.status(203).json({ message: "wrong password", isAuth: false })
-        }
-
-        res.status(201).json({ message: 'login', isAuth: true })
-
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error)
-        res.status(500).json({ message: 'error, try again' })
+        res.status(500).json({message:'error, try again'})
     }
 })
 
