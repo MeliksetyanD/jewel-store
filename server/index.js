@@ -4,10 +4,23 @@ import product from './models/productmodel.js'
 import blogmodel from './models/blogmodel.js'
 import cors from 'cors'
 import session from 'express-session'
+import connectSessionSequelize from 'connect-session-sequelize'
+import multer from 'multer'
 import add  from './routes/add.js'
 import blog from './routes/blog.js'
+import auth from './routes/auth.js'
 import varmiddleware from "./middleware/variable.js"
 
+
+const upload = multer({ dest: 'uploads/' })
+const SequelizeStore = connectSessionSequelize(session.Store)
+
+
+const store = new SequelizeStore({
+    db: sequelize,
+    checkExpirationInterval: 15 * 60 * 1000,
+    expiration: 15 * 60 * 1000
+})
 
 
 const PORT = process.env.PORT || 4700
@@ -21,15 +34,12 @@ app.use(session({
     secret: 'secret',
     resave: false,
     saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24, // Время жизни куки (в данном случае — 1 день)
-        secure: false, // Устанавливать true, если используешь HTTPS
-        httpOnly: true, // Защита от XSS, куки доступны только через HTTP (не JavaScript)
-    }
+    store
 }))
 app.use(varmiddleware)
 app.use(cors())
 app.use('/products', add)
+app.use('/auth', auth)
 app.use('/blog', blog)
 
 
