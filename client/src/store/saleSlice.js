@@ -3,7 +3,9 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 export const getSale = createAsyncThunk('sale/getSale', async () => {
 	const response = await fetch('http://localhost:4700/products')
 	const data = await response.json()
-	return data.filter(product => product.forSlide === 1)
+	console.log(data)
+
+	return data.filter(product => product.forSlide === true)
 })
 
 const initialState = {
@@ -22,6 +24,7 @@ export const saleReducer = createSlice({
 			})
 			.addCase(getSale.fulfilled, (state, action) => {
 				state.entities = action.payload
+
 				state.loading = 'success'
 			})
 			.addCase(getSale.rejected, state => {

@@ -1,0 +1,25 @@
+.Admin {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	height: 100vh;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	width: 300px;
+	height: 400px;
+	border-radius: 20px;
+	background-color: var(--light-gray);
+}
+.container h1 {
+	margin: 20px 0;
+}
+.admin {
+	height: 100vh;
+}

@@ -13,6 +13,7 @@ import styles from './SingleProductPage.module.css'
 products
 
 export const SingleProductPage = () => {
+	const [data, setData] = useState([])
 	const { id } = useParams()
 	const dispatch = useDispatch()
 	const {
@@ -26,9 +27,18 @@ export const SingleProductPage = () => {
 	function addToCartHandler(item) {
 		dispatch(addToCart(item))
 	}
-	// console.log(similarProducts)
+	async function getElementByIdHandler() {
+		try {
+			const response = await dispatch(getProductById(id))
+
+			await setData(response.payload)
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
 	useEffect(() => {
-		dispatch(getProductById(id))
+		getElementByIdHandler()
 	}, [id])
 	return loading === 'pending' ? (
 		<h1>Loading</h1>
@@ -39,7 +49,7 @@ export const SingleProductPage = () => {
 					<div className={styles.singleProductContent}>
 						<div className={styles.singleProductImages}>
 							<div className={styles.singleProductImageBox}>
-								{product.length !== 0
+								{/* {product.length !== 0
 									? product?.images.map((image, index) => (
 											<img
 												key={index}
@@ -49,13 +59,14 @@ export const SingleProductPage = () => {
 												onClick={() => setImage(image)}
 											/>
 									  ))
-									: ''}
+									: ''} */}
 							</div>
 							<div className={styles.singleProductImagePreview}>
 								<img
-									src={image ? image : product?.images?.[0]}
-									alt='jewel'
-									className={styles.singleProductImage}
+									src={`data:image/png;base64,${btoa(
+										String.fromCharCode(...new Uint8Array(product?.images))
+									)}`}
+									alt=''
 								/>
 							</div>
 						</div>

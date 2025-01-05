@@ -12,10 +12,10 @@ export const getProducts = createAsyncThunk(
 export const getProductById = createAsyncThunk(
 	'products/getProductById',
 	async id => {
-		const response = await fetch(`http://localhost:4700/products/get/${id}`)
+		const response = await fetch(`http://localhost:4700/products/${id}`)
 		const data = await response.json()
 
-		return data[0]
+		return data
 	}
 )
 const initialState = {

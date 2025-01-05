@@ -42,13 +42,15 @@ function CustomSlide(props) {
 			<div className={styles.sliderContent}>
 				<h1>{item.name}</h1>
 				<h2>{item.price} AMD</h2>
-				<Link to={`/product/${item.uid}`}>Տեսնել</Link>
+				<Link to={`/product/${item._id}`}>Տեսնել</Link>
 			</div>
 		</div>
 	)
 }
 function HomeSlider() {
 	const sale = useSelector(state => state.sale.entities)
+	console.log(sale)
+
 	const settings = {
 		dots: true,
 		infinite: true,

@@ -5,6 +5,13 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import About from './pages/About/About.jsx'
 import Account from './pages/Account/Account.jsx'
+import Admin from './pages/Admin/Admin.jsx'
+import AdminPanel from './pages/AdminPanel/AdminPanel.jsx'
+import BlogContent from './pages/AdminPanel/BlogContent/BlogContent.jsx'
+
+import CreateAndUpdatePage from './pages/AdminPanel/CreateAndUpdatePage/CreateAndUpdatePage.jsx'
+import ProductsContent from './pages/AdminPanel/ProductsContent/ProductsContent.jsx'
+import Blog from './pages/Blog/Blog.jsx'
 import BlogPage from './pages/BlogPage/BlogPage.jsx'
 import BlogSingle from './pages/BlogSingle/BlogSingle.jsx'
 import { Cart } from './pages/Cart/Cart.jsx'
@@ -24,8 +31,13 @@ const router = createBrowserRouter([
 			{ index: true, element: <Home /> },
 			{
 				path: '/blog',
-				element: <BlogPage />,
+				element: <Blog />,
 				children: [
+					{
+						index: true,
+						element: <BlogPage />,
+					},
+
 					{
 						path: '/blog/:id',
 						element: <BlogSingle />,
@@ -51,6 +63,39 @@ const router = createBrowserRouter([
 			{
 				path: '/product/:id',
 				element: <SingleProductPage />,
+			},
+		],
+	},
+	{
+		path: 'admin',
+		element: <Admin />,
+		errorElement: <ErrorPage />,
+		children: [
+			// {
+			// 	index: true,
+			// 	element: <Auth />,
+			// },
+			{
+				path: 'home',
+				element: <AdminPanel />,
+				children: [
+					{
+						path: 'products',
+						element: <ProductsContent />,
+					},
+					{
+						path: 'blog',
+						element: <BlogContent />,
+					},
+					{
+						path: 'create',
+						element: <CreateAndUpdatePage />,
+					},
+					{
+						path: 'update/:id',
+						element: <CreateAndUpdatePage />,
+					},
+				],
 			},
 		],
 	},

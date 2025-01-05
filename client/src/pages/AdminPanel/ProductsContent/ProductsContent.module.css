@@ -1,0 +1,31 @@
+.container {
+	display: flex;
+	flex-direction: column;
+}
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+.items {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+}
+.button {
+	text-decoration: none;
+	font-size: 14px;
+	padding: 15px;
+	border: none;
+	background-color: var(--dark-gray);
+	color: white;
+	margin: 10px;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.3s ease-in-out;
+}
+
+.button:hover {
+	color: black;
+	background-color: var(--light-gray);
+}
