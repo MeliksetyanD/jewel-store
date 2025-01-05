@@ -36,10 +36,10 @@ const Shop = () => {
 					<div className={styles.products}>
 						{shopProducts.length === 0
 							? products.map(product => (
-									<Product key={product.uid} id={product._id} {...product} />
+									<Product key={product.uid} uid={product.uid} {...product} />
 							  ))
 							: shopProducts.map(product => (
-									<Product key={product._id} id={product._id} {...product} />
+									<Product key={product.uid} uid={product.uid} {...product} />
 							  ))}
 					</div>
 				</div>

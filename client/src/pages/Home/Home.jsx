@@ -18,9 +18,11 @@ const Home = () => {
 					{products.length === 0 ? (
 						<h1>Loading...</h1>
 					) : (
-						products.slice(0, 4).map(product => {
-							return <Product key={product.uid} id={product._id} {...product} />
-						})
+						products
+							.slice(0, 4)
+							.map(product => (
+								<Product key={product.id} id={product.id} {...product} />
+							))
 					)}
 				</div>
 			</div>

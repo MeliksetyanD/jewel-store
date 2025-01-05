@@ -1,84 +1,139 @@
 import { Router } from "express"
-import Product from "../models/product.js"
-import dotenv from 'dotenv'
+import { v4 as uuidv4 } from "uuid"
+import multer from 'multer'
+import prodmodel from "../models/productmodel.js"
 import authcheck from "../middleware/authcheck.js"
-
-dotenv.config()
-
-
-
-
-
+import path from 'path'
 
 const router = Router()
+
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname))
+    }
+  })
+
+const upload = multer({ storage })
+
+
+
 
 
 
 router.get('/:id', async (req, res) => {
     try {
-        const { id } = req.params
-        const products = await Product.findById(id)
-        
 
-        res.status(200).json(products)
-    } catch (err) {
-        console.log(err)
+        const response = await prodmodel.findOne({ where: { uid: req.params.id } })
+        const images = JSON.parse(response.images)
+        response.images = images
+        res.status(200).json(response)
+
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({ message: 'error, try again' })
     }
 })
 
 router.get('/', async (req, res) => {
     try {
-        const products = await Product.find()
+        const products = await prodmodel.findAll()
+        const data = products.map(async (prod) => {
 
-        res.status(200).json(products)
+            const images = JSON.parse(prod.dataValues.images)
+            prod.dataValues.images = images
+            console.log(prod.dataValues)
 
-    } catch (err) {
-        console.log(err)
-    }
-})
-
-router.post('/', authcheck, async (req, res) => {
-    try {
-        const images = []
-        images.push(req.body.images)
-        // const images = JSON.stringify(image)
-        const product = new Product({
-            name: req.body.name,
-            price: req.body.price,
-            description: req.body.description,
-            count: req.body.count,
-            sizes: req.body.sizes,
-            colorus: req.body.colorus,
-            weight: req.body.weight,
-            material: req.body.material,
-            categoryname: req.body.categoryname,
-            images,
+            return prod.dataValues
         })
+
+        const prods = await Promise.all(data)
+
+
+        res.status(200).json(prods)
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({ message: 'error, try again' })
+    }
+})
+
+router.post('/', authcheck, upload.array('images', 4) ,  async (req, res) => {
+    try {
+        const body = JSON.parse(req.body.body)
+    
+
+        const uploadpromises = req.files.map(async (file) => {
+            const imageName = file.filename
+            return imageName
+        })
+
+        const imagenames = await Promise.all(uploadpromises)
+
+        const images = JSON.stringify(imagenames)
+
+        await prodmodel.create({
+            uid: uuidv4(),
+            name: body.name,
+            price: body.price,
+            description: body.description,
+            count: body.count,
+            sizes: body.sizes,
+            colorus: body.colorus,
+            weight: body.weight,
+            material: body.material,
+            categoryname: body.categoryname,
+            forSlide: body.forSlide,
+            images
+        })
+
+        res.status(200).json({message: 'Добавлено'})
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({ message: 'error, try again' })
+    }
+})
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const uid = req.params.id
+        const product = await prodmodel.findAll({where: {uid: uid} })
+        await product[0].destroy()
+
+        res.status(200).json({ message: 'Удалено' })
+    } catch (e) {
+        console.log(e)
+        res.status(404).json({ message: 'не найдено такого товара' })
+    }
+})
+
+router.put('/:id', async (req, res) => {
+    try {
+
+        const product = await prodmodel.findOne({ where: { uid: req.params.id } })
+        const link = { links: [] }
+        link.links.push(req.body.images)
+        const data = JSON.stringify(link)
+
+            product.name = req.body.name,
+            product.price = req.body.price,
+            product.description = req.body.description,
+            product.count = req.body.count,
+            product.sizes = req.body.sizes,
+            product.colorus = req.body.colorus,
+            product.weight = req.body.weight,
+            product.material = req.body.material,
+            product.categoryname = req.body.categoryname,
+            product.images = data
+
         await product.save()
-        res.status(200).json({ message: 'Добавлено', product })
-    } catch (err) {
-        console.log(err)
-    }
-})
 
-router.put('/', authcheck, async (req, res) => {
-    try {
-        const { _id } = req.body
-        delete req.body._id
-        await Product.findByIdAndUpdate(_id, req.body)
-
-        res.status(200).json({ message: 'Изменено', })
-    } catch (error) {
-        console.log(error)
-    }
-})
-
-router.delete('/:id', authcheck, async (req, res) => {
-    try {
-        await Product.deleteOne({ _id: req.params.id })
-        res.status(200).json({ message: 'Продукт успешно удален' })
-    } catch (err) {
-        console.log(err)
+        res.status(200).json({ message: 'Изменено' })
+    } catch (e) {
+        console.log(e)
+        res.status(400).json({ message: 'error' })
     }
 })
 
@@ -87,33 +142,3 @@ router.delete('/:id', authcheck, async (req, res) => {
 
 export default router
 
-
-
-
-
-
-
-/*
-
-const axios = require('axios');
-const FormData = require('form-data');
-const fs = require('fs');
-
-const uploadImage = async () => {
-    const formData = new FormData();
-    formData.append('key', 'ВАШ_API_КЛЮЧ'); // Замените на ваш API-ключ
-    formData.append('image', fs.createReadStream('/path/to/your/image.jpg'));
-
-    try {
-        const response = await axios.post('https://api.postimages.org/1/upload', formData, {
-            headers: formData.getHeaders(),
-        });
-        console.log('Image URL:', response.data.data.url);
-    } catch (error) {
-        console.error('Ошибка загрузки:', error.response.data);
-    }
-};
-
-uploadImage();
-
-*/
