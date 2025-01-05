@@ -23,6 +23,7 @@ export const SingleProductPage = () => {
 	} = useSelector(state => state.products)
 
 	const [image, setImage] = useState('')
+	console.log(product)
 
 	function addToCartHandler(item) {
 		dispatch(addToCart(item))
@@ -49,7 +50,7 @@ export const SingleProductPage = () => {
 					<div className={styles.singleProductContent}>
 						<div className={styles.singleProductImages}>
 							<div className={styles.singleProductImageBox}>
-								{/* {product.length !== 0
+								{product.length !== 0
 									? product?.images.map((image, index) => (
 											<img
 												key={index}
@@ -59,14 +60,13 @@ export const SingleProductPage = () => {
 												onClick={() => setImage(image)}
 											/>
 									  ))
-									: ''} */}
+									: ''}
 							</div>
 							<div className={styles.singleProductImagePreview}>
 								<img
-									src={`data:image/png;base64,${btoa(
-										String.fromCharCode(...new Uint8Array(product?.images))
-									)}`}
-									alt=''
+									src={image || product?.images?.[0]}
+									alt='jewel'
+									className={styles.singleProductSliderImage}
 								/>
 							</div>
 						</div>

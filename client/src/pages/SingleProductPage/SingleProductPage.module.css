@@ -40,7 +40,10 @@
 	width: 100px;
 	height: 100px;
 }
-
+.singleProductImagePreview img {
+	width: 300px;
+	height: 300px;
+}
 .singleProductName h2,
 .singleProductReviews h3 {
 	font-weight: normal;

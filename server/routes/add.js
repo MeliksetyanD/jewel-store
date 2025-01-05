@@ -1,12 +1,11 @@
 import { Router } from 'express'
-import fs from 'fs'
 import multer from 'multer'
 import path, { dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { v4 as uuidv4 } from 'uuid'
 import prodmodel from '../models/productmodel.js'
 const router = Router()
-console.log(path)
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 var storage = multer.diskStorage({
@@ -20,76 +19,66 @@ var storage = multer.diskStorage({
 
 const upload = multer({ storage })
 
-// router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
+	try {
+		const response = await prodmodel.findOne({ where: { uid: req.params.id } })
+
+		if (!response) {
+			return res.status(404).json({ message: 'Product not found' })
+		}
+
+		// Формируем полный URL для каждого изображения
+		const images = JSON.parse(response.images).map(
+			image => `${req.protocol}://${req.get('host')}/uploads/${image}`
+		)
+
+		// Обновляем данные ответа
+		response.dataValues.images = images
+
+		res.status(200).json(response.dataValues)
+	} catch (e) {
+		console.error(e)
+		res.status(500).json({ message: 'Error, try again' })
+	}
+})
+
+router.get('/', async (req, res) => {
+	try {
+		const products = await prodmodel.findAll()
+
+		const prods = products.map(prod => {
+			const images = JSON.parse(prod.dataValues.images).map(
+				image => `${req.protocol}://${req.get('host')}/uploads/${image}`
+			)
+			prod.dataValues.images = images
+			return prod.dataValues
+		})
+
+		res.status(200).json(prods)
+	} catch (e) {
+		console.error(e)
+		res.status(500).json({ message: 'Error, try again' })
+	}
+})
+// router.get('/', async (req, res) => {
 // 	try {
-// 		const response = await prodmodel.findOne({ where: { uid: req.params.id } })
+// 		const products = await prodmodel.findAll()
+// 		const data = products.map(async prod => {
+// 			const images = JSON.parse(prod.dataValues.images)
+// 			prod.dataValues.images = images
+// 			console.log(prod.dataValues)
 
-// 		const images = JSON.parse(response.images)
+// 			return prod.dataValues
+// 		})
 
-// 		response.images = images
-// 		res.status(200).json(response)
+// 		const prods = await Promise.all(data)
+
+// 		res.status(200).json(prods)
 // 	} catch (e) {
 // 		console.log(e)
 // 		res.status(500).json({ message: 'error, try again' })
 // 	}
 // })
-//============================old get
-
-router.get('/:id', async (req, res) => {
-	try {
-		const response = await prodmodel.findOne({ where: { uid: req.params.id } })
-
-		const images = JSON.parse(response.images) // Извлекаем список изображений
-
-		// Предполагаем, что в images хранится массив путей к изображениям (например, ['image1.jpg', 'image2.png'])
-		const imagePaths = images.map(image =>
-			path.join(__dirname, '..', 'uploads', image)
-		) // Собираем полный путь к изображению
-		console.log(imagePaths)
-
-		if (imagePaths.length > 0) {
-			// Получаем первое изображение (или можете отправить список всех)
-			const imagePath = imagePaths[0]
-
-			// Проверяем, существует ли файл
-			fs.access(imagePath, fs.constants.F_OK, err => {
-				if (err) {
-					// Если файл не существует
-					return res.status(404).json({ message: 'Image not found' })
-				}
-
-				// Если файл существует, отправляем его
-				res.json({ ...response.dataValues, images: imagePaths })
-			})
-		} else {
-			return res
-				.status(400)
-				.json({ message: 'No images found for this product' })
-		}
-	} catch (e) {
-		console.log(e)
-		res.status(500).json({ message: 'Error, try again' })
-	}
-})
-router.get('/', async (req, res) => {
-	try {
-		const products = await prodmodel.findAll()
-		const data = products.map(async prod => {
-			const images = JSON.parse(prod.dataValues.images)
-			prod.dataValues.images = images
-			console.log(prod.dataValues)
-
-			return prod.dataValues
-		})
-
-		const prods = await Promise.all(data)
-
-		res.status(200).json(prods)
-	} catch (e) {
-		console.log(e)
-		res.status(500).json({ message: 'error, try again' })
-	}
-})
 
 router.post('/', upload.array('images', 3), async (req, res) => {
 	try {
@@ -131,42 +120,6 @@ router.post('/', upload.array('images', 3), async (req, res) => {
 		res.status(500).json({ error: 'Error adding product' })
 	}
 })
-
-// ================================= old post
-// router.post('/', upload.array('images', 4), async (req, res) => {
-// 	try {
-// 		const body = JSON.parse(req.body.body)
-
-// 		const uploadpromises = req.files.map(async file => {
-// 			const imageName = file.filename
-// 			return imageName
-// 		})
-
-// 		const imagenames = await Promise.all(uploadpromises)
-
-// 		const images = JSON.stringify(imagenames)
-
-// 		await prodmodel.create({
-// 			uid: uuidv4(),
-// 			name: body.name,
-// 			price: body.price,
-// 			description: body.description,
-// 			count: body.count,
-// 			sizes: body.sizes,
-// 			colorus: body.colorus,
-// 			weight: body.weight,
-// 			material: body.material,
-// 			categoryname: body.categoryname,
-// 			forSlide: body.forSlide,
-// 			images,
-// 		})
-
-// 		res.status(200).json({ message: 'Добавлено' })
-// 	} catch (e) {
-// 		console.log(e)
-// 		res.status(500).json({ message: 'error, try again' })
-// 	}
-// })
 
 router.delete('/:id', async (req, res) => {
 	try {

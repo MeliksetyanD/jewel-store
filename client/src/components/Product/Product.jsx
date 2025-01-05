@@ -4,7 +4,7 @@ import styles from './Product.module.css'
 const Product = ({ uid, name, price, images }) => {
 	return (
 		<Link className={styles.product} to={`/product/${uid}`}>
-			<img src={`http://localhost:3306${images[0]}`} alt='img' />
+			<img src={images[0]} alt='dd' />
 			<h3>{name}</h3>
 			<h4>{price} AMD</h4>
 		</Link>
