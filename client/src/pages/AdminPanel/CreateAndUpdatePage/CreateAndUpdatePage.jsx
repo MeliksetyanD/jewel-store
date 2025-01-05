@@ -2,6 +2,7 @@ import axios from 'axios'
 import React, { useState } from 'react'
 
 const CreateAndUpdatePage = () => {
+	const [forSlide, setForSlide] = useState(false)
 	const [product, setProduct] = useState({
 		name: '',
 		price: '',
@@ -12,10 +13,12 @@ const CreateAndUpdatePage = () => {
 		weight: '',
 		material: '',
 		categoryname: '',
+		forSlide: '',
 	})
 	const [images, setImages] = useState([null, null, null]) // Массив для хранения 3 изображений
 
 	// Обработчик изменения данных продукта
+
 	const handleInputChange = e => {
 		setProduct({
 			...product,
@@ -51,6 +54,7 @@ const CreateAndUpdatePage = () => {
 		formData.append('weight', product.weight)
 		formData.append('material', product.material)
 		formData.append('categoryname', product.categoryname)
+		formData.append('forSlide', forSlide)
 
 		// Добавляем изображения в FormData
 		images.forEach((image, index) => {
@@ -62,7 +66,7 @@ const CreateAndUpdatePage = () => {
 
 		try {
 			const response = await axios.post(
-				'http://localhost:4700/product',
+				'http://localhost:4700/products',
 				formData,
 				{
 					headers: {
@@ -133,7 +137,12 @@ const CreateAndUpdatePage = () => {
 				placeholder='Category Name'
 				onChange={handleInputChange}
 			/>
-
+			<input
+				type='checkbox'
+				name='forSlide'
+				placeholder='For Slide'
+				onChange={() => setForSlide(prev => !prev)}
+			/>
 			{/* Поля для загрузки 3 изображений */}
 			<input type='file' name='images' multiple onChange={handleImageChange} />
 

@@ -49,7 +49,6 @@ function CustomSlide(props) {
 }
 function HomeSlider() {
 	const sale = useSelector(state => state.sale.entities)
-	console.log(sale)
 
 	const settings = {
 		dots: true,

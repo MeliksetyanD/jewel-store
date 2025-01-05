@@ -9,6 +9,7 @@ import Admin from './pages/Admin/Admin.jsx'
 import AdminPanel from './pages/AdminPanel/AdminPanel.jsx'
 import BlogContent from './pages/AdminPanel/BlogContent/BlogContent.jsx'
 
+import Auth from './components/Auth/Auth.jsx'
 import CreateAndUpdatePage from './pages/AdminPanel/CreateAndUpdatePage/CreateAndUpdatePage.jsx'
 import ProductsContent from './pages/AdminPanel/ProductsContent/ProductsContent.jsx'
 import Blog from './pages/Blog/Blog.jsx'
@@ -71,10 +72,10 @@ const router = createBrowserRouter([
 		element: <Admin />,
 		errorElement: <ErrorPage />,
 		children: [
-			// {
-			// 	index: true,
-			// 	element: <Auth />,
-			// },
+			{
+				index: true,
+				element: <Auth />,
+			},
 			{
 				path: 'home',
 				element: <AdminPanel />,
