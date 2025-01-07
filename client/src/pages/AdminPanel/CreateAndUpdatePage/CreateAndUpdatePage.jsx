@@ -216,7 +216,7 @@ const CreateAndUpdatePage = () => {
 
 			<button type='submit'>Add Product</button>
 			<div className={styles.imagesBox}>
-				{images.some(image => typeof image === 'string')
+				{images?.some(image => typeof image === 'string')
 					? images?.map((image, index) => {
 							return (
 								<div key={index}>

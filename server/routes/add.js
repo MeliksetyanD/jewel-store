@@ -1,7 +1,7 @@
 import { Router } from 'express'
+import fs from 'fs'
 import multer from 'multer'
 import path from 'path'
-import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid'
 import prodmodel from '../models/productmodel.js'
 const router = Router()
@@ -57,15 +57,14 @@ router.get('/', async (req, res) => {
 	}
 })
 
-
 router.post('/', upload.array('images', 3), async (req, res) => {
-	try {		  
-		const images = req.files.map(file => file.filename) 
+	try {
+		const images = req.files.map(file => file.filename)
 
 		const product = await prodmodel.create({
 			uid: uuidv4(),
 			name: req.body.name,
-			price: req.body.price, 
+			price: req.body.price,
 			description: req.body.description,
 			count: req.body.count,
 			sizes: req.body.sizes,
@@ -74,7 +73,7 @@ router.post('/', upload.array('images', 3), async (req, res) => {
 			material: req.body.material,
 			forSlide: req.body.forSlide,
 			categoryname: req.body.categoryname,
-			images: JSON.stringify(images)
+			images: JSON.stringify(images),
 		})
 
 		res.status(201).json({ message: 'Product added successfully', product })
@@ -88,10 +87,10 @@ router.delete('/:id', async (req, res) => {
 	try {
 		const path = '../server/uploads/'
 		const product = await prodmodel.findAll({ where: { uid: req.params.id } })
-        
-		const images = JSON.parse(product[0].images).map((imgpath)=>{
-             const fullPath = path + imgpath
-			 fs.unlinkSync(fullPath)
+
+		const images = JSON.parse(product[0].images).map(imgpath => {
+			const fullPath = path + imgpath
+			fs.unlinkSync(fullPath)
 		})
 
 		await product[0].destroy()
@@ -105,35 +104,38 @@ router.delete('/:id', async (req, res) => {
 
 router.put('/:id', upload.array('images', 3), async (req, res) => {
 	try {
-		const newImages = req.body.images
+		const bodyImages =
+			typeof req.body.images === 'string'
+				? [req.body.images]
+				: [...req.body.images]
+		const newImages = bodyImages.map(image => {
+			return image.slice(30, image.length)
+		})
+		console.log(newImages)
+
 		const path = '../server/uploads/'
 		const product = await prodmodel.findOne({ where: { uid: req.params.id } })
 		const oldImages = JSON.parse(product.images)
 		const images = req.files.map(file => newImages.push(file.filename))
-		
 
-		
-
-		for (let i = 0; i < images.length; i++) {
+		for (let i = 0; i < images.length - 1; i++) {
 			if (newImages[i] != oldImages[i]) {
 				const fullPath = path + oldImages[i]
 				fs.unlinkSync(fullPath)
 			}
 		}
 
-
-		product.name = req.body.name,
-		product.price = req.body.price,
-		product.description = req.body.description,
-		product.count = req.body.count,
-		product.sizes = req.body.sizes,
-		product.colorus = req.body.colorus,
-		product.weight = req.body.weight,
-		product.material = req.body.material,
-		product.categoryname = req.body.categoryname,
-		product.images = JSON.stringify(images),
-
-		await product.save()
+		;(product.name = req.body.name),
+			(product.price = req.body.price),
+			(product.description = req.body.description),
+			(product.count = req.body.count),
+			(product.sizes = req.body.sizes),
+			(product.colorus = req.body.colorus),
+			(product.weight = req.body.weight),
+			(product.material = req.body.material),
+			(product.categoryname = req.body.categoryname),
+			(product.images = JSON.stringify(images)),
+			await product.save()
 
 		res.status(200).json({ message: 'Изменено' })
 	} catch (e) {
