@@ -65,14 +65,4 @@ const product = sequelize.define('Product',
 export default product
 
 
-// {	
-// 	reviews: [
-// 	{
-// 	username:,
-// 	content:,
-// 	stars:,
-// 	date:,
-// 	}
-
-
 

@@ -1,13 +1,11 @@
 import { Router } from 'express'
 import multer from 'multer'
-import path, { dirname } from 'path'
-import { fileURLToPath } from 'url'
+import path from 'path'
+import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid'
 import prodmodel from '../models/productmodel.js'
 const router = Router()
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
 var storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		cb(null, 'uploads/')
@@ -27,12 +25,10 @@ router.get('/:id', async (req, res) => {
 			return res.status(404).json({ message: 'Product not found' })
 		}
 
-		// Формируем полный URL для каждого изображения
 		const images = JSON.parse(response.images).map(
 			image => `${req.protocol}://${req.get('host')}/uploads/${image}`
 		)
 
-		// Обновляем данные ответа
 		response.dataValues.images = images
 
 		res.status(200).json(response.dataValues)
@@ -60,58 +56,25 @@ router.get('/', async (req, res) => {
 		res.status(500).json({ message: 'Error, try again' })
 	}
 })
-// router.get('/', async (req, res) => {
-// 	try {
-// 		const products = await prodmodel.findAll()
-// 		const data = products.map(async prod => {
-// 			const images = JSON.parse(prod.dataValues.images)
-// 			prod.dataValues.images = images
-// 			console.log(prod.dataValues)
 
-// 			return prod.dataValues
-// 		})
-
-// 		const prods = await Promise.all(data)
-
-// 		res.status(200).json(prods)
-// 	} catch (e) {
-// 		console.log(e)
-// 		res.status(500).json({ message: 'error, try again' })
-// 	}
-// })
 
 router.post('/', upload.array('images', 3), async (req, res) => {
-	try {
-		const {
-			name,
-			price,
-			description,
-			count,
-			sizes,
-			colorus,
-			weight,
-			material,
-			forSlide,
-			categoryname,
-		} = req.body
-		const uid = req.body.uid || uuidv4()
-		// Массив для хранения имён файлов изображений
-		const images = req.files.map(file => file.filename) // Массив с именами файлов
+	try {		  
+		const images = req.files.map(file => file.filename) 
 
 		const product = await prodmodel.create({
-			uid,
-			name,
-			price,
-			description,
-			count,
-			sizes,
-			colorus,
-			weight,
-			material,
-			forSlide,
-
-			categoryname,
-			images: JSON.stringify(images), // Сохраняем массив в формате JSON
+			uid: uuidv4(),
+			name: req.body.name,
+			price: req.body.price, 
+			description: req.body.description,
+			count: req.body.count,
+			sizes: req.body.sizes,
+			colorus: req.body.colorus,
+			weight: req.body.weight,
+			material: req.body.material,
+			forSlide: req.body.forSlide,
+			categoryname: req.body.categoryname,
+			images: JSON.stringify(images)
 		})
 
 		res.status(201).json({ message: 'Product added successfully', product })
@@ -123,8 +86,14 @@ router.post('/', upload.array('images', 3), async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
 	try {
-		const uid = req.params.id
-		const product = await prodmodel.findAll({ where: { uid: uid } })
+		const path = '../server/uploads/'
+		const product = await prodmodel.findAll({ where: { uid: req.params.id } })
+        
+		const images = JSON.parse(product[0].images).map((imgpath)=>{
+             const fullPath = path + imgpath
+			 fs.unlinkSync(fullPath)
+		})
+
 		await product[0].destroy()
 
 		res.status(200).json({ message: 'Удалено' })
@@ -134,23 +103,33 @@ router.delete('/:id', async (req, res) => {
 	}
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', upload.array('images', 3), async (req, res) => {
 	try {
-		const product = await prodmodel.findOne({ where: { uid: req.params.id } })
-		const link = { links: [] }
-		link.links.push(req.body.images)
-		const data = JSON.stringify(link)
 
-		;(product.name = req.body.name),
-			(product.price = req.body.price),
-			(product.description = req.body.description),
-			(product.count = req.body.count),
-			(product.sizes = req.body.sizes),
-			(product.colorus = req.body.colorus),
-			(product.weight = req.body.weight),
-			(product.material = req.body.material),
-			(product.categoryname = req.body.categoryname),
-			(product.images = data)
+		const product = await prodmodel.findOne({ where: { uid: req.params.id } })
+		const oldImages = JSON.parse(product.images)
+		const images = req.files.map(file => file.filename) 
+
+		const path = '../server/uploads/'
+        
+		for (let i = 0; i < images.length; i++) {
+			if(images[i] != oldImages[i]){
+				const fullPath = path + oldImages[i]
+			     fs.unlinkSync(fullPath)
+			}
+		}
+
+		
+		    product.name = req.body.name
+			product.price = req.body.price
+			product.description = req.body.description
+			product.count = req.body.count
+			product.sizes = req.body.sizes
+			product.colorus = req.body.colorus
+			product.weight = req.body.weight
+			product.material = req.body.material
+			product.categoryname = req.body.categoryname
+			product.images = JSON.stringify(images)
 
 		await product.save()
 
