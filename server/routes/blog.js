@@ -101,8 +101,8 @@ router.put('/:id', async (req, res) => {
 	try {
 		const blog = await blogmodel.findOne({ where: { uid: req.params.id } })
 
-        blog.title = req.body.title,
-        blog.description =  req.body.description,
+        blog.title = req.body.title
+        blog.description =  req.body.description
     
 		await blog.save()
 
