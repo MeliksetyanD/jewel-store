@@ -22,7 +22,7 @@ const ProductsContent = () => {
 			</div>
 			<div className={styles.items}>
 				{products.map(product => {
-					return <AdminProduct key={product._id} product={product} />
+					return <AdminProduct key={product.uid} product={product} />
 				})}
 			</div>
 		</div>

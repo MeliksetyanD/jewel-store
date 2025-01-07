@@ -1,8 +1,14 @@
 import axios from 'axios'
-import React, { useState } from 'react'
-
+import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import { getProductById } from '../../../store/productsSlice'
+import styles from './CreateAndUpdatePage.module.css'
 const CreateAndUpdatePage = () => {
+	const { id } = useParams()
+	const dispatch = useDispatch()
 	const [forSlide, setForSlide] = useState(false)
+	const [productForChange, setProductForChange] = useState(null)
 	const [product, setProduct] = useState({
 		name: '',
 		price: '',
@@ -15,32 +21,50 @@ const CreateAndUpdatePage = () => {
 		categoryname: '',
 		forSlide: '',
 	})
-	const [images, setImages] = useState([null, null, null]) // Массив для хранения 3 изображений
+	const [images, setImages] = useState([null, null, null, null])
+	const handleForChangeValues = async id => {
+		try {
+			const response = await dispatch(getProductById(id))
 
-	// Обработчик изменения данных продукта
+			setProductForChange(response.payload)
+			setImages(response.payload.images)
+		} catch (error) {
+			console.log(error)
+		}
+	}
 
 	const handleInputChange = e => {
-		setProduct({
-			...product,
-			[e.target.name]: e.target.value,
+		setProduct(prev => {
+			return {
+				...productForChange,
+				[e.target.name]: e.target.value,
+
+				forSlide: forSlide,
+			}
 		})
 	}
 
-	// Обработчик изменения изображений
 	const handleImageChange = e => {
 		const files = e.target.files
 		const newImages = [...images]
+		console.log(files)
 
-		// Убедимся, что пользователь может выбрать только 3 изображения
-		if (files.length <= 3) {
-			for (let i = 0; i < files.length; i++) {
-				newImages[i] = files[i]
-			}
-		}
+		Array.from(files).forEach((file, index) => {
+			newImages.push(file)
+		})
+		// if (files.length <= 3) {
+		// 	for (let i = 0; i < files.length; i++) {
+		// 		newImages[i] = files[i]
+		// 	}
+		// }
+		console.log(newImages)
+		setProduct({
+			...productForChange,
+			images: newImages,
+		})
 		setImages(newImages)
 	}
 
-	// Обработчик отправки формы
 	const handleSubmit = async e => {
 		e.preventDefault()
 
@@ -56,97 +80,157 @@ const CreateAndUpdatePage = () => {
 		formData.append('categoryname', product.categoryname)
 		formData.append('forSlide', forSlide)
 
-		// Добавляем изображения в FormData
 		images.forEach((image, index) => {
 			if (image) {
-				formData.append(`images`, image) // Отправляем массив изображений
+				formData.append(`images`, image)
 			}
 		})
-		console.log(...formData)
+		// console.log(...formData)
 
+		if (product.name.length === 0) {
+			return
+		}
+		console.log(...formData)
 		try {
-			const response = await axios.post(
-				'http://localhost:4700/products',
-				formData,
-				{
-					headers: {
-						'Content-Type': 'multipart/form-data',
-					},
+			if (id) {
+				const response = await axios.put(
+					`http://localhost:4700/api/products/${id}`,
+					formData,
+					{
+						headers: {
+							'Content-Type': 'multipart/form-data',
+						},
+					}
+				)
+				console.log(response.data)
+			} else {
+				const response = await axios.post(
+					'http://localhost:4700/api/products',
+					formData,
+					{
+						headers: {
+							'Content-Type': 'multipart/form-data',
+						},
+					}
+				)
+				if (response.status === 201) {
+					console.log('Product added successfully:', response.data)
 				}
-			)
-			console.log('Product added successfully:', response.data)
+			}
 		} catch (error) {
 			console.error('Error adding product:', error)
 		}
 	}
+	const imgDeleteHandler = src => {
+		setProduct({
+			...productForChange,
+			images: productForChange.images.filter(image => image !== src),
+		})
+		setImages(prev => prev.filter(image => image !== src))
+	}
+
+	useEffect(() => {
+		if (id) {
+			handleForChangeValues(id)
+		}
+	}, [])
 
 	return (
 		<form onSubmit={handleSubmit}>
 			<input
 				type='text'
 				name='name'
-				placeholder='Product Name'
+				placeholder={productForChange ? productForChange.name : 'Name'}
 				onChange={handleInputChange}
 			/>
 			<input
 				type='number'
 				name='price'
-				placeholder='Price'
+				placeholder={productForChange ? productForChange.price : 'Price'}
 				onChange={handleInputChange}
 			/>
 			<input
 				type='text'
 				name='description'
-				placeholder='Description'
+				placeholder={
+					productForChange ? productForChange.description : 'Description'
+				}
 				onChange={handleInputChange}
 			/>
 			<input
 				type='number'
 				name='count'
-				placeholder='Count'
+				placeholder={productForChange ? productForChange.count : 'Count'}
 				onChange={handleInputChange}
 			/>
 			<input
 				type='text'
 				name='sizes'
-				placeholder='Sizes'
+				placeholder={productForChange ? productForChange.sizes : 'Sizes'}
 				onChange={handleInputChange}
 			/>
 			<input
 				type='text'
 				name='colorus'
-				placeholder='Colorus'
+				placeholder={productForChange ? productForChange.colorus : 'Colorus'}
 				onChange={handleInputChange}
 			/>
 			<input
 				type='number'
 				step='0.01'
 				name='weight'
-				placeholder='Weight'
+				placeholder={productForChange ? productForChange.weight : 'Weight'}
 				onChange={handleInputChange}
 			/>
 			<input
 				type='text'
 				name='material'
-				placeholder='Material'
+				placeholder={productForChange ? productForChange.material : 'Material'}
 				onChange={handleInputChange}
 			/>
 			<input
 				type='text'
 				name='categoryname'
-				placeholder='Category Name'
+				placeholder={
+					productForChange ? productForChange.categoryname : 'Categoryname'
+				}
 				onChange={handleInputChange}
 			/>
-			<input
-				type='checkbox'
-				name='forSlide'
-				placeholder='For Slide'
-				onChange={() => setForSlide(prev => !prev)}
-			/>
-			{/* Поля для загрузки 3 изображений */}
+			<div>
+				<label htmlFor='forSlide'>For Slide</label>
+				<input
+					type='checkbox'
+					name='forSlide'
+					checked={productForChange ? forSlide : productForChange?.forSlide}
+					onChange={() => setForSlide(prev => !prev)}
+				/>
+			</div>
 			<input type='file' name='images' multiple onChange={handleImageChange} />
 
 			<button type='submit'>Add Product</button>
+			<div className={styles.imagesBox}>
+				{images?.map((image, index) => {
+					console.log(typeof image)
+
+					return (
+						<div key={index}>
+							<img
+								className={styles.image}
+								key={index}
+								src={
+									typeof image === 'string'
+										? image
+										: URL.createObjectURL(
+												new Blob([image], { type: 'application/zip' })
+										  )
+								}
+								alt={`Image ${index}`}
+							/>
+							<button onClick={() => imgDeleteHandler(image)}>X</button>
+						</div>
+					)
+				})}
+			</div>
 		</form>
 	)
 }
