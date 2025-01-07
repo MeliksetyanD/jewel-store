@@ -21,9 +21,10 @@ const CreateAndUpdatePage = () => {
 		categoryname: '',
 		forSlide: '',
 	})
-	const [images, setImages] = useState([null, null, null, null])
+	const [images, setImages] = useState([null, null, null])
 	const handleForChangeValues = async id => {
 		try {
+			if (!id) return
 			const response = await dispatch(getProductById(id))
 
 			setProductForChange(response.payload)
@@ -36,13 +37,14 @@ const CreateAndUpdatePage = () => {
 	const handleInputChange = e => {
 		setProduct(prev => {
 			return {
+				...prev,
 				...productForChange,
 				[e.target.name]: e.target.value,
-
 				forSlide: forSlide,
 			}
 		})
 	}
+	console.log(product)
 
 	const handleImageChange = e => {
 		const files = e.target.files
@@ -57,10 +59,14 @@ const CreateAndUpdatePage = () => {
 		// 		newImages[i] = files[i]
 		// 	}
 		// }
-		console.log(newImages)
-		setProduct({
-			...productForChange,
-			images: newImages,
+		console.log(product)
+
+		setProduct(prev => {
+			return {
+				...prev,
+				...productForChange,
+				images: newImages,
+			}
 		})
 		setImages(newImages)
 	}
@@ -87,14 +93,15 @@ const CreateAndUpdatePage = () => {
 		})
 		// console.log(...formData)
 
+		console.log(...formData)
+
 		if (product.name.length === 0) {
 			return
 		}
-		console.log(...formData)
 		try {
 			if (id) {
 				const response = await axios.put(
-					`http://localhost:4700/api/products/${id}`,
+					`http://localhost:4700/products/${id}`,
 					formData,
 					{
 						headers: {
@@ -105,7 +112,7 @@ const CreateAndUpdatePage = () => {
 				console.log(response.data)
 			} else {
 				const response = await axios.post(
-					'http://localhost:4700/api/products',
+					'http://localhost:4700/products',
 					formData,
 					{
 						headers: {
@@ -209,27 +216,27 @@ const CreateAndUpdatePage = () => {
 
 			<button type='submit'>Add Product</button>
 			<div className={styles.imagesBox}>
-				{images?.map((image, index) => {
-					console.log(typeof image)
-
-					return (
-						<div key={index}>
-							<img
-								className={styles.image}
-								key={index}
-								src={
-									typeof image === 'string'
-										? image
-										: URL.createObjectURL(
-												new Blob([image], { type: 'application/zip' })
-										  )
-								}
-								alt={`Image ${index}`}
-							/>
-							<button onClick={() => imgDeleteHandler(image)}>X</button>
-						</div>
-					)
-				})}
+				{images.some(image => typeof image === 'string')
+					? images?.map((image, index) => {
+							return (
+								<div key={index}>
+									<img
+										className={styles.image}
+										key={index}
+										src={
+											typeof image === 'string'
+												? image
+												: URL.createObjectURL(
+														new Blob([image], { type: 'application/zip' })
+												  )
+										}
+										alt={`Image ${index}`}
+									/>
+									<button onClick={() => imgDeleteHandler(image)}>X</button>
+								</div>
+							)
+					  })
+					: ''}
 			</div>
 		</form>
 	)
