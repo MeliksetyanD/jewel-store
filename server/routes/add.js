@@ -103,19 +103,33 @@ router.delete('/:id', async (req, res) => {
 	}
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', upload.array('images', 3), async (req, res) => {
 	try {
-		const product = await prodmodel.findOne({ where: { uid: req.params.id } })
 
-		    product.name = req.body.name,
-			product.price = req.body.price,
-			product.description = req.body.description,
-			product.count = req.body.count,
-			product.sizes = req.body.sizes,
-			product.colorus = req.body.colorus,
-			product.weight = req.body.weight,
-			product.material = req.body.material,
-			product.categoryname = req.body.categoryname,
+		const product = await prodmodel.findOne({ where: { uid: req.params.id } })
+		const oldImages = JSON.parse(product.images)
+		const images = req.files.map(file => file.filename) 
+
+		const path = '../server/uploads/'
+        
+		for (let i = 0; i < images.length; i++) {
+			if(images[i] != oldImages[i]){
+				const fullPath = path + oldImages[i]
+			     fs.unlinkSync(fullPath)
+			}
+		}
+
+		
+		    product.name = req.body.name
+			product.price = req.body.price
+			product.description = req.body.description
+			product.count = req.body.count
+			product.sizes = req.body.sizes
+			product.colorus = req.body.colorus
+			product.weight = req.body.weight
+			product.material = req.body.material
+			product.categoryname = req.body.categoryname
+			product.images = JSON.stringify(images)
 
 		await product.save()
 
