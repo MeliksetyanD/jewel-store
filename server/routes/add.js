@@ -128,18 +128,19 @@ router.put('/:id', upload.array('images', 3), async (req, res) => {
 		});
 
 
-		product.name = req.body.name
-		product.price = req.body.price
-		product.description = req.body.description
-		product.count = req.body.count
-		product.sizes = req.body.sizes
-		product.colorus = req.body.colorus
-		product.weight = req.body.weight
-		product.material = req.body.material
-		product.categoryname = req.body.categoryname
-		product.forSlide = req.body.forSlide
-		product.images = JSON.stringify(newImages)
-		await product.save()
+		    product.name = req.body.name
+			product.price = req.body.price
+			product.description = req.body.description
+			product.count = req.body.count
+			product.sizes = req.body.sizes
+			product.colorus = req.body.colorus
+			product.weight = req.body.weight
+			product.material = req.body.material
+			product.categoryname = req.body.categoryname
+			product.forSlide = req.body.forSlide
+			product.images = JSON.stringify(newImages)
+			await product.save()
+
 
 		res.status(200).json({ message: 'Изменено' })
 	} catch (e) {
