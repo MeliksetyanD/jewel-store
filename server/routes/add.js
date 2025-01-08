@@ -104,22 +104,28 @@ router.delete('/:id', async (req, res) => {
 
 router.put('/:id', upload.array('images', 3), async (req, res) => {
 	try {
-		const bodyImages =
-			typeof req.body.images === 'string'
-				? [req.body.images]
-				: [...req.body.images]
-		const newImages = bodyImages.map(image => {
-			return image.slice(30, image.length)
-		})
-		console.log(newImages)
+
+		const product = await prodmodel.findOne({ where: { uid: req.params.id } })
+		
+		if (req.body.images) {
+			const bodyImages =
+				typeof req.body.images === 'string'
+					? [req.body.images]
+					: [...req.body.images]
+			const newImages = bodyImages.map(image => {
+				return image.slice(30, image.length)
+			})
+			product.images = JSON.stringify(newImages)
+		}
+		
+		console.log(req.body.deletedImg)
+
+		const deletedImg = req.body.deletedImg
 
 		const path = '../server/uploads/'
-		const product = await prodmodel.findOne({ where: { uid: req.params.id } })
-		const oldImages = JSON.parse(product.images)
+		
 		const images = req.files.map(file => newImages.push(file.filename))
 
-		console.log(newImages, 'new')
-		console.log(oldImages, 'old')
 
 		deletedImg.forEach(element => {
 			const fullPath = path + element
@@ -138,7 +144,7 @@ router.put('/:id', upload.array('images', 3), async (req, res) => {
 			product.material = req.body.material
 			product.categoryname = req.body.categoryname
 			product.forSlide = req.body.forSlide
-			product.images = JSON.stringify(newImages)
+			
 			await product.save()
 
 
