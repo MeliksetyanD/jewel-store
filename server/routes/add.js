@@ -121,8 +121,7 @@ router.put('/:id', upload.array('images', 3), async (req, res) => {
 		console.log(newImages, 'new')
 		console.log(oldImages, 'old')
 
-
-		for (let i = 0; i < newImages.length-1; i++) {
+		for (let i = 0; i < newImages.length - 1; i++) {
 			if (newImages[i] != oldImages[i]) {
 				const fullPath = path + oldImages[i]
 				fs.unlinkSync(fullPath)
@@ -130,31 +129,18 @@ router.put('/:id', upload.array('images', 3), async (req, res) => {
 			}
 		}
 
-<<<<<<< HEAD
-		;(product.name = req.body.name),
-			(product.price = req.body.price),
-			(product.description = req.body.description),
-			(product.count = req.body.count),
-			(product.sizes = req.body.sizes),
-			(product.colorus = req.body.colorus),
-			(product.weight = req.body.weight),
-			(product.material = req.body.material),
-			(product.categoryname = req.body.categoryname),
-			(product.images = JSON.stringify(newImages)),
-=======
-		    product.name = req.body.name
-			product.price = req.body.price
-			product.description = req.body.description
-			product.count = req.body.count
-			product.sizes = req.body.sizes
-			product.colorus = req.body.colorus
-			product.weight = req.body.weight
-			product.material = req.body.material
-			product.categoryname = req.body.categoryname
-			product.forSlide = req.body.forSlide
-			product.images = JSON.stringify(newImages)
->>>>>>> 689c8b7c0c352f00c0fe922ecc5e1edd9d7b4ac5
-			await product.save()
+		product.price = req.body.price
+		product.description = req.body.description
+		product.count = req.body.count
+		product.sizes = req.body.sizes
+		product.colorus = req.body.colorus
+		product.weight = req.body.weight
+		product.material = req.body.material
+		product.categoryname = req.body.categoryname
+		product.forSlide = req.body.forSlide
+		product.images = JSON.stringify(newImages)
+
+		await product.save()
 
 		res.status(200).json({ message: 'Изменено' })
 	} catch (e) {
