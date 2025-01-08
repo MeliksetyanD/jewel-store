@@ -106,36 +106,50 @@ router.put('/:id', upload.array('images', 3), async (req, res) => {
 	try {
 
 		const product = await prodmodel.findOne({ where: { uid: req.params.id } })
-		
-		if (req.body.images) {
+		const path = '../server/uploads/'
+
+
+		if (req.body.deletedImg && typeof req.body.deletedImg == 'string') {
+			try {
+				const name = req.body.deletedImg.slice(29)
+				const fullPath = path + name
+				fs.unlinkSync(fullPath)
+				console.log('deleted', name)
+			} catch (error) {
+				console.log('no such')
+				const namee = req.body.deletedImg.slice(29)
+				const images = JSON.parse(product.images)
+				const newImages = images.filter((name) => name == namee)
+				product.images = JSON.stringify(newImages)
+			}
+		}
+		if (req.body.deletedImg == Array) {
+			req.body.deletedImg.forEach(element => {
+				const name = element.slice(29)
+				const fullPath = path + name
+				fs.unlinkSync(fullPath)
+				console.log('deleted', element)
+			});
+		}
+		let newImages = []
+		if(req.body.images){
+			console.log(req.body.images)
 			const bodyImages =
 				typeof req.body.images === 'string'
 					? [req.body.images]
 					: [...req.body.images]
-			const newImages = bodyImages.map(image => {
+
+			newImages = bodyImages.map(image => {
 				return image.slice(30, image.length)
 			})
+		}
+
+		
+			const images = req.files.map(file => newImages.push(file.filename))
+			console.log(newImages)
 			product.images = JSON.stringify(newImages)
-		}
-		
-		console.log(req.body.deletedImg)
 
-		const deletedImg = req.body.deletedImg
-
-		const path = '../server/uploads/'
-		
-		const images = req.files.map(file => newImages.push(file.filename))
-
-
-<<<<<<< HEAD
-		for (let i = 0; i < newImages.length - 1; i++) {
-			if (newImages[i] != oldImages[i]) {
-				const fullPath = path + oldImages[i]
-				fs.unlinkSync(fullPath)
-				console.log('deleted')
-			}
-		}
-
+		product.name = req.body.name
 		product.price = req.body.price
 		product.description = req.body.description
 		product.count = req.body.count
@@ -145,31 +159,8 @@ router.put('/:id', upload.array('images', 3), async (req, res) => {
 		product.material = req.body.material
 		product.categoryname = req.body.categoryname
 		product.forSlide = req.body.forSlide
-		product.images = JSON.stringify(newImages)
 
 		await product.save()
-=======
-		deletedImg.forEach(element => {
-			const fullPath = path + element
-			fs.unlinkSync(fullPath)
-			console.log('deleted', element)
-		});
-
-
-		    product.name = req.body.name
-			product.price = req.body.price
-			product.description = req.body.description
-			product.count = req.body.count
-			product.sizes = req.body.sizes
-			product.colorus = req.body.colorus
-			product.weight = req.body.weight
-			product.material = req.body.material
-			product.categoryname = req.body.categoryname
-			product.forSlide = req.body.forSlide
-			
-			await product.save()
->>>>>>> 9c0b7b4c6ede775d56ab6adf6249a8a96d75f28f
-
 
 		res.status(200).json({ message: 'Изменено' })
 	} catch (e) {
