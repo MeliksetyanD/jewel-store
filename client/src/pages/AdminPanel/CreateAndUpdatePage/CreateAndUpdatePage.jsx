@@ -9,6 +9,7 @@ const CreateAndUpdatePage = () => {
 	const { id } = useParams()
 	const dispatch = useDispatch()
 	const [forSlide, setForSlide] = useState(false)
+	const [deletedImages, setDeletedImages] = useState([])
 	const [productForChange, setProductForChange] = useState(null)
 	const [product, setProduct] = useState({
 		name: '',
@@ -62,10 +63,10 @@ const CreateAndUpdatePage = () => {
 				images: newImages,
 			}
 		})
+		console.log(newImages)
 
 		setImages(newImages)
 	}
-	console.log(product)
 
 	const handleSubmit = async e => {
 		e.preventDefault()
@@ -85,6 +86,13 @@ const CreateAndUpdatePage = () => {
 		images.forEach((image, index) => {
 			if (image) {
 				formData.append(`images`, image)
+			}
+		})
+		console.log(deletedImages)
+
+		deletedImages.forEach((image, index) => {
+			if (image) {
+				formData.append(`deletedImg`, image)
 			}
 		})
 		// console.log(...formData)
@@ -132,17 +140,17 @@ const CreateAndUpdatePage = () => {
 		}
 	}
 	const imgDeleteHandler = src => {
-		console.log(productForChange)
-		const newImg = productForChange.images.filter(image => image !== src)
-
-		const deletedImg = [...productForChange.deletedImg, src]
-		setProduct({
-			...productForChange,
-			images: newImg,
-			deletedImg: deletedImg,
+		if (typeof src == 'string') {
+			setDeletedImages(prev => [...prev, src])
+		}
+		setProduct(prev => {
+			return {
+				...productForChange,
+			}
 		})
 		setImages(prev => prev.filter(image => image !== src))
 	}
+
 	useEffect(() => {
 		if (id) {
 			handleForChangeValues(id)
@@ -251,6 +259,7 @@ const CreateAndUpdatePage = () => {
 								alt={`Image ${index}`}
 							/>
 							<button
+								type='button'
 								onClick={() => imgDeleteHandler(image)}
 								className={styles.deleteImg}
 							>
