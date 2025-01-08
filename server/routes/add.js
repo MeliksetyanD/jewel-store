@@ -139,6 +139,7 @@ router.put('/:id', upload.array('images', 3), async (req, res) => {
 			product.weight = req.body.weight
 			product.material = req.body.material
 			product.categoryname = req.body.categoryname
+			product.forSlide = req.body.forSlide
 			product.images = JSON.stringify(newImages)
 			await product.save()
 
