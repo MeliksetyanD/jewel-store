@@ -9,22 +9,21 @@ const links = ['blog', 'products']
 const AdminPanel = () => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
-	useEffect(() => {
-		if (!localStorage.getItem('isAuth')) navigate('/')
-	}, [])
+
 	function signOut() {
 		localStorage.removeItem('isAuth')
 		navigate('/')
 	}
 
 	useEffect(() => {
+		if (!localStorage.getItem('isAuth')) navigate('/admin')
 		dispatch(getProductsAdmin())
 	}, [])
 	return (
 		<div className={styles.AdminPanel}>
 			<div className={styles.container}>
 				<div className={styles.sidebar}>
-					<h1>Admin Panel</h1>
+					<Link to={'/admin/home'}>Admin Panel</Link>
 					<div className={styles.sidebarContent}>
 						<ul>
 							{links.map((link, index) => (
@@ -33,7 +32,15 @@ const AdminPanel = () => {
 								</li>
 							))}
 						</ul>
-						<button onClick={signOut}>Sign out</button>
+						<button className={styles.button} onClick={signOut}>
+							Sign out
+						</button>
+					</div>
+					<div className={styles.logo}>
+						Go to{' '}
+						<Link to={'/'} onClick={signOut}>
+							MOAH
+						</Link>
 					</div>
 				</div>
 				<div className={styles.content}>

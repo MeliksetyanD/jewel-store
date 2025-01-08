@@ -125,7 +125,7 @@ router.put('/:id', upload.array('images', 3), async (req, res) => {
 			}
 		}
 
-		;   (product.name = req.body.name),
+		;(product.name = req.body.name),
 			(product.price = req.body.price),
 			(product.description = req.body.description),
 			(product.count = req.body.count),

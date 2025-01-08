@@ -19,12 +19,12 @@
 .button {
 	text-decoration: none;
 	font-size: 14px;
-	padding: 15px;
-	border: none;
-	background-color: var(--dark-gray);
+	padding: 15px !important;
+	border: none !important;
+	background-color: var(--dark-gray) !important;
 	color: white;
-	margin: 10px;
-	border-radius: 10px;
+	margin: 10px !important;
+	border-radius: 10px !important;
 	cursor: pointer;
 	transition: all 0.3s ease-in-out;
 }
@@ -34,7 +34,7 @@
 	background-color: var(--light-gray);
 }
 .update {
-	color: yellow;
+	color: yellow !important;
 }
 .delete {
 	color: red;

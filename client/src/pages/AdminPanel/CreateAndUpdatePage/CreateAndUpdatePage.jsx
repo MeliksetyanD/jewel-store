@@ -1,10 +1,11 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { getProductById } from '../../../store/productsSlice'
 import styles from './CreateAndUpdatePage.module.css'
 const CreateAndUpdatePage = () => {
+	const navigate = useNavigate()
 	const { id } = useParams()
 	const dispatch = useDispatch()
 	const [forSlide, setForSlide] = useState(false)
@@ -21,45 +22,38 @@ const CreateAndUpdatePage = () => {
 		categoryname: '',
 		forSlide: '',
 	})
-	const [images, setImages] = useState([null, null, null])
+
+	const [images, setImages] = useState([])
 	const handleForChangeValues = async id => {
 		try {
 			if (!id) return
 			const response = await dispatch(getProductById(id))
 
-			setProductForChange(response.payload)
+			setProductForChange({ ...response.payload, deletedImg: [] })
 			setImages(response.payload.images)
+			setForSlide(response.payload.forSlide)
 		} catch (error) {
 			console.log(error)
 		}
 	}
-
 	const handleInputChange = e => {
 		setProduct(prev => {
 			return {
 				...prev,
 				...productForChange,
 				[e.target.name]: e.target.value,
-				forSlide: forSlide,
+				forSlide: !forSlide,
 			}
 		})
+		if (e.target.name === 'forSlide') setForSlide(prev => !prev)
 	}
-	console.log(product)
-
 	const handleImageChange = e => {
 		const files = e.target.files
 		const newImages = [...images]
-		console.log(files)
 
 		Array.from(files).forEach((file, index) => {
 			newImages.push(file)
 		})
-		// if (files.length <= 3) {
-		// 	for (let i = 0; i < files.length; i++) {
-		// 		newImages[i] = files[i]
-		// 	}
-		// }
-		console.log(product)
 
 		setProduct(prev => {
 			return {
@@ -68,8 +62,10 @@ const CreateAndUpdatePage = () => {
 				images: newImages,
 			}
 		})
+
 		setImages(newImages)
 	}
+	console.log(product)
 
 	const handleSubmit = async e => {
 		e.preventDefault()
@@ -109,6 +105,12 @@ const CreateAndUpdatePage = () => {
 						},
 					}
 				)
+				console.log(response.status)
+
+				if (response.status === 200) {
+					navigate('/admin/home/products')
+					console.log('Product added successfully:', response.data)
+				}
 				console.log(response.data)
 			} else {
 				const response = await axios.post(
@@ -121,6 +123,7 @@ const CreateAndUpdatePage = () => {
 					}
 				)
 				if (response.status === 201) {
+					navigate('/admin/home/products')
 					console.log('Product added successfully:', response.data)
 				}
 			}
@@ -129,21 +132,24 @@ const CreateAndUpdatePage = () => {
 		}
 	}
 	const imgDeleteHandler = src => {
+		console.log(productForChange)
+		const newImg = productForChange.images.filter(image => image !== src)
+
+		const deletedImg = [...productForChange.deletedImg, src]
 		setProduct({
 			...productForChange,
-			images: productForChange.images.filter(image => image !== src),
+			images: newImg,
+			deletedImg: deletedImg,
 		})
 		setImages(prev => prev.filter(image => image !== src))
 	}
-
 	useEffect(() => {
 		if (id) {
 			handleForChangeValues(id)
 		}
 	}, [])
-
 	return (
-		<form onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit} className={styles.form}>
 			<input
 				type='text'
 				name='name'
@@ -203,40 +209,56 @@ const CreateAndUpdatePage = () => {
 				}
 				onChange={handleInputChange}
 			/>
-			<div>
+			<div className={styles.forSlide}>
 				<label htmlFor='forSlide'>For Slide</label>
 				<input
 					type='checkbox'
 					name='forSlide'
-					checked={productForChange ? forSlide : productForChange?.forSlide}
-					onChange={() => setForSlide(prev => !prev)}
+					checked={forSlide}
+					onChange={handleInputChange}
 				/>
 			</div>
-			<input type='file' name='images' multiple onChange={handleImageChange} />
+			<input
+				type='file'
+				className={styles.file}
+				name='images'
+				multiple
+				onChange={handleImageChange}
+			/>
 
-			<button type='submit'>Add Product</button>
+			<button
+				type='submit'
+				className={`${styles.buttonAdd} ${
+					product.name.length === 0 && styles.stop
+				}`}
+			>
+				Add Product
+			</button>
 			<div className={styles.imagesBox}>
-				{images?.some(image => typeof image === 'string')
-					? images?.map((image, index) => {
-							return (
-								<div key={index}>
-									<img
-										className={styles.image}
-										key={index}
-										src={
-											typeof image === 'string'
-												? image
-												: URL.createObjectURL(
-														new Blob([image], { type: 'application/zip' })
-												  )
-										}
-										alt={`Image ${index}`}
-									/>
-									<button onClick={() => imgDeleteHandler(image)}>X</button>
-								</div>
-							)
-					  })
-					: ''}
+				{images?.map((image, index) => {
+					return (
+						<div key={index} className={styles.imageBoxWrapper}>
+							<img
+								className={styles.image}
+								key={index}
+								src={
+									typeof image === 'string'
+										? image
+										: URL.createObjectURL(
+												new Blob([image], { type: 'application/zip' })
+										  )
+								}
+								alt={`Image ${index}`}
+							/>
+							<button
+								onClick={() => imgDeleteHandler(image)}
+								className={styles.deleteImg}
+							>
+								X
+							</button>
+						</div>
+					)
+				})}
 			</div>
 		</form>
 	)

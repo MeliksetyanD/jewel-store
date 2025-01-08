@@ -42,7 +42,7 @@ function CustomSlide(props) {
 			<div className={styles.sliderContent}>
 				<h1>{item.name}</h1>
 				<h2>{item.price} AMD</h2>
-				<Link to={`/product/${item._id}`}>Տեսնել</Link>
+				<Link to={`/product/${item.uid}`}>Տեսնել</Link>
 			</div>
 		</div>
 	)
