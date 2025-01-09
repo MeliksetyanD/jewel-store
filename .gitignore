@@ -1,9 +1,8 @@
 node_modules
 
 uploads
-server
 
-utils
+server
 
 
 .env
