@@ -24,7 +24,7 @@ export const getBlogsAdmin = createAsyncThunk('admin/getBlogs', async () => {
 export const getBlogByIdAdmin = createAsyncThunk(
 	'admin/getBlogByIdAdmin',
 	async id => {
-		const response = await fetch(`http://localhost:4700/blog/get/${id}`)
+		const response = await fetch(`http://localhost:4700/blog/${id}`)
 		const data = await response.json()
 
 		return data
@@ -33,7 +33,7 @@ export const getBlogByIdAdmin = createAsyncThunk(
 export const deleteBlogAdmin = createAsyncThunk(
 	'admin/deleteBlogAdmin',
 	async id => {
-		const response = await fetch(`http://localhost:4700/blogs/${id}`, {
+		const response = await fetch(`http://localhost:4700/blog/${id}`, {
 			method: 'DELETE',
 		})
 		const data = await response.json()

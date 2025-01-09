@@ -7,7 +7,6 @@ import { deleteImages } from '../utils/utilsfunctions.js'
 
 const router = Router()
 
-
 var storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		cb(null, 'uploads/')
@@ -62,16 +61,16 @@ router.get('/', async (req, res) => {
 router.post('/', upload.array('images', 3), async (req, res) => {
 	try {
 		let images = []
-		if(req.files){
+		if (req.files) {
 			images = req.files.map(file => file.filename)
 		}
 		const blog = await blogmodel.create({
 			uid: uuidv4(),
 			title: req.body.title,
-			subTitle:req.body.subTitle,
+			subTitle: req.body.subTitle,
 			descriptionShort: req.body.descriptionShort,
 			descriptionFull: req.body.descriptionFull,
-			images: JSON.stringify(images)
+			images: JSON.stringify(images),
 		})
 
 		res.status(201).json({ message: 'Blog added successfully', blog })
@@ -85,13 +84,15 @@ router.delete('/:id', async (req, res) => {
 	try {
 		const blog = await blogmodel.findAll({ where: { uid: req.params.id } })
 
-		await Promise.all(JSON.parse(product[0].images).map(async (name) => {
-					try {
-						await deleteImages(name)
-					} catch (error) {
-						console.log('no such')
-					}
-				}))
+		await Promise.all(
+			JSON.parse(blog[0].images).map(async name => {
+				try {
+					await deleteImages(name)
+				} catch (error) {
+					console.log('no such')
+				}
+			})
+		)
 
 		await blog[0].destroy()
 
@@ -107,17 +108,17 @@ router.put('/:id', async (req, res) => {
 		const blog = await blogmodel.findOne({ where: { uid: req.params.id } })
 
 		if (!blog) {
-			return res.status(404).json({ message: 'Product not found' });
+			return res.status(404).json({ message: 'Product not found' })
 		}
 		if (req.body.deletedImg && typeof req.body.deletedImg == 'string') {
 			const name = req.body.deletedImg.slice(29)
 			await deleteImages(name)
 		}
 		if (Array.isArray(req.body.deletedImg)) {
-			req.body.deletedImg.forEach(async (element) => {
+			req.body.deletedImg.forEach(async element => {
 				const name = element.slice(29)
 				await deleteImages(name)
-			});
+			})
 		}
 		let newImages = []
 		if (req.body.images) {
@@ -143,7 +144,6 @@ router.put('/:id', async (req, res) => {
 		await blog.save()
 
 		res.status(200).json({ message: 'Изменено' })
-
 
 		res.status(200).json({ message: 'Изменено' })
 	} catch (e) {

@@ -99,7 +99,7 @@ const router = createBrowserRouter([
 								element: <BlogAdminEditPage />,
 							},
 							{
-								path: 'update',
+								path: 'update/:id',
 								element: <BlogAdminEditPage />,
 							},
 						],

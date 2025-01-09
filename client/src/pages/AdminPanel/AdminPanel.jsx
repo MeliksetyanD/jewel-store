@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 
 import { useDispatch } from 'react-redux'
-import { getProductsAdmin } from '../../store/adminSlice'
+import { getBlogsAdmin, getProductsAdmin } from '../../store/adminSlice'
 import styles from './AdminPanel.module.css'
 
 const links = ['blog', 'products']
@@ -18,6 +18,7 @@ const AdminPanel = () => {
 	useEffect(() => {
 		if (!localStorage.getItem('isAuth')) navigate('/admin')
 		dispatch(getProductsAdmin())
+		dispatch(getBlogsAdmin())
 	}, [])
 	return (
 		<div className={styles.AdminPanel}>

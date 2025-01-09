@@ -1,3 +1,4 @@
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -12,7 +13,7 @@ const BlogAdminEditPage = () => {
 	const [productForChange, setProductForChange] = useState(null)
 	const [product, setProduct] = useState({
 		title: '',
-		subtitle: '',
+		subTitle: '',
 		descriptionShort: '',
 		descriptionFull: '',
 		images: [],
@@ -29,6 +30,8 @@ const BlogAdminEditPage = () => {
 		}
 	}
 	const handleInputChange = e => {
+		console.log(e.target.value)
+
 		setProduct(prev => {
 			return {
 				...prev,
@@ -37,6 +40,7 @@ const BlogAdminEditPage = () => {
 			}
 		})
 	}
+
 	const handleImageChange = e => {
 		const files = e.target.files
 		const newImages = [...images]
@@ -59,9 +63,9 @@ const BlogAdminEditPage = () => {
 		e.preventDefault()
 		const formData = new FormData()
 		formData.append('title', product.title)
-		formData.append('subtitle', product.subtitle)
-		formData.append('descriptionShort', product.description)
-		formData.append('descriptionFull', product.description)
+		formData.append('subTitle', product.subTitle)
+		formData.append('descriptionShort', product.descriptionFull)
+		formData.append('descriptionFull', product.descriptionShort)
 		images.forEach((image, index) => {
 			if (image) {
 				formData.append(`images`, image)
@@ -72,46 +76,47 @@ const BlogAdminEditPage = () => {
 				formData.append(`deletedImg`, image)
 			}
 		})
+		console.log(...formData)
 
 		if (product.title.length === 0) {
 			return
 		}
-		// try {
-		// 	if (id) {
-		// 		const response = await axios.put(
-		// 			`http://localhost:4700/products/${id}`,
-		// 			formData,
-		// 			{
-		// 				headers: {
-		// 					'Content-Type': 'multipart/form-data',
-		// 				},
-		// 			}
-		// 		)
-		// 		console.log(response.status)
+		try {
+			if (id) {
+				const response = await axios.put(
+					`http://localhost:4700/blog/${id}`,
+					formData,
+					{
+						headers: {
+							'Content-Type': 'multipart/form-data',
+						},
+					}
+				)
+				console.log(response.status)
 
-		// 		if (response.status === 200) {
-		// 			navigate('/admin/home/products')
-		// 			console.log('Product added successfully:', response.data)
-		// 		}
-		// 		console.log(response.data)
-		// 	} else {
-		// 		const response = await axios.post(
-		// 			'http://localhost:4700/products',
-		// 			formData,
-		// 			{
-		// 				headers: {
-		// 					'Content-Type': 'multipart/form-data',
-		// 				},
-		// 			}
-		// 		)
-		// 		if (response.status === 201) {
-		// 			navigate('/admin/home/products')
-		// 			console.log('Product added successfully:', response.data)
-		// 		}
-		// 	}
-		// } catch (error) {
-		// 	console.error('Error adding product:', error)
-		// }
+				// if (response.status === 200) {
+				// 	navigate('/admin/home/products')
+				// 	console.log('Product added successfully:', response.data)
+				// }
+				console.log(response.data)
+			} else {
+				const response = await axios.post(
+					'http://localhost:4700/blog',
+					formData,
+					{
+						headers: {
+							'Content-Type': 'multipart/form-data',
+						},
+					}
+				)
+				// if (response.status === 201) {
+				// 	navigate('/admin/home/products')
+				// 	console.log('Product added successfully:', response.data)
+				// }
+			}
+		} catch (error) {
+			console.error('Error adding product:', error)
+		}
 	}
 	const imgDeleteHandler = src => {
 		if (typeof src == 'string') {
@@ -134,8 +139,8 @@ const BlogAdminEditPage = () => {
 		<form onSubmit={handleSubmit} className={styles.form}>
 			<input
 				type='text'
-				name='subtitle'
-				placeholder={productForChange ? productForChange.subtitle : 'subtitle'}
+				name='subTitle'
+				placeholder={productForChange ? productForChange.subTitle : 'subTitle'}
 				onChange={handleInputChange}
 			/>
 			<input
@@ -177,7 +182,7 @@ const BlogAdminEditPage = () => {
 			<button
 				type='submit'
 				className={`${styles.buttonAdd} ${
-					product.title.length === 0 && styles.stop
+					product.title?.length === 0 && styles.stop
 				}`}
 			>
 				Add Blog
