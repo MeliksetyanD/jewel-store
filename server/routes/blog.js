@@ -84,7 +84,6 @@ router.delete('/:id', async (req, res) => {
 	try {
 		const blog = await blogmodel.findAll({ where: { uid: req.params.id } })
 
-<<<<<<< HEAD
 		await Promise.all(JSON.parse(blog[0].images).map(async (name) => {
 					try {
 						await deleteImages(name)
@@ -92,17 +91,6 @@ router.delete('/:id', async (req, res) => {
 						console.log('no such')
 					}
 				}))
-=======
-		await Promise.all(
-			JSON.parse(blog[0].images).map(async name => {
-				try {
-					await deleteImages(name)
-				} catch (error) {
-					console.log('no such')
-				}
-			})
-		)
->>>>>>> d312e8f77e98f04b230aa8f74b86c4b8832c96bf
 
 		await blog[0].destroy()
 
@@ -113,12 +101,12 @@ router.delete('/:id', async (req, res) => {
 	}
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', upload.array('images', 3), async (req, res) => {
 	try {
 		const blog = await blogmodel.findOne({ where: { uid: req.params.id } })
 
 		if (!blog) {
-			return res.status(404).json({ message: 'Product not found' })
+			return res.status(404).json({ message: 'Blog not found' })
 		}
 		if (req.body.deletedImg && typeof req.body.deletedImg == 'string') {
 			const name = req.body.deletedImg.slice(29)
@@ -142,8 +130,10 @@ router.put('/:id', async (req, res) => {
 			})
 		}
 
+
+		
 		await Promise.all(req.files.map(file => newImages.push(file.filename)))
-		console.log(newImages)
+
 		blog.images = JSON.stringify(newImages)
 
 		blog.title = req.body.title
@@ -155,7 +145,6 @@ router.put('/:id', async (req, res) => {
 
 		res.status(200).json({ message: 'Изменено' })
 
-		res.status(200).json({ message: 'Изменено' })
 	} catch (e) {
 		console.log(e)
 		res.status(400).json({ message: 'error' })
