@@ -2,7 +2,8 @@ node_modules
 
 uploads
 
-server
+client
 
+/connect.js
 
 .env
