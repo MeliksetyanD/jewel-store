@@ -1,0 +1,66 @@
+.imagesBox {
+	display: flex;
+	gap: 20px;
+}
+.image {
+	width: 200px;
+	height: 200px;
+}
+.imageBoxWrapper {
+	position: relative;
+}
+.deleteImg {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	top: 5px;
+	right: 5px;
+	cursor: pointer;
+	z-index: 200;
+	background-color: rgb(22, 18, 18);
+	border-radius: 10px;
+	border: none;
+	width: 20px;
+	height: 20px;
+	border: 1px solid red;
+	padding: 2px;
+	color: red;
+}
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding: 20px;
+}
+.form input {
+	border: none;
+	padding: 5px;
+	border-radius: 10px;
+}
+.forSlide {
+	display: flex;
+	gap: 20px;
+}
+.buttonAdd {
+	width: 300px;
+	margin: 20px;
+	font-size: 14px;
+	padding: 15px;
+	border: none;
+	background-color: var(--dark-gray);
+	color: white;
+	margin: 10px;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.3s ease-in-out;
+}
+.file {
+	border: 1px solid var(--dark-gray) !important;
+}
+.buttonAdd:hover {
+	background-color: var(--black);
+}
+.stop {
+	cursor: not-allowed;
+}

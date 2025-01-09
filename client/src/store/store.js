@@ -27,7 +27,8 @@ const preloadedState = {
 	},
 	admin: {
 		entities: [],
-		single: [],
+		blogs: [],
+
 		loading: 'true',
 	},
 }

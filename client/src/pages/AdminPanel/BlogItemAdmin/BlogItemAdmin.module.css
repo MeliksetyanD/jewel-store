@@ -3,12 +3,20 @@
 	flex-direction: column;
 	gap: 20px;
 	margin: 20px;
+	border: 1px solid var(--dark-gray);
+	border-radius: 20px;
+	align-items: center;
+	padding-bottom: 20px;
 }
-.header {
-	display: flex;
-	justify-content: space-around;
+.img {
+	width: 200px;
+	height: 200px;
+	border-radius: 20px;
 }
 
+.buttons {
+	display: flex;
+}
 .button {
 	text-decoration: none;
 	font-size: 14px;
@@ -26,8 +34,9 @@
 	color: black !important;
 	background-color: var(--light-gray) !important;
 }
-.items {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 20px;
+.update {
+	background-color: yellow !important;
+}
+.delete {
+	background-color: red !important;
 }
