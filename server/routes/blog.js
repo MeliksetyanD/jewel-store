@@ -85,7 +85,7 @@ router.delete('/:id', async (req, res) => {
 	try {
 		const blog = await blogmodel.findAll({ where: { uid: req.params.id } })
 
-		await Promise.all(JSON.parse(product[0].images).map(async (name) => {
+		await Promise.all(JSON.parse(blog[0].images).map(async (name) => {
 					try {
 						await deleteImages(name)
 					} catch (error) {
