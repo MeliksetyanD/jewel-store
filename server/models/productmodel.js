@@ -12,51 +12,51 @@ const product = sequelize.define('Product',
     },
     uid: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     name:{
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     price: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     description:{
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     count: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     sizes: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     colorus: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     weight:{
         type: Sequelize.FLOAT,
-        allowNull: false,
+        allowNull: true,
     },
     material:{
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     categoryname:{
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     forSlide:{
         type: Sequelize.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
     },
     images:{
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
     }
 })
 
