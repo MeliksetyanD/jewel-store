@@ -4,6 +4,9 @@ import path from 'path'
 import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid'
 import blogmodel from '../models/blogmodel.js'
+import { deleteImages } from '../utils/utilsfunctions.js'
+const uploadsPath = path.resolve('uploads/')
+
 const router = Router()
 
 
@@ -23,7 +26,7 @@ router.get('/:id', async (req, res) => {
 		const response = await blogmodel.findOne({ where: { uid: req.params.id } })
 
 		if (!response) {
-			return res.status(404).json({ message: 'Product not found' })
+			return res.status(404).json({ message: 'Blog not found' })
 		}
 
 		const images = JSON.parse(response.images).map(
@@ -43,12 +46,12 @@ router.get('/', async (req, res) => {
 	try {
 		const blogs = await blogmodel.findAll()
 
-		const blog = blogs.map(prod => {
-			const images = JSON.parse(prod.dataValues.images).map(
+		const blog = blogs.map(blog => {
+			const images = JSON.parse(blog.dataValues.images).map(
 				image => `${req.protocol}://${req.get('host')}/uploads/${image}`
 			)
-			prod.dataValues.images = images
-			return prod.dataValues
+			blog.dataValues.images = images
+			return blog.dataValues
 		})
 
 		res.status(200).json(blog)
@@ -58,15 +61,14 @@ router.get('/', async (req, res) => {
 	}
 })
 
-
 router.post('/', upload.array('images', 3), async (req, res) => {
 	try {
-		const images = req.files.map(file => file.filename) 
+		const images = req.files.map(file => file.filename)
 
 		const blog = await blogmodel.create({
 			uid: uuidv4(),
-            title: req.body.title,
-            description: req.body.description,
+			title: req.body.title,
+			description: req.body.description,
 			images: JSON.stringify(images)
 		})
 
@@ -79,15 +81,16 @@ router.post('/', upload.array('images', 3), async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
 	try {
-		const path = '../server/uploads/'
 		const blog = await blogmodel.findAll({ where: { uid: req.params.id } })
-        
-		const images = JSON.parse(blog[0].images).map((imgpath)=>{
-			
-             const fullPath = path + imgpath
-			 fs.unlinkSync(fullPath)
-		})
-		
+
+		await Promise.all(JSON.parse(product[0].images).map(async (name) => {
+					try {
+						await deleteImages(name)
+					} catch (error) {
+						console.log('no such')
+					}
+				}))
+
 		await blog[0].destroy()
 
 		res.status(200).json({ message: 'Удалено' })
@@ -101,10 +104,43 @@ router.put('/:id', async (req, res) => {
 	try {
 		const blog = await blogmodel.findOne({ where: { uid: req.params.id } })
 
-        blog.title = req.body.title
-        blog.description =  req.body.description
-    
+		if (!blog) {
+			return res.status(404).json({ message: 'Product not found' });
+		}
+		if (req.body.deletedImg && typeof req.body.deletedImg == 'string') {
+			const name = req.body.deletedImg.slice(29)
+			await deleteImages(name)
+		}
+		if (Array.isArray(req.body.deletedImg)) {
+			req.body.deletedImg.forEach(async (element) => {
+				const name = element.slice(29)
+				await deleteImages(name)
+			});
+		}
+		let newImages = []
+		if (req.body.images) {
+			const bodyImages =
+				typeof req.body.images === 'string'
+					? [req.body.images]
+					: [...req.body.images]
+
+			newImages = bodyImages.map(image => {
+				return image.slice(30, image.length)
+			})
+		}
+
+
+		await Promise.all(req.files.map(file => newImages.push(file.filename)))
+		console.log(newImages)
+		blog.images = JSON.stringify(newImages)
+
+		blog.title = req.body.title
+		blog.description = req.body.description
+
 		await blog.save()
+
+		res.status(200).json({ message: 'Изменено' })
+
 
 		res.status(200).json({ message: 'Изменено' })
 	} catch (e) {

@@ -4,7 +4,9 @@ import multer from 'multer'
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import prodmodel from '../models/productmodel.js'
+import { deleteImages } from '../utils/utilsfunctions.js'
 const router = Router()
+
 
 var storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -20,15 +22,12 @@ const upload = multer({ storage })
 router.get('/:id', async (req, res) => {
 	try {
 		const response = await prodmodel.findOne({ where: { uid: req.params.id } })
-
 		if (!response) {
 			return res.status(404).json({ message: 'Product not found' })
 		}
-
 		const images = JSON.parse(response.images).map(
 			image => `${req.protocol}://${req.get('host')}/uploads/${image}`
 		)
-
 		response.dataValues.images = images
 
 		res.status(200).json(response.dataValues)
@@ -85,13 +84,15 @@ router.post('/', upload.array('images', 3), async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
 	try {
-		const path = '../server/uploads/'
 		const product = await prodmodel.findAll({ where: { uid: req.params.id } })
 
-		const images = JSON.parse(product[0].images).map(imgpath => {
-			const fullPath = path + imgpath
-			fs.unlinkSync(fullPath)
-		})
+		await Promise.all(JSON.parse(product[0].images).map(async (name) => {
+			try {
+				await deleteImages(name)
+			} catch (error) {
+				console.log('no such')
+			}
+		}))
 
 		await product[0].destroy()
 
@@ -104,36 +105,24 @@ router.delete('/:id', async (req, res) => {
 
 router.put('/:id', upload.array('images', 3), async (req, res) => {
 	try {
-
+		
 		const product = await prodmodel.findOne({ where: { uid: req.params.id } })
-		const path = '../server/uploads/'
-
-
-		if (req.body.deletedImg && typeof req.body.deletedImg == 'string') {
-			try {
-				const name = req.body.deletedImg.slice(29)
-				const fullPath = path + name
-				fs.unlinkSync(fullPath)
-				console.log('deleted', name)
-			} catch (error) {
-				console.log('no such')
-				const namee = req.body.deletedImg.slice(29)
-				const images = JSON.parse(product.images)
-				const newImages = images.filter((name) => name == namee)
-				product.images = JSON.stringify(newImages)
-			}
+	
+		if (!product) {
+			return res.status(404).json({ message: 'Product not found' });
 		}
-		if (req.body.deletedImg == Array) {
-			req.body.deletedImg.forEach(element => {
+		if (req.body.deletedImg && typeof req.body.deletedImg == 'string') {
+			const name = req.body.deletedImg.slice(29)
+			await deleteImages(name)
+		}
+		if (Array.isArray(req.body.deletedImg)) {
+			req.body.deletedImg.forEach(async (element) => {
 				const name = element.slice(29)
-				const fullPath = path + name
-				fs.unlinkSync(fullPath)
-				console.log('deleted', element)
+				await deleteImages(name)
 			});
 		}
 		let newImages = []
-		if(req.body.images){
-			console.log(req.body.images)
+		if (req.body.images) {
 			const bodyImages =
 				typeof req.body.images === 'string'
 					? [req.body.images]
@@ -144,10 +133,8 @@ router.put('/:id', upload.array('images', 3), async (req, res) => {
 			})
 		}
 
-		
-			const images = req.files.map(file => newImages.push(file.filename))
-			console.log(newImages)
-			product.images = JSON.stringify(newImages)
+		await Promise.all(req.files.map(file => newImages.push(file.filename)))
+		product.images = JSON.stringify(newImages)
 
 		product.name = req.body.name
 		product.price = req.body.price
