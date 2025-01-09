@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { clearSingle } from '../../../store/adminSlice'
 import AdminProduct from '../AdminProduct/AdminProduct'
 import styles from './ProductsContent.module.css'
 const ProductsContent = () => {
@@ -12,11 +11,7 @@ const ProductsContent = () => {
 		<div className={styles.container}>
 			<div className={styles.header}>
 				<h1>Product Create</h1>
-				<Link
-					to={'/admin/home/create'}
-					onClick={dispatch(clearSingle())}
-					className={styles.button}
-				>
+				<Link to={'/admin/home/create'} className={styles.button}>
 					Create
 				</Link>
 			</div>

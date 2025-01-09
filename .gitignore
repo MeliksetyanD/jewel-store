@@ -1,8 +1,9 @@
 node_modules
 
 uploads
-
-client
+server
+server/utils/connect.js
+utils
 
 /connect.js
 

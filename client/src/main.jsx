@@ -10,6 +10,8 @@ import AdminPanel from './pages/AdminPanel/AdminPanel.jsx'
 import BlogContent from './pages/AdminPanel/BlogContent/BlogContent.jsx'
 
 import Auth from './components/Auth/Auth.jsx'
+import BlogAdminEditPage from './pages/AdminPanel/BlogAdminEditPage/BlogAdminEditPage.jsx'
+import BlogWrap from './pages/AdminPanel/BlogWrap/BlogWrap.jsx'
 import CreateAndUpdatePage from './pages/AdminPanel/CreateAndUpdatePage/CreateAndUpdatePage.jsx'
 import ProductsContent from './pages/AdminPanel/ProductsContent/ProductsContent.jsx'
 import Blog from './pages/Blog/Blog.jsx'
@@ -86,7 +88,21 @@ const router = createBrowserRouter([
 					},
 					{
 						path: 'blog',
-						element: <BlogContent />,
+						element: <BlogWrap />,
+						children: [
+							{
+								index: true,
+								element: <BlogContent />,
+							},
+							{
+								path: 'create',
+								element: <BlogAdminEditPage />,
+							},
+							{
+								path: 'update',
+								element: <BlogAdminEditPage />,
+							},
+						],
 					},
 					{
 						path: 'create',
