@@ -1,10 +1,17 @@
 /* eslint-disable react/prop-types */
 
+import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import BlogItemAdmin from '../BlogItemAdmin/BlogItemAdmin'
 import styles from './BlogContent.module.css'
 
 const BlogContent = () => {
+	const blogs = useSelector(state => state.admin.blogs)
+
+	useEffect(() => {}, [blogs])
+	console.log(blogs)
+
 	return (
 		<div className={styles.item}>
 			<div className={styles.header}>
@@ -14,7 +21,7 @@ const BlogContent = () => {
 				</Link>
 			</div>
 			<div className={styles.items}>
-				{[1, 2, 3, 4].map((item, index) => (
+				{blogs?.map((item, index) => (
 					<BlogItemAdmin item={item} key={index} />
 				))}
 			</div>

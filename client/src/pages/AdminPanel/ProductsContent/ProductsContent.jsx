@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import AdminProduct from '../AdminProduct/AdminProduct'
 import styles from './ProductsContent.module.css'
 const ProductsContent = () => {
 	const products = useSelector(state => state.admin.entities)
-	const dispatch = useDispatch()
+
 	useEffect(() => {}, [products])
 	return (
 		<div className={styles.container}>
