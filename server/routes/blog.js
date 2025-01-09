@@ -1,11 +1,9 @@
 import { Router } from 'express'
 import multer from 'multer'
 import path from 'path'
-import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid'
 import blogmodel from '../models/blogmodel.js'
 import { deleteImages } from '../utils/utilsfunctions.js'
-const uploadsPath = path.resolve('uploads/')
 
 const router = Router()
 
@@ -63,12 +61,16 @@ router.get('/', async (req, res) => {
 
 router.post('/', upload.array('images', 3), async (req, res) => {
 	try {
-		const images = req.files.map(file => file.filename)
-
+		let images = []
+		if(req.files){
+			images = req.files.map(file => file.filename)
+		}
 		const blog = await blogmodel.create({
 			uid: uuidv4(),
 			title: req.body.title,
-			description: req.body.description,
+			subTitle:req.body.subTitle,
+			descriptionShort: req.body.descriptionShort,
+			descriptionFull: req.body.descriptionFull,
 			images: JSON.stringify(images)
 		})
 
@@ -129,13 +131,14 @@ router.put('/:id', async (req, res) => {
 			})
 		}
 
-
 		await Promise.all(req.files.map(file => newImages.push(file.filename)))
 		console.log(newImages)
 		blog.images = JSON.stringify(newImages)
 
 		blog.title = req.body.title
-		blog.description = req.body.description
+		blog.subTitle = req.body.subTitle
+		blog.descriptionShort = req.body.descriptionShort
+		blog.descriptionFull = req.body.descriptionFull
 
 		await blog.save()
 

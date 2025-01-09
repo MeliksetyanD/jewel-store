@@ -1,8 +1,6 @@
 import Sequelize from "sequelize"
 import sequelize from "../utils/connect.js"
 
-
-
 const blog = sequelize.define('Blog', {
     id: {
         primaryKey: true,
@@ -18,7 +16,15 @@ const blog = sequelize.define('Blog', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    description: {
+    subTitle: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    descriptionShort: {
+        type: Sequelize.TEXT,
+        allowNull: false
+    },
+    descriptionFull: {
         type: Sequelize.TEXT,
         allowNull: false
     },
