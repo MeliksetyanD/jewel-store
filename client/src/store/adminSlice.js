@@ -16,15 +16,17 @@ export const getProductsAdmin = createAsyncThunk(
 	}
 )
 export const getBlogsAdmin = createAsyncThunk('admin/getBlogs', async () => {
-	const response = await fetch('http://localhost:4700/blog')
+	const response = await fetch('http://192.168.0.100:4700/blog')
+
 	const data = await response.json()
+
 	return data
 })
 
 export const getBlogByIdAdmin = createAsyncThunk(
 	'admin/getBlogByIdAdmin',
 	async id => {
-		const response = await fetch(`http://localhost:4700/blog/${id}`)
+		const response = await fetch(`http://192.168.0.100:4700/blog/${id}`)
 		const data = await response.json()
 
 		return data

@@ -22,13 +22,16 @@
 .product:hover {
 	border: 1px solid var(--accent);
 }
-.product img {
+.img {
+	border-radius: 10px;
+	background-position: center center;
+	background-size: cover;
 	width: 377px;
 	height: 380px;
 }
 
 @media (max-width: 1200px) {
-	.product img {
+	.img {
 		width: 312px;
 		height: 305px;
 	}
@@ -37,13 +40,13 @@
 	}
 }
 @media (max-width: 924px) {
-	.product img {
+	.img {
 		width: 277px;
 		height: 280px;
 	}
 }
 @media (max-width: 675px) {
-	.product img {
+	.img {
 		width: 247px;
 		height: 250px;
 	}

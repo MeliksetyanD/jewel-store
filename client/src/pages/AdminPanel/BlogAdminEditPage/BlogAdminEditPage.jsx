@@ -30,8 +30,6 @@ const BlogAdminEditPage = () => {
 		}
 	}
 	const handleInputChange = e => {
-		console.log(e.target.value)
-
 		setProduct(prev => {
 			return {
 				...prev,
@@ -94,10 +92,10 @@ const BlogAdminEditPage = () => {
 				)
 				console.log(response.status)
 
-				// if (response.status === 200) {
-				// 	navigate('/admin/home/products')
-				// 	console.log('Product added successfully:', response.data)
-				// }
+				if (response.status === 200) {
+					navigate('/admin/home/')
+					console.log('Product added successfully:', response.data)
+				}
 				console.log(response.data)
 			} else {
 				const response = await axios.post(
@@ -109,10 +107,10 @@ const BlogAdminEditPage = () => {
 						},
 					}
 				)
-				// if (response.status === 201) {
-				// 	navigate('/admin/home/products')
-				// 	console.log('Product added successfully:', response.data)
-				// }
+				if (response.status === 201) {
+					navigate('/admin/home/')
+					console.log('Product added successfully:', response.data)
+				}
 			}
 		} catch (error) {
 			console.error('Error adding product:', error)

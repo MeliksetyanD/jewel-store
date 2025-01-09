@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 export const getProducts = createAsyncThunk(
 	'products/getProducts',
 	async () => {
-		const response = await fetch('http://localhost:4700/products')
+		const response = await fetch('http://192.168.0.100:4700/products')
 		const data = await response.json()
 		return data
 	}
@@ -12,7 +12,7 @@ export const getProducts = createAsyncThunk(
 export const getProductById = createAsyncThunk(
 	'products/getProductById',
 	async id => {
-		const response = await fetch(`http://localhost:4700/products/${id}`)
+		const response = await fetch(`http://192.168.0.100:4700/products/${id}`)
 		const data = await response.json()
 
 		return data

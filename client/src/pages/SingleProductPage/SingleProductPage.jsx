@@ -23,7 +23,6 @@ export const SingleProductPage = () => {
 	} = useSelector(state => state.products)
 
 	const [image, setImage] = useState('')
-	console.log(product)
 
 	function addToCartHandler(item) {
 		dispatch(addToCart(item))
@@ -40,6 +39,8 @@ export const SingleProductPage = () => {
 
 	useEffect(() => {
 		getElementByIdHandler()
+
+		setImage('')
 	}, [id])
 	return loading === 'pending' ? (
 		<h1>Loading</h1>
@@ -49,25 +50,35 @@ export const SingleProductPage = () => {
 				<div className={styles.singleProductContainer}>
 					<div className={styles.singleProductContent}>
 						<div className={styles.singleProductImages}>
-							<div className={styles.singleProductImageBox}>
-								{product.length !== 0
-									? product?.images.map((image, index) => (
-											<img
-												key={index}
-												src={image}
-												alt='jewel'
-												className={styles.singleProductSliderImage}
-												onClick={() => setImage(image)}
-											/>
-									  ))
-									: ''}
-							</div>
-							<div className={styles.singleProductImagePreview}>
-								<img
-									src={image || product?.images?.[0]}
-									alt='jewel'
-									className={styles.singleProductSliderImage}
-								/>
+							<div></div>
+							<div className={styles.singleProductImageBoxWrapper}>
+								<div className={styles.singleProductImageBox}>
+									{product.length !== 0
+										? product?.images.map((image, index) => (
+												<div
+													key={index}
+													className={styles.singleProductImage}
+													style={{ backgroundImage: `url(${image})` }}
+													onClick={() => setImage(image)}
+												></div>
+												// <img
+												// 	key={index}
+												// 	src={image}
+												// 	alt='jewel'
+												// 	className={styles.singleProductSliderImage}
+												// 	onClick={() => setImage(image)}
+												// />
+										  ))
+										: ''}
+								</div>
+								<div className={styles.singleProductImagePreview}>
+									<div
+										className={styles.singleProductImagePreviewImage}
+										style={{
+											backgroundImage: `url(${image || product?.images?.[0]})`,
+										}}
+									></div>
+								</div>
 							</div>
 						</div>
 						<div className={styles.singleProductInfo}>
