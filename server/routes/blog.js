@@ -126,16 +126,16 @@ router.put('/:id', upload.array('images', 3), async (req, res) => {
 					: [...req.body.images]
 
 			newImages = bodyImages.map(image => {
-				return image.slice(30, image.length)
+				return image.slice(33, image.length)
 			})
 		}
-
-
+		if (req.files || req.file) {
+			await Promise.all(req.files.map(file => newImages.push(file.filename)))
+			blog.images = JSON.stringify(newImages)
+		}
 		
-		await Promise.all(req.files.map(file => newImages.push(file.filename)))
 
-		blog.images = JSON.stringify(newImages)
-
+	
 		blog.title = req.body.title
 		blog.subTitle = req.body.subTitle
 		blog.descriptionShort = req.body.descriptionShort
