@@ -1,8 +1,8 @@
 import Sequelize from 'sequelize'
 
-const NAME = 'shoppe'
+const NAME = 'jewelry_store'
 const USER = 'root'
-const PASSWORD = '12345678'
+const PASSWORD = 'root'
 
 const sequelize = new Sequelize(NAME, USER, PASSWORD, {
 	host: 3306,

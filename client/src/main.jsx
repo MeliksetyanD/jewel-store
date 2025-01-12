@@ -18,11 +18,14 @@ import Blog from './pages/Blog/Blog.jsx'
 import BlogPage from './pages/BlogPage/BlogPage.jsx'
 import BlogSingle from './pages/BlogSingle/BlogSingle.jsx'
 import { Cart } from './pages/Cart/Cart.jsx'
+import { Contact } from './pages/Contact/Contact.jsx'
 import ErrorPage from './pages/ErrorPage/ErrorPage.jsx'
 import Home from './pages/Home/Home.jsx'
 import Layout from './pages/layout/Layout.jsx'
+import { Shipping } from './pages/Shipping/Shipping.jsx'
 import Shop from './pages/Shop/Shop.jsx'
 import { SingleProductPage } from './pages/SingleProductPage/SingleProductPage.jsx'
+import Terms from './pages/Terms/Terms.jsx'
 import { store } from './store/store.js'
 
 const router = createBrowserRouter([
@@ -54,6 +57,18 @@ const router = createBrowserRouter([
 			{
 				path: '/about',
 				element: <About />,
+			},
+			{
+				path: '/contact',
+				element: <Contact />,
+			},
+			{
+				path: '/terms',
+				element: <Terms />,
+			},
+			{
+				path: '/shipping',
+				element: <Shipping />,
 			},
 			{
 				path: '/account',

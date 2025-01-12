@@ -96,6 +96,7 @@
 	}
 	.singleProductInfo {
 		padding: 10px 15px;
+		flex: 2;
 	}
 }
 @media (max-width: 675px) {
@@ -103,6 +104,7 @@
 		margin-top: 50px;
 		flex-direction: column;
 		align-items: center;
+		justify-content: space-evenly;
 	}
 	.singleProductImageBoxWrapper {
 		flex-direction: column;
