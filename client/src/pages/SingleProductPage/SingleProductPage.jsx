@@ -6,6 +6,7 @@ import ShowDescriptionContent from '../../components/ShowDescriptions/ShowDescri
 import Social from '../../components/Social/Social'
 import { products } from '../../product'
 
+import useLang from '../../hooks/useLang'
 import { addToCart } from '../../store/cartSlice'
 import { getProductById } from '../../store/productsSlice'
 import Button from '../../ui/Button'
@@ -14,6 +15,7 @@ products
 
 export const SingleProductPage = () => {
 	const [data, setData] = useState([])
+	const { language, languagesJson } = useLang()
 	const { id } = useParams()
 	const dispatch = useDispatch()
 	const {
@@ -39,7 +41,6 @@ export const SingleProductPage = () => {
 
 	useEffect(() => {
 		getElementByIdHandler()
-
 		setImage('')
 	}, [id])
 	return loading === 'pending' ? (
@@ -61,13 +62,6 @@ export const SingleProductPage = () => {
 													style={{ backgroundImage: `url(${image})` }}
 													onClick={() => setImage(image)}
 												></div>
-												// <img
-												// 	key={index}
-												// 	src={image}
-												// 	alt='jewel'
-												// 	className={styles.singleProductSliderImage}
-												// 	onClick={() => setImage(image)}
-												// />
 										  ))
 										: ''}
 								</div>
@@ -95,7 +89,7 @@ export const SingleProductPage = () => {
 							</section>
 							<section>
 								<Button
-									text='Add to cart'
+									text={languagesJson[language].product.addToCart}
 									type={'button'}
 									onClick={() => addToCartHandler(product)}
 								/>
@@ -109,21 +103,23 @@ export const SingleProductPage = () => {
 					</div>
 				</div>
 				<div className={styles.similarProducts}>
-					<h3>Similar Items</h3>
+					<h3>{languagesJson[language].product.similarItems}</h3>
 					<div className={styles.similarProductsContent}>
 						{products
 							.filter(item => {
-								return item.categoryName === product?.categoryName
+								return item.categoryname === product?.categoryname
 							})
-							.map((product, index) => (
-								<Product
-									key={index}
-									uid={product.uid}
-									name={product.name}
-									price={product.price}
-									{...product}
-								/>
-							))}
+							.map((product, index) => {
+								return (
+									<Product
+										key={index}
+										uid={product.uid}
+										name={product.name}
+										price={product.price}
+										{...product}
+									/>
+								)
+							})}
 					</div>
 				</div>
 			</section>

@@ -2,6 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
+import { categories } from '../../../constants/categories'
 import { getProductById } from '../../../store/productsSlice'
 import styles from './CreateAndUpdatePage.module.css'
 const CreateAndUpdatePage = () => {
@@ -46,6 +47,7 @@ const CreateAndUpdatePage = () => {
 				forSlide: !forSlide,
 			}
 		})
+
 		if (e.target.name === 'forSlide') setForSlide(prev => !prev)
 	}
 	const handleImageChange = e => {
@@ -88,14 +90,12 @@ const CreateAndUpdatePage = () => {
 				formData.append(`images`, image)
 			}
 		})
-		console.log(deletedImages)
 
 		deletedImages.forEach((image, index) => {
 			if (image) {
 				formData.append(`deletedImg`, image)
 			}
 		})
-		// console.log(...formData)
 
 		console.log(...formData)
 
@@ -117,6 +117,10 @@ const CreateAndUpdatePage = () => {
 
 				if (response.status === 200) {
 					navigate('/admin/home/products')
+					setTimeout(() => {
+						window.location.reload()
+					}, 2000)
+
 					console.log('Product added successfully:', response.data)
 				}
 				console.log(response.data)
@@ -209,14 +213,32 @@ const CreateAndUpdatePage = () => {
 				placeholder={productForChange ? productForChange.material : 'Material'}
 				onChange={handleInputChange}
 			/>
-			<input
+			<select
+				name='categoryname'
+				id='categoryname'
+				onChange={handleInputChange}
+				value={productForChange ? productForChange.categoryname : ''}
+			>
+				{categories?.slice(0, 4).map((category, index) => {
+					return (
+						<option
+							key={index}
+							value={category}
+							selected={productForChange ? productForChange.categoryname : ''}
+						>
+							{category}
+						</option>
+					)
+				})}
+			</select>
+			{/* <input
 				type='text'
 				name='categoryname'
 				placeholder={
 					productForChange ? productForChange.categoryname : 'Categoryname'
 				}
 				onChange={handleInputChange}
-			/>
+			/> */}
 			<div className={styles.forSlide}>
 				<label htmlFor='forSlide'>For Slide</label>
 				<input

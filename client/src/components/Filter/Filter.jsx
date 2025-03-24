@@ -1,11 +1,15 @@
 import { useSelector } from 'react-redux'
+import { categories, sort } from '../../constants/categories'
+import useLang from '../../hooks/useLang'
 import styles from './Filter.module.css'
 const Filter = ({ setShopProducts, setOpen }) => {
 	const products = useSelector(state => state.products.entities)
+	const { language, languagesJson } = useLang()
 	function handleSubmit(e) {
 		e.preventDefault()
 		const form = e.target
 		const formData = new FormData(form)
+
 		const [jewels, sort] = [...formData.entries()]
 		setShopProducts(prevstate => {
 			const newState = products.filter(product => {
@@ -24,6 +28,7 @@ const Filter = ({ setShopProducts, setOpen }) => {
 
 			return newState
 		})
+
 		setOpen(false)
 	}
 
@@ -31,36 +36,39 @@ const Filter = ({ setShopProducts, setOpen }) => {
 		<form className={`${styles.filter}`} method='post' onSubmit={handleSubmit}>
 			<label>
 				<select name='jewels' defaultValue='all' className={styles.select}>
-					<option value='rings'>rings</option>
-					<option value='earings'>earings</option>
-					<option value='bracelet'>bracelet</option>
-					<option value='cuff'>cuff</option>
-					<option value='all'>Shop by</option>
+					{categories.map((category, index) => (
+						<option key={index} value={category}>
+							{languagesJson[language].shop.categories[category]}
+						</option>
+					))}
 				</select>
 			</label>
 			<label>
 				<select name='sort' defaultValue='all' className={styles.select}>
-					<option value='desc'>Price: High to Low</option>
-					<option value='asc'>Price: Low to High</option>
-					<option value='all'>Sort by</option>
+					{sort.map((option, index) => (
+						<option key={index} value={option}>
+							{languagesJson[language].shop.sort[option]}
+						</option>
+					))}
 				</select>
 			</label>
 			<div className={styles.switchContainer}>
-				On sale
+				{languagesJson[language].shop.filter.onSale}
+
 				<label className={styles.switch}>
 					<input type='checkbox' name='onSale' />
 					<span className={`${styles.slider} ${styles.round}`}></span>
 				</label>
 			</div>
 			<div className={styles.switchContainer}>
-				In Stock
+				{languagesJson[language].shop.filter.inStock}
 				<label className={styles.switch}>
 					<input type='checkbox' name='inStock' />
 					<span className={`${styles.slider} ${styles.round}`}></span>
 				</label>
 			</div>
 			<button type='submit' className={styles.submitBtn}>
-				Apply
+				{languagesJson[language].shop.filter.apply}
 			</button>
 		</form>
 	)

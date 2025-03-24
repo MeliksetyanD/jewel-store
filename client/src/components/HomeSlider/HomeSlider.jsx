@@ -3,6 +3,7 @@
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Slider from 'react-slick'
+import useLang from '../../hooks/useLang'
 import styles from './HomeSlider.module.css'
 function SampleNextArrow(props) {
 	const { className, style, onClick } = props
@@ -31,6 +32,7 @@ function SamplePrevArrow(props) {
 }
 
 function CustomSlide(props) {
+	const { language, languagesJson } = useLang()
 	const { index, item, ...otherProps } = props
 
 	return (
@@ -42,7 +44,9 @@ function CustomSlide(props) {
 			<div className={styles.sliderContent}>
 				<h1>{item.name}</h1>
 				<h2>{item.price} AMD</h2>
-				<Link to={`/product/${item.uid}`}>Տեսնել</Link>
+				<Link to={`/product/${item.uid}`}>
+					{languagesJson[language].slider.view}
+				</Link>
 			</div>
 		</div>
 	)

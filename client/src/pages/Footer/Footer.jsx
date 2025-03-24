@@ -1,49 +1,35 @@
 import { NavLink } from 'react-router-dom'
 import Social from '../../components/Social/Social'
+import useLang from '../../hooks/useLang'
 import styles from './Footer.module.css'
 export const Footer = () => {
+	const { language, languagesJson } = useLang()
 	return (
 		<footer className={styles.footer}>
 			<div className={styles.footerMenu}>
 				<ul className={styles.footerMenuList}>
 					<li className={styles.footerMenuItem}>
 						<NavLink className={styles.footerMenuLink} to='/about'>
-							CONTACT
+							{languagesJson[language].footer.contact}
 						</NavLink>
 					</li>
 					<li className={styles.footerMenuItem}>
 						<NavLink className={styles.footerMenuLink} to='/terms'>
-							TERMS OF SERVICES
+							{languagesJson[language].footer.terms}
 						</NavLink>
 					</li>
 					<li className={styles.footerMenuItem}>
 						<NavLink className={styles.footerMenuLink} to='/shipping'>
-							SHIPPING AND RETURNS
+							{languagesJson[language].footer.shipping}
 						</NavLink>
 					</li>
 				</ul>
-				{/* <form action='' className={styles.footerNewsLetterForm}>
-					<input
-						className={styles.footerNewsLetterInput}
-						type='text'
-						placeholder='Give an email, get the newsletter.'
-					/>
-					<div className={styles.footerNewsLetterButton}>
-						<input
-							className={styles.footerNewsLetterSubmit}
-							type='button'
-							onClick={() => {
-								console.log('submit')
-							}}
-							value={''}
-						/>
-						<img src={arrow} alt='submit' width={25} height={25} />
-					</div>
-				</form> */}
 			</div>
 
 			<div className={styles.footerCopy}>
-				<p className={styles.footerCopyText}>© 2024. All rights reserved.</p>
+				<p className={styles.footerCopyText}>
+					{languagesJson[language].footer.copy}
+				</p>
 				<Social />
 			</div>
 		</footer>

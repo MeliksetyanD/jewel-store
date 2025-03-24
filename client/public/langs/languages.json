@@ -1,0 +1,230 @@
+{
+	"AM": {
+		"header": {
+			"shop": "Սրահ",
+			"blog": "Բլոգ",
+			"about": "Մեր մասին"
+		},
+		"slider": {
+			"view": "ՏԵսնել"
+		},
+		"home": {
+			"title": "Գնեք վերջինը",
+			"view": "Դիտել բոլորը"
+		},
+		"footer": {
+			"contact": "ԿԱՊ",
+			"terms": "ԾԱՌԱՅՈՒԹՅՈՒՆՆԵՐ ԵՎ ՊԱՅՄԱՆՆԵՐ",
+			"shipping": "ԱՌԱՔՈՒՄ ԵՎ ՎԵՐԱԴԱՐՁ",
+			"copy": "© 2025. Բոլոր իրավունքները պաշտպանված են:"
+		},
+		"shop": {
+			"categories": {
+				"rings": "Մատանիներ",
+				"earings": "Ականջօղեր",
+				"bracelet": "Ապարանջան",
+				"cuff": "Մանժետ ականջօղեր",
+				"all": "Բոլորը"
+			},
+			"sort": {
+				"desc": "Գինը՝ բարձրից ցածր",
+				"asc": "Գինը՝ ցածրից բարձր",
+				"all": "Դասավորել ըստ"
+			},
+			"filter": {
+				"onSale": "Վաճառվում է",
+				"inStock": "Պահեստում",
+				"apply": "Դիմել"
+			}
+		},
+		"product": {
+			"addToCart": "Ավելացնել զամբյուղ",
+			"similarItems": "Նմանատիպ իրեր"
+		},
+		"cart": {
+			"shoppingCart": "Գնումների զամբյուղ",
+			"checkout": "Ստուգում"
+		},
+		"cartModal": {
+			"title": "Պատվերի մասին տեղեկատվություն"
+		},
+		"order": {
+			"fName": "Անուն",
+			"lName": "Ազգանուն",
+			"email": "Էլեկտրոնային հասցե",
+			"phone": "Կոնտակտային համարը",
+			"address": "Ձեր հասցեն",
+			"orderType": "Ընտրեք Պատվերի տեսակը",
+			"apartment": "Բնակարան",
+			"postCode": "Փոստային ինդեքս",
+			"city": "Քաղաք",
+			"shipping": "Առաքում",
+			"bringToAddress": "Վերցրեք հասցեից",
+			"postal": "Փոստային",
+			"bringAddress": "Պատվերը կարող եք ստանալ Վրացական 15",
+			"productInfo": {
+				"name": " Անուն",
+				"price": "Գինը",
+				"count": "Քանակ",
+				"total": "Ընդհանուր"
+			},
+			"complete": {
+				"info": "Ձեր պատվերը ընդունված է",
+				"thanks": "Շնոհակալություն",
+				"okay": "Լավ"
+			}
+		}
+	},
+	"RU": {
+		"header": {
+			"shop": "Магазин",
+			"blog": "Блог",
+			"about": "О нас"
+		},
+		"slider": {
+			"view": "Посмотреть"
+		},
+		"home": {
+			"title": "Купить Последние",
+			"view": "Посмотреть все"
+		},
+		"footer": {
+			"contact": "КОНТАКТ",
+			"terms": "УСЛУГИ И УСЛОВИЯ",
+			"shipping": "ДОСТАВКА И ВОЗВРАТ",
+			"copy": "© 2025. Все права защищены."
+		},
+		"shop": {
+			"categories": {
+				"rings": "Кольца",
+				"earings": "Серьги",
+				"bracelet": "Браслет",
+				"cuff": "Серьги-манжеты",
+				"all": "Все"
+			},
+			"sort": {
+				"desc": "Цена: по убыванию",
+				"asc": "Цена: по возрастанию",
+				"all": "Сортировать по"
+			},
+			"filter": {
+				"onSale": "В продаже",
+				"inStock": "В наличии",
+				"apply": "Применять"
+			}
+		},
+		"product": {
+			"addToCart": "Добавить в корзину",
+			"similarItems": "Похожие товары"
+		},
+		"cart": {
+			"shoppingCart": "Корзина",
+			"checkout": "Проверить"
+		},
+		"cartModal": {
+			"cartModal": "Информация о заказе"
+		},
+		"order": {
+			"fName": "Имя",
+			"lName": "Фамилия",
+			"email": "Электронная почта",
+			"phone": "Контактный номер",
+			"address": "Ваш адрес",
+			"orderType": "Выберите тип заказа",
+			"apartment": "Квартира",
+			"postCode": "Почтовый индекс",
+			"city": "Город",
+			"shipping": "Перевозка",
+			"bringToAddress": "Взять по адресу",
+			"postal": "Почтовый",
+			"bringAddress": "Вы можете забрать свой заказ по адресу: Врацакан 15.",
+			"productInfo": {
+				"name": " Имя",
+				"price": "Стоимость",
+				"count": "Количество",
+				"total": "Итого"
+			},
+			"complete": {
+				"info": "Ваш заказ принят.",
+				"thanks": "Спасибо за покупку!",
+				"okay": "Хорошо"
+			}
+		}
+	},
+	"EN": {
+		"header": {
+			"shop": "Shop",
+			"blog": "Blog",
+			"about": "About"
+		},
+		"slider": {
+			"view": "View"
+		},
+		"home": {
+			"title": "Shop The Latest",
+			"view": "View All"
+		},
+		"footer": {
+			"contact": "CONTACT",
+			"terms": "TERMS OF SERVICES",
+			"shipping": "SHIPPING AND RETURNS",
+			"copy": "© 2025. All rights reserved."
+		},
+		"shop": {
+			"categories": {
+				"rings": "Rings",
+				"earings": "Earings",
+				"bracelet": "Bracelet",
+				"cuff": "Cuff",
+				"all": "All"
+			},
+			"sort": {
+				"desc": "Price: High to Low",
+				"asc": "Price: Low to High",
+				"all": "Sort by"
+			},
+			"filter": {
+				"onSale": "On sale",
+				"inStock": "In stock",
+				"apply": "Apply"
+			}
+		},
+		"product": {
+			"addToCart": "Add to cart",
+			"similarItems": "Similar Items"
+		},
+		"cart": {
+			"shoppingCart": "Shoping Cart",
+			"checkout": "Checkout"
+		},
+		"cartModal": {
+			"title": "Order Information"
+		},
+		"order": {
+			"fName": "First Name",
+			"lName": "First Name",
+			"email": "Email",
+			"phone": "Contact Number",
+			"address": "Your Address",
+			"orderType": "Select Order Type",
+			"apartment": "Apartment",
+			"postCode": "Post Code",
+			"city": "City",
+			"shipping": "Shipping",
+			"bringToAddress": "Bring to address",
+			"postal": "Postal",
+			"bringAddress": "You can take the order to Vratsakan 15",
+			"productInfo": {
+				"name": " Name",
+				"price": "Price",
+				"count": "Count",
+				"total": "Total"
+			},
+			"complete": {
+				"info": "Your order has been accepted.",
+				"thanks": "Thank you for your purchase!",
+				"okay": "Okay"
+			}
+		}
+	}
+}

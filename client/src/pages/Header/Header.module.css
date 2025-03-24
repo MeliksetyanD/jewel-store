@@ -1,7 +1,16 @@
+.select {
+	padding: 10px;
+	border-radius: 50px;
+	background-color: transparent;
+	outline: none;
+	cursor: pointer;
+	/* width: 80px; */
+}
+
 .nav {
 	padding: 20px;
 
-	height: 80px;
+	/* height: 80px; */
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -48,7 +57,7 @@ button {
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
-	gap: 30px;
+	gap: 25px;
 	margin: 0 24px;
 }
 .cart {
@@ -71,8 +80,8 @@ button {
 }
 .logo {
 	margin: 0 10px;
-	width: 158px;
-	height: 40px;
+	width: 150px;
+	height: 150px;
 }
 .search {
 	border: none;
@@ -81,10 +90,21 @@ button {
 }
 
 @media (max-width: 924px) {
+	.nav {
+		padding: 0;
+	}
+
+	.logo {
+		width: 100px;
+		height: 100px;
+	}
+	.divider {
+		display: none;
+	}
 }
 @media (max-width: 675px) {
 	.nav {
 		flex-direction: column;
-		gap: 20px;
+		gap: 5px;
 	}
 }

@@ -1,8 +1,13 @@
 .cartItem {
 	display: flex;
 	align-items: center;
-	gap: 20px;
+	gap: 50px;
 	padding: 10px;
+}
+.cartItem img {
+	width: 120px;
+	height: 120px;
+	border-radius: 20px;
 }
 .cartItemInfo {
 	display: flex;
@@ -42,10 +47,33 @@
 	color: var(--accent);
 }
 .cartItemDelete {
+	margin-top: 10px;
+	width: 20px;
+	height: 20px;
 	background: transparent;
-	border: none;
+	border: 1px solid black;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 5px;
+	color: rgb(214, 129, 129);
 	cursor: pointer;
-	font-size: 20px;
 	transition: all 0.3s ease;
 	align-self: flex-start;
+}
+.cartItemDelete:hover {
+	background-color: black;
+	color: white;
+}
+
+@media (max-width: 924px) {
+}
+@media (max-width: 675px) {
+	.cartItem {
+		gap: 25px;
+	}
+	.cartItemInfo {
+		display: flex;
+		flex-direction: row;
+	}
 }

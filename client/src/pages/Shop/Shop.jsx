@@ -4,10 +4,11 @@ import Filter from '../../components/Filter/Filter'
 import Product from '../../components/Product/Product'
 import useWindowDimensions from '../../components/UseDimession/useDimession'
 import { SideFilter } from '../../features/SideFilter/SideFilter'
+import useLang from '../../hooks/useLang'
 import styles from './Shop.module.css'
 const Shop = () => {
 	const { height, width } = useWindowDimensions()
-
+	const { language, languagesJson } = useLang()
 	const { entities: products, loading } = useSelector(state => state.products)
 	const [shopProducts, setShopProducts] = useState(products)
 	const [scroll, setScroll] = useState(false)

@@ -1,6 +1,7 @@
-import img from '../../public/SHOPPE.svg'
+import img from '../../../public/logo.svg'
 import styles from './About.module.css'
 const About = () => {
+	1
 	return (
 		<div className={styles.about}>
 			<h1>About Us</h1>

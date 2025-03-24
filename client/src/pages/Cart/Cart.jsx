@@ -5,9 +5,11 @@ import styles from './Cart.module.css'
 import { useEffect, useState } from 'react'
 import CartModal from '../../components/CartModal/CartModal'
 import Complete from '../../components/Complete/Complete'
+import useLang from '../../hooks/useLang'
 import { deleteFromCart } from '../../store/cartSlice'
 import Button from '../../ui/Button'
 export const Cart = () => {
+	const { language, languagesJson } = useLang()
 	const [orderInfo, setOrderInfo] = useState([])
 	const [modalOpen, setModalOpen] = useState(false)
 	const [complete, setComplete] = useState(false)
@@ -53,7 +55,7 @@ export const Cart = () => {
 			className={styles.cart}
 			style={modalOpen ? { overflow: 'hidden' } : null}
 		>
-			<h1>Shoping Cart</h1>
+			<h1>{languagesJson[language].cart.shoppingCart}</h1>
 			<div className={styles.cartContainer}>
 				<div className={styles.cartItems}>
 					{cartProducts.map(cartItem => {
@@ -75,7 +77,7 @@ export const Cart = () => {
 					<Button
 						className={styles.cartCheckout}
 						disabled={cartProducts.length === 0}
-						text='Checkout'
+						text={languagesJson[language].cart.checkout}
 						onClick={orderInfoCotentHandler}
 					/>
 				</div>

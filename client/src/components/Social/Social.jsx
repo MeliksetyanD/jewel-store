@@ -4,7 +4,11 @@ import styles from './Social.module.css'
 const Social = () => {
 	return (
 		<div className={styles.footerSocial}>
-			<Link className={styles.footerSocialLink} to='https://www.instagram.com'>
+			<Link
+				className={styles.footerSocialLink}
+				to='https://www.instagram.com/moah_jewelery/'
+				target='_blank'
+			>
 				<svg
 					width='18'
 					height='18'
@@ -20,7 +24,11 @@ const Social = () => {
 					/>
 				</svg>
 			</Link>
-			<Link className={styles.footerSocialLink} to='https://www.facebook.com'>
+			<Link
+				className={styles.footerSocialLink}
+				to='https://www.facebook.com/profile.php?id=100082242420396'
+				target='_blank'
+			>
 				<svg
 					width='10'
 					height='18'

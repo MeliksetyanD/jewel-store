@@ -1,11 +1,16 @@
+import useLang from '../../hooks/useLang'
 import Button from '../../ui/Button'
 import styles from './Complete.module.css'
 const Complete = ({ setComplete }) => {
+	const { language, languagesJson } = useLang()
 	return (
 		<div className={styles.complete}>
-			<div>Ձեր պատվերը ընդունված է</div>
-			<div>Շնոհակալություն</div>
-			<Button text={'Լավ'} onClick={() => setComplete(false)} />
+			<div>{languagesJson[language].order.complete?.info}</div>
+			<div>{languagesJson[language].order.complete?.thanks}</div>
+			<Button
+				text={languagesJson[language].order.complete?.okay}
+				onClick={() => setComplete(false)}
+			/>
 		</div>
 	)
 }
