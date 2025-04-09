@@ -1,7 +1,23 @@
+import jwt from 'jsonwebtoken'
+
+
+const secretKey = 'randomkey'
+
 export default function (req, res, next) {
-    if (req.session && req.session.isAuthenticated) {
+    if (req.method === "OPTIONS") {
         next()
-    } else {
-        res.status(401).json({ message: "Unauthorized: Please log in" })
+    }
+
+    try {
+        const token = req.headers.authorization
+        if (!token) {
+            return res.status(403).json({ message: "пользователь не авторизирован" })
+        }
+        const decodeData = jwt.verify(token, secretKey)
+        req.user = decodeData
+        next()
+    } catch (error) {
+        console.log(error)
+        return res.status(403).json({ message: error })
     }
 }

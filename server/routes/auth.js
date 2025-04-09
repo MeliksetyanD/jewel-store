@@ -1,27 +1,42 @@
 import { Router } from 'express'
+import { generateAccessToken } from '../utils/utilsfunctions.js'
+import bcrypt from 'bcrypt'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const router = Router()
 
-router.post('/log', async (req, res) => {
-	try {
-		const { login, password } = req.body
-		console.log(login, password)
 
-		if (login == 'admin' && password == '123') {
-			req.session.isAuthenticated = true
-			req.session.save(err => {
-				if (err) {
-					throw err
-				}
-				return res.status(200).json({ isAuth: true })
-			})
-		} else {
-			return res.status(203).json({ message: 'wrong password', isAuth: false })
-		}
-	} catch (error) {
-		console.log(error)
-		res.status(500).json({ message: 'error, try again' })
-	}
+router.post('/login', async (req, res) => {
+    try {
+
+        const {login , password} = req.body
+
+        const logHash = process.env.LOGIN
+        const pasHash = process.env.PASSWORD
+
+        if(!login || !password){
+            return res.status(400).json({message: 'введен неправильный пароль'})
+        }
+
+        const validLogin = await bcrypt.compare(login , logHash)
+        const validpassword = await bcrypt.compare(password, pasHash)
+
+
+        if(!validpassword || !validLogin){
+            return res.status(400).json({message: 'введен неправильный пароль'})
+        }
+
+        const token =  await generateAccessToken(login)
+
+        return res.json({token})
+       
+    } catch (error) {
+        console.log(error)
+    }
+
 })
+
 
 export default router

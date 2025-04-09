@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken'
 import path from 'path'
 import fs from 'fs'
 
@@ -11,3 +12,16 @@ export async function deleteImages(name) {
         });
     }
 }
+
+
+const secretkey = 'randomkey'
+
+export async function generateAccessToken (admin){
+    const payload = {
+        admin
+    }
+    return jwt.sign(payload, secretkey, {expiresIn: "10h" })
+}
+
+
+
