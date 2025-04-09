@@ -3,6 +3,7 @@ import multer from 'multer'
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import blogmodel from '../models/blogmodel.js'
+import authcheck from '../middleware/authcheck.js'
 import { deleteImages } from '../utils/utilsfunctions.js'
 
 const router = Router()
@@ -58,7 +59,7 @@ router.get('/', async (req, res) => {
 	}
 })
 
-router.post('/', upload.array('images', 3), async (req, res) => {
+router.post('/', authcheck, upload.array('images', 3), async (req, res) => {
 	try {
 		let images = []
 		if (req.files) {
@@ -80,7 +81,7 @@ router.post('/', upload.array('images', 3), async (req, res) => {
 	}
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authcheck, async (req, res) => {
 	try {
 		const blog = await blogmodel.findAll({ where: { uid: req.params.id } })
 
@@ -101,7 +102,7 @@ router.delete('/:id', async (req, res) => {
 	}
 })
 
-router.put('/:id', upload.array('images', 3), async (req, res) => {
+router.put('/:id', authcheck,  upload.array('images', 3), async (req, res) => {
 	try {
 		const blog = await blogmodel.findOne({ where: { uid: req.params.id } })
 

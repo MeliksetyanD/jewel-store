@@ -5,7 +5,7 @@ const secretKey = 'randomkey'
 
 export default function (req, res, next) {
     if (req.method === "OPTIONS") {
-        next()
+        return next()
     }
 
     try {
