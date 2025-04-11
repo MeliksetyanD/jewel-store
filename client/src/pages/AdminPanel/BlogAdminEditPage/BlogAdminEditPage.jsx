@@ -2,6 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
+import { checkAuth } from '../../../features/auth'
 import { getBlogByIdAdmin } from '../../../store/adminSlice'
 import styles from './BlogAdminEditPage.module.css'
 const BlogAdminEditPage = () => {
@@ -87,6 +88,8 @@ const BlogAdminEditPage = () => {
 					{
 						headers: {
 							'Content-Type': 'multipart/form-data',
+
+							authorization: await checkAuth(),
 						},
 					}
 				)
@@ -104,6 +107,7 @@ const BlogAdminEditPage = () => {
 					{
 						headers: {
 							'Content-Type': 'multipart/form-data',
+							authorization: await checkAuth(),
 						},
 					}
 				)

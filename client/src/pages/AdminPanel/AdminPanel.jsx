@@ -11,12 +11,12 @@ const AdminPanel = () => {
 	const navigate = useNavigate()
 
 	function signOut() {
-		localStorage.removeItem('isAuth')
+		localStorage.removeItem('bearer')
 		navigate('/')
 	}
 
 	useEffect(() => {
-		if (!localStorage.getItem('isAuth')) navigate('/admin')
+		if (!localStorage.getItem('bearer')) navigate('/admin')
 		dispatch(getProductsAdmin())
 		dispatch(getBlogsAdmin())
 	}, [])

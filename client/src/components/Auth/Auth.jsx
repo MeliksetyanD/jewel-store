@@ -23,6 +23,7 @@ const Auth = () => {
 			console.log(error)
 		}
 	}
+
 	return (
 		<div className={styles.Admin}>
 			<div className={styles.container}>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { categories } from '../../../constants/categories'
+import { checkAuth } from '../../../features/auth'
 import { getProductById } from '../../../store/productsSlice'
 import styles from './CreateAndUpdatePage.module.css'
 const CreateAndUpdatePage = () => {
@@ -97,18 +98,19 @@ const CreateAndUpdatePage = () => {
 			}
 		})
 
-		console.log(...formData)
-
 		if (product.name.length === 0) {
 			return
 		}
 		try {
 			if (id) {
+				const token = localStorage.getItem('bearer')
+				if (!token) return
 				const response = await axios.put(
 					`http://localhost:4700/products/${id}`,
 					formData,
 					{
 						headers: {
+							authorization: await checkAuth(),
 							'Content-Type': 'multipart/form-data',
 						},
 					}
@@ -125,11 +127,14 @@ const CreateAndUpdatePage = () => {
 				}
 				console.log(response.data)
 			} else {
+				const token = localStorage.getItem('bearer')
+				if (!token) return
 				const response = await axios.post(
 					'http://localhost:4700/products',
 					formData,
 					{
 						headers: {
+							authorization: await checkAuth(),
 							'Content-Type': 'multipart/form-data',
 						},
 					}

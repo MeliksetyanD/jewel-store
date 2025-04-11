@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { checkAuth } from '../features/auth'
 
 const initialState = {
 	entities: [],
@@ -10,13 +11,13 @@ const initialState = {
 export const getProductsAdmin = createAsyncThunk(
 	'admin/getProducts',
 	async () => {
-		const response = await fetch('http://192.168.0.108:4700/products')
+		const response = await fetch('http://192.168.0.109:4700/products')
 		const data = await response.json()
 		return data
 	}
 )
 export const getBlogsAdmin = createAsyncThunk('admin/getBlogs', async () => {
-	const response = await fetch('http://192.168.0.108:4700/blog')
+	const response = await fetch('http://192.168.0.109:4700/blog')
 
 	const data = await response.json()
 
@@ -26,7 +27,7 @@ export const getBlogsAdmin = createAsyncThunk('admin/getBlogs', async () => {
 export const getBlogByIdAdmin = createAsyncThunk(
 	'admin/getBlogByIdAdmin',
 	async id => {
-		const response = await fetch(`http://192.168.0.108:4700/blog/${id}`)
+		const response = await fetch(`http://192.168.0.109:4700/blog/${id}`)
 		const data = await response.json()
 
 		return data
@@ -35,8 +36,11 @@ export const getBlogByIdAdmin = createAsyncThunk(
 export const deleteBlogAdmin = createAsyncThunk(
 	'admin/deleteBlogAdmin',
 	async id => {
-		const response = await fetch(`http://192.168.0.108:4700/blog/${id}`, {
+		const response = await fetch(`http://192.168.0.109:4700/blog/${id}`, {
 			method: 'DELETE',
+			headers: {
+				authorization: await checkAuth(),
+			},
 		})
 		const data = await response.json()
 
@@ -46,7 +50,7 @@ export const deleteBlogAdmin = createAsyncThunk(
 export const getProductByIdAdmin = createAsyncThunk(
 	'admin/getProductByIdAdmin',
 	async id => {
-		const response = await fetch(`http://192.168.0.108:4700/products/get/${id}`)
+		const response = await fetch(`http://192.168.0.109:4700/products/get/${id}`)
 		const data = await response.json()
 
 		return data
@@ -55,8 +59,11 @@ export const getProductByIdAdmin = createAsyncThunk(
 export const deleteProductAdmin = createAsyncThunk(
 	'admin/deleteProductAdmin',
 	async id => {
-		const response = await fetch(`http://192.168.0.108:4700/products/${id}`, {
+		const response = await fetch(`http://192.168.0.109:4700/products/${id}`, {
 			method: 'DELETE',
+			headers: {
+				authorization: await checkAuth(),
+			},
 		})
 		const data = await response.json()
 
@@ -67,7 +74,7 @@ export const updateBlogAdmin = createAsyncThunk(
 	'admin/updateBlogAdmin',
 	async data => {
 		const response = await fetch(
-			`http://192.168.0.108:4700/blog/put/${data.id}`,
+			`http://192.168.0.109:4700/blog/put/${data.id}`,
 			{
 				body: JSON.stringify(data),
 			}
@@ -80,7 +87,7 @@ export const updateBlogAdmin = createAsyncThunk(
 export const createBlogAdmin = createAsyncThunk(
 	'admin/createBlogAdmin',
 	async data => {
-		const response = await fetch(`http://192.168.0.108:4700/blog/post`, {
+		const response = await fetch(`http://192.168.0.109:4700/blog/post`, {
 			method: 'POST',
 
 			body: data,
@@ -95,7 +102,7 @@ export const updateProductAdmin = createAsyncThunk(
 	'admin/updateProductAdmin',
 	async data => {
 		const response = await fetch(
-			`http://192.168.0.108:4700/products/put/${data.id}`,
+			`http://192.168.0.109:4700/products/put/${data.id}`,
 			{
 				body: JSON.stringify(data),
 			}
@@ -108,7 +115,7 @@ export const updateProductAdmin = createAsyncThunk(
 export const createProductAdmin = createAsyncThunk(
 	'admin/createProductAdmin',
 	async data => {
-		const response = await fetch(`http://192.168.0.108:4700/products/post`, {
+		const response = await fetch(`http://192.168.0.109:4700/products/post`, {
 			method: 'POST',
 
 			body: data,

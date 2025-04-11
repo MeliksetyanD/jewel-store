@@ -10,7 +10,6 @@ const BlogContent = () => {
 	const blogs = useSelector(state => state.admin.blogs)
 
 	useEffect(() => {}, [blogs])
-	console.log(blogs)
 
 	return (
 		<div className={styles.item}>
