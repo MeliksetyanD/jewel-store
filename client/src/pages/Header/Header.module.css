@@ -107,4 +107,7 @@ button {
 		flex-direction: column;
 		gap: 5px;
 	}
+	.menu {
+		gap: 20px;
+	}
 }

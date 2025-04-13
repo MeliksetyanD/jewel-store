@@ -20,7 +20,7 @@ const Home = () => {
 						<h1>Loading...</h1>
 					) : (
 						products
-							.slice(0, 4)
+							?.slice(0, 4)
 							.map(product => (
 								<Product key={product.id} id={product.id} {...product} />
 							))

@@ -26,7 +26,11 @@ const BlogSingle = () => {
 		<div className={styles.blogSingle}>
 			<h1>{blog?.title}</h1>
 			<h5>{new Date(blog?.createdAt).toDateString()}</h5>
-			<img src={blog?.images?.[0]} alt='' width={700} height={300} />
+			<div
+				className={styles.img}
+				style={{ backgroundImage: `url(${blog?.images[0]})` }}
+			></div>
+
 			<p>{blog?.descriptionFull}</p>
 			{blog?.images?.length > 1 && (
 				<img src={blog?.images[1]} width='400' height='300' alt='' />

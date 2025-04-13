@@ -79,9 +79,15 @@
 	align-items: center;
 }
 @media (max-width: 924px) {
+	.footerMenuList {
+		gap: 25px;
+	}
 }
 @media (max-width: 675px) {
 	.footerMenu {
 		flex-direction: column;
+	}
+	.footerMenuList {
+		gap: 15px;
 	}
 }

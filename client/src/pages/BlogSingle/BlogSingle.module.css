@@ -8,3 +8,9 @@
 	justify-content: center;
 	align-items: center;
 }
+.img {
+	width: 70vw;
+	height: 50vh;
+	background-size: cover;
+	background-position: center center;
+}

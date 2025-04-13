@@ -22,7 +22,7 @@ const CreateAndUpdatePage = () => {
 		colorus: '',
 		weight: '',
 		material: '',
-		categoryname: '',
+		categoryname: categories?.[0],
 		forSlide: '',
 	})
 
@@ -226,24 +226,13 @@ const CreateAndUpdatePage = () => {
 			>
 				{categories?.slice(0, 4).map((category, index) => {
 					return (
-						<option
-							key={index}
-							value={category}
-							selected={productForChange ? productForChange.categoryname : ''}
-						>
+						<option key={index} value={category}>
 							{category}
 						</option>
 					)
 				})}
 			</select>
-			{/* <input
-				type='text'
-				name='categoryname'
-				placeholder={
-					productForChange ? productForChange.categoryname : 'Categoryname'
-				}
-				onChange={handleInputChange}
-			/> */}
+
 			<div className={styles.forSlide}>
 				<label htmlFor='forSlide'>For Slide</label>
 				<input

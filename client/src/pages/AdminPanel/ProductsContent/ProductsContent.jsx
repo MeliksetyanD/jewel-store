@@ -16,7 +16,7 @@ const ProductsContent = () => {
 				</Link>
 			</div>
 			<div className={styles.items}>
-				{products.map(product => {
+				{products?.map(product => {
 					return <AdminProduct key={product.uid} product={product} />
 				})}
 			</div>

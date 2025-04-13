@@ -72,3 +72,13 @@
 .button:hover {
 	background-color: var(--white);
 }
+@media (max-width: 924px) {
+	.container {
+		flex-direction: column;
+	}
+	.sidebarContent ul {
+		flex-direction: row;
+	}
+}
+@media (max-width: 675px) {
+}
