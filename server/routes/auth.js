@@ -25,7 +25,7 @@ router.post('/login', async (req, res) => {
 
 
         if(!validpassword || !validLogin){
-            return res.status(400).json({message: 'введен неправильный пароль'})
+            return res.status(400).json({message: 'введен неправильный логин или пароль'})
         }
 
         const token =  await generateAccessToken(login)

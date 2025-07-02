@@ -131,7 +131,7 @@ router.put('/:id', authcheck,  upload.array('images', 3), async (req, res) => {
 			})
 		}
 		if (req.files || req.file) {
-			await Promise.all(req.files.map(file => newImages.push(file.filename)))
+			Promise.all(req.files.map(file => newImages.push(file.filename)))
 			blog.images = JSON.stringify(newImages)
 		}
 		
