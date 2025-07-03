@@ -36,7 +36,7 @@ app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
-	origin: 'http://localhost:5173', // укажи порт фронтенда!
+	origin: 'http://192.168.0.104:5173', // укажи порт фронтенда!
 	credentials: true
   }))
 app.use('/products', add)

@@ -1,4 +1,4 @@
-export const productQuestions = [
+export const questions = [
   '📝 Enter the **product name**:',
   '💲 Enter the **price**:',
   '📃 Enter the **description**:',
@@ -36,3 +36,8 @@ export const productValidators = [
     // images — для upload (тут проще валидировать отдельно в middleware загрузки, либо проверить количество файлов)
     images => Array.isArray(images) && images.length > 0 && images.length <= 3 || 'Upload 1 to 3 images.'
 ]
+
+
+
+
+
