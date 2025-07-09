@@ -1,6 +1,6 @@
 import TelegramApi from 'node-telegram-bot-api'
 import dotenv from 'dotenv';
-import { blogQuestions, blogValidators, productValidators, questions, sendPage } from './utils/botsUtils.js';
+import { blogQuestions, blogValidators, productValidators, questions, sendPage, sendUpdatePage } from './utils/botsUtils.js';
 import { v4 as uuidv4 } from 'uuid'
 import { deleteImages } from './utils/utilsfunctions.js'
 import prodmodel from './models/productmodel.js'
@@ -65,7 +65,7 @@ const start = () => {
             return bot.sendMessage(chatID, blogQuestions[0]);
         }
 
-        if (state && state.step === BLOG_IMAGE_STEP_INDEX && state.type === 'blog') {
+        if (state && state.step === BLOG_IMAGE_STEP_INDEX && state.type === 'blog' && state.operationtype !== 'update') {
             if (msg.photo) {
                 const photoSizes = msg.photo;
                 const largestPhoto = photoSizes[photoSizes.length - 1];
@@ -135,7 +135,22 @@ const start = () => {
             state.answers.push(text);
             state.step++;
 
-            if (state.step === BLOG_IMAGE_STEP_INDEX) {
+            if (state.step === BLOG_IMAGE_STEP_INDEX && state.operationtype === 'update') {
+                const blog = await blogmodel.findOne({ where: { uid: state.uidToUpdate } })
+
+                blog.title = state.answers[0]
+                blog.subTitle = state.answers[1]
+                blog.descriptionShort = state.answers[2]
+                blog.descriptionFull = state.answers[3]
+
+                await blog.save()
+
+                const productUrl = `✅ Successfully updated!  \n\nhttp://192.168.0.104:5173/blog/${blog.uid}`;
+                await bot.sendMessage(chatID, `${productUrl}`);
+                return bot.sendMessage(chatID, 'updated');
+            }
+
+            if (state.step === BLOG_IMAGE_STEP_INDEX && state.operationtype !== 'update') {
                 userStates.set(chatID, state);
                 return bot.sendMessage(chatID, '📸 Please send 1–3 photos (either all at once or one by one).');
             }
@@ -152,8 +167,9 @@ const start = () => {
             }
         }
 
-        if (state && state.step === IMAGE_STEP_INDEX) {
+        if (state && state.step === IMAGE_STEP_INDEX && state.operationtype !== 'update') {
             if (msg.photo) {
+
                 const photoSizes = msg.photo;
                 const largestPhoto = photoSizes[photoSizes.length - 1];
                 const fileId = largestPhoto.file_id;
@@ -232,7 +248,36 @@ const start = () => {
             state.answers.push(text);
             state.step++;
 
-            if (state.step === IMAGE_STEP_INDEX) {
+            if (state.step === IMAGE_STEP_INDEX && state.operationtype === 'update') {
+
+                const product = await prodmodel.findOne({ where: { uid: state.uidToUpdate } })
+
+                if (state.answers[8] === 'yes') {
+                    state.answers[8] = true
+                } else {
+                    state.answers[8] = false
+                }
+
+                product.name = state.answers[0]
+                product.price = parseInt(state.answers[1])
+                product.description = state.answers[2]
+                product.count = parseInt(state.answers[3])
+                product.sizes = state.answers[4]
+                product.colorus = state.answers[5]
+                product.weight = parseFloat(state.answers[6])
+                product.material = state.answers[7]
+                product.forSlide = state.answers[8]
+                product.categoryname = state.answers[9]
+
+
+                await product.save()
+
+                const productUrl = `✅ Successfully updated!  \n\nhttp://192.168.0.104:5173/product/${product.uid}`;
+                await bot.sendMessage(chatID, `${productUrl}`);
+                return bot.sendMessage(chatID, 'updated');
+            }
+
+            if (state.step === IMAGE_STEP_INDEX && state.operationtype !== 'update') {
                 userStates.set(chatID, state);
                 return bot.sendMessage(chatID, '📸 Please send 1–3 photos (either all at once or one by one).');
             }
@@ -305,6 +350,17 @@ const start = () => {
             return sendPage(bot, chatID, 1,messageID, blogmodel);
         }
 
+
+        if(data === 'updateProduct'){
+            userStates.set(chatID, { type: 'pagination', page: 1 });
+            return sendUpdatePage(bot, chatID, 1, messageID, prodmodel)
+        }
+
+        if(data === 'updateBlog'){
+            userStates.set(chatID, { type: 'pagination', page: 1 });
+            return sendUpdatePage(bot, chatID, 1, messageID, blogmodel)
+        }
+
         if (data.startsWith('prevPage_') || data.startsWith('nextPage_')) {
             const page = parseInt(data.split('_')[1]);
             const typeOfModel = data.split('_')[2]
@@ -341,6 +397,32 @@ const start = () => {
                 const currentPage = (state && state.page) || 1;
                 userStates.set(chatID, { type: 'pagination', page: currentPage });
                 return sendPage(bot, chatID, currentPage, messageID, model);
+
+            } catch (error) {
+                console.error('Delete error:', error);
+                return bot.answerCallbackQuery(callbackQuery.id, { text: `❌ Failed to delete ${model === prodmodel ? 'product' : 'blog'}`, show_alert: true });
+            }
+        }
+
+
+        if (data.startsWith('update_')) {
+            const uidToUpdate = data.split('_')[1];
+            const Upd = data.split('_')[2]
+            console.log(Upd)
+            const model = Upd === 'product' ? prodmodel : blogmodel
+            try {
+
+                if (Upd === 'product') {
+                    userStates.set(chatID, { step: 0, answers: [], operationtype: 'update', uidToUpdate });
+                    await bot.sendMessage(chatID, questions[0]);
+                    await bot.answerCallbackQuery(callbackQuery.id);
+                    return
+                } else {
+                    userStates.set(chatID, { step: 0, answers: [], type: 'blog', operationtype: 'update', uidToUpdate });
+                    await bot.sendMessage(chatID, blogQuestions[0]);
+                    await bot.answerCallbackQuery(callbackQuery.id);
+                    return
+                }
 
             } catch (error) {
                 console.error('Delete error:', error);

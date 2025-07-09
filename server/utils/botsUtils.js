@@ -144,3 +144,70 @@ export async function sendPage(bot, chatID, page, message_id, model) {
 }
 
 
+
+export async function sendUpdatePage(bot, chatID, page, message_id, model) {
+  try {
+    // console.log(model)
+    const total = await model.count();
+    const totalPages = Math.ceil(total / PAGE_SIZE);
+
+    if (page < 1 || page > totalPages) {
+      return bot.sendMessage(chatID, '📭 The list is empty.');
+    }
+
+
+    const datas = await model.findAll({
+      offset: (page - 1) * PAGE_SIZE,
+      limit: PAGE_SIZE,
+      order: [['createdAt', 'DESC']],
+    });
+
+    let msg = `📦 <b>Page ${page} / ${totalPages}</b>\n\n`;
+
+    const inlineKeyboard = [];
+
+    datas.forEach((p, index) => {
+      const dataUrl = `http://192.168.0.104:5173/${model === prodmodel ? 'product' : 'blog'}/${p.uid}`;
+      msg += `<b>${index + 1}․</b> <a href="${dataUrl}">${model === prodmodel ? p.name : p.title}</a>\n\n\n`;
+
+      inlineKeyboard.push([
+        { text: `✏️ Update #${index + 1}`, callback_data: `update_${p.uid}_${model === prodmodel ? 'product' : 'blog'}` }
+      ]);
+    });
+
+    const prewtype = model === prodmodel ? 'product' : 'blog'
+
+    console.log(prewtype)
+
+    const navButtons = [];
+    if (page > 1) navButtons.push({ text: '⬅️ Previous', callback_data: `prevPage_${page - 1}_${prewtype}` });
+    if (page < totalPages) navButtons.push({ text: '➡️ Next', callback_data: `nextPage_${page + 1}_${prewtype}` });
+    if (navButtons.length) inlineKeyboard.push(navButtons);
+
+    inlineKeyboard.push([
+      { text: '🔙 Back', callback_data: 'backToMenu' }
+    ]);
+
+    const options = {
+      parse_mode: 'HTML',
+      reply_markup: {
+        inline_keyboard: inlineKeyboard
+      }
+    };
+
+    if (message_id) {
+      return bot.editMessageText(msg, {
+        chat_id: chatID,
+        message_id,
+        parse_mode: 'HTML',
+        reply_markup: options.reply_markup
+      });
+    } else {
+      return bot.sendMessage(chatID, msg, options);
+    }
+
+
+  } catch (error) {
+    console.error('error:', error);
+  }
+}
