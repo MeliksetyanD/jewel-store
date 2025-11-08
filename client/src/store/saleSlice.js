@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 export const getSale = createAsyncThunk('sale/getSale', async () => {
-	const response = await fetch('http://192.168.0.104:4700/products')
+	const response = await fetch('http://192.168.0.105:4700/products')
 	const data = await response.json()
 
 	return data.filter(product => product.forSlide === true)

@@ -1,4 +1,4 @@
-.item {
+/* .item {
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
@@ -38,4 +38,57 @@
 }
 .delete {
 	color: red;
+} */
+
+
+.card {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 16px;
+  padding: 16px;
+  margin: 16px;
+  border: 1px solid var(--dark-gray);
+  border-radius: 16px;
+  background: var(--bg, #111);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .2s ease;
 }
+.card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.25); border-color: var(--light-gray); }
+.card[aria-busy="true"] { opacity: .6; pointer-events: none; }
+
+.thumbWrap { position: relative; }
+.thumb {
+  width: 200px; height: 200px; object-fit: cover; border-radius: 12px; border: 1px solid var(--dark-gray);
+}
+.thumbEmpty {
+  width: 200px; height: 200px; border-radius: 12px; border: 1px dashed var(--dark-gray);
+  display: grid; place-items: center; color: var(--light-gray);
+  font-size: 12px; letter-spacing: .5px;
+}
+
+.badge {
+  position: absolute; top: 8px; left: 8px;
+  padding: 4px 8px; font-size: 11px; border-radius: 999px;
+  background: #2b63ff22; color: #8fb0ff; border: 1px solid #2b63ff55; backdrop-filter: blur(2px);
+}
+
+.body { display: flex; flex-direction: column; gap: 8px; }
+.title {
+  margin: 0; font-size: 16px; line-height: 1.3; color: #fff;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.meta { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+.price { font-weight: 700; color: #e9ff6a; }
+.count { color: var(--light-gray); font-size: 12px; }
+
+.actions { margin-top: auto; display: flex; gap: 10px; }
+.btn {
+  text-decoration: none; font-size: 13px; padding: 10px 14px;
+  border: 1px solid var(--dark-gray); border-radius: 10px; cursor: pointer;
+  background: #1a1a1a; color: #fff; transition: all .2s ease;
+}
+.btn:hover { background: var(--light-gray); color: #000; }
+.update { border-color: #ffd43b66; box-shadow: inset 0 0 0 1px #ffd43b22; }
+.delete { border-color: #ff6b6b66; color: #ff6b6b; }
+.delete:hover { background: #ff6b6b; color: #000; }
+

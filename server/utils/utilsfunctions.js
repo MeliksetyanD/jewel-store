@@ -25,3 +25,9 @@ export async function generateAccessToken (admin){
 
 
 
+
+
+export function fileFilter(req, file, cb) {
+  const ok = ['image/jpeg','image/png','image/webp','image/gif', 'image/jpg'].includes(file.mimetype)
+  cb(ok ? null : new Error('Only images allowed'), ok)
+}

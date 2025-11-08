@@ -4,7 +4,7 @@ import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import blogmodel from '../models/blogmodel.js'
 import authcheck from '../middleware/authcheck.js'
-import { deleteImages } from '../utils/utilsfunctions.js'
+import { deleteImages, fileFilter} from '../utils/utilsfunctions.js'
 
 const router = Router()
 
@@ -13,11 +13,15 @@ var storage = multer.diskStorage({
 		cb(null, 'uploads/')
 	},
 	filename: function (req, file, cb) {
-		cb(null, Date.now() + path.extname(file.originalname))
+		cb(null, uuidv4() + path.extname(file.originalname))
 	},
 })
 
-const upload = multer({ storage })
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { files: 3, fileSize: 5 * 1024 * 1024 } // <= 5MB на файл
+})
 
 router.get('/:id', async (req, res) => {
 	try {

@@ -35,10 +35,17 @@ app.use('/uploads', (req, res, next) => {
 app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+// app.use(cors({
+// 	origin: 'http://192.168.0.104:5173', // укажи порт фронтенда!
+// 	credentials: true
+//   }))
+
 app.use(cors({
-	origin: 'http://192.168.0.104:5173', // укажи порт фронтенда!
-	credentials: true
-  }))
+  origin: '*',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
 app.use('/products', add)
 app.use('/auth', auth)
 app.use('/blog',  blog)
