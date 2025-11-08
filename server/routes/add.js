@@ -6,12 +6,12 @@ import authcheck from '../middleware/authcheck.js'
 import prodmodel from '../models/productmodel.js'
 import { deleteImages } from '../utils/utilsfunctions.js'
 
-// ---------- Helpers ----------
+
 const toBool = v => v === true || v === 'true' || v === 1 || v === '1'
 const toInt = v => (v === '' || v == null ? null : parseInt(v, 10))
 const toFloat = v => (v === '' || v == null ? null : parseFloat(v))
 
-// безопасный парсер JSON массива картинок
+
 const parseImages = val => {
   try {
     if (Array.isArray(val)) return val
@@ -23,13 +23,13 @@ const parseImages = val => {
   }
 }
 
-// конвертируем имена файлов в публичные URL
+
 const toPublicUrls = (req, names) => {
   const base = `${req.protocol}://${req.get('host')}/uploads/`
   return (names || []).map(n => base + n)
 }
 
-// ---------- Multer ----------
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
   filename: (req, file, cb) =>
@@ -44,12 +44,11 @@ function fileFilter(req, file, cb) {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { files: 3, fileSize: 5 * 1024 * 1024 } // до 3 файлов, каждый до 5MB
+  limits: { files: 3, fileSize: 5 * 1024 * 1024 } 
 })
 
 const router = Router()
 
-// ---------- GET /products/:id ----------
 router.get('/:id', async (req, res) => {
   try {
     const product = await prodmodel.findOne({ where: { uid: req.params.id } })
@@ -68,7 +67,7 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-// ---------- GET /products ----------
+
 router.get('/', async (req, res) => {
   try {
     const products = await prodmodel.findAll()
@@ -85,10 +84,8 @@ router.get('/', async (req, res) => {
   }
 })
 
-// ---------- POST /products ----------
 router.post('/', authcheck, upload.array('images', 3), async (req, res) => {
   try {
-    // дедупликация имён файлов на всякий случай
     const images = [...new Set((req.files || []).map(f => f.filename))]
 
     const created = await prodmodel.create({
@@ -116,7 +113,7 @@ router.post('/', authcheck, upload.array('images', 3), async (req, res) => {
   }
 })
 
-// ---------- DELETE /products/:id ----------
+
 router.delete('/:id', authcheck, async (req, res) => {
   try {
     const product = await prodmodel.findOne({ where: { uid: req.params.id } })
@@ -137,13 +134,13 @@ router.delete('/:id', authcheck, async (req, res) => {
   }
 })
 
-// ---------- PUT /products/:id ----------
+
 router.put('/:id', authcheck, upload.array('images', 3), async (req, res) => {
   try {
     const product = await prodmodel.findOne({ where: { uid: req.params.id } })
     if (!product) return res.status(404).json({ message: 'Product not found' })
 
-    // 1) удалить отмеченные к удалению
+  
     if (req.body.deletedImg) {
       const delList = Array.isArray(req.body.deletedImg) ? req.body.deletedImg : [req.body.deletedImg]
       for (const url of delList) {
@@ -154,7 +151,7 @@ router.put('/:id', authcheck, upload.array('images', 3), async (req, res) => {
       }
     }
 
-    // 2) собрать итоговый массив картинок: оставшиеся из body + новые файлы
+
     let keep = []
     if (req.body.images) {
       const bodyImages = Array.isArray(req.body.images) ? req.body.images : [req.body.images]
@@ -165,7 +162,6 @@ router.put('/:id', authcheck, upload.array('images', 3), async (req, res) => {
 
     product.images = JSON.stringify(finalImages)
 
-    // 3) обновить остальные поля с приведением типов
     const fieldsRaw = ['name', 'description', 'sizes', 'colorus', 'material', 'categoryname']
     fieldsRaw.forEach(k => { if (k in req.body) product[k] = req.body[k] })
 
